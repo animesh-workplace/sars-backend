@@ -28,5 +28,10 @@ class Download_Handler(models.Model):
 
 class Frontend_Handler(models.Model):
 	metadata = jsonfield.JSONField()
+	map_data = jsonfield.JSONField()
+	genomes_sequenced = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
+	variants_catalogued = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
+	lineages_catalogued = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
+	states_covered = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
 
 
