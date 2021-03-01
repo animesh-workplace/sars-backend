@@ -55,13 +55,55 @@ def get_all_metadata(user_obj):
 	frontend_obj = Frontend_Handler.objects.last()
 	return frontend_obj.metadata
 
+def get_dashboard(user_obj):
+	frontend_obj = Frontend_Handler.objects.last()
+	dashboard = {
+		"genomes_sequenced": int(frontend_obj.genomes_sequenced),
+		"variants_catalogued": int(frontend_obj.variants_catalogued),
+		"lineages_catalogued": int(frontend_obj.lineages_catalogued),
+		"states_covered": int(frontend_obj.states_covered),
+	}
+	return dashboard
+
+def get_map_data(user_obj):
+	frontend_obj = Frontend_Handler.objects.last()
+	return frontend_obj.map_data
+
 def create_download_link(workflow_info):
 	download_link = f"{os.getenv('DOWNLOAD_URL')}/INSACOG_data_{workflow_info['upload_time']}.zip"
 	download_obj = Download_Handler(download_link = download_link)
 	download_obj.save()
 
 def create_frontend_entry(workflow_info):
-	download_obj = Frontend_Handler(metadata = workflow_info["message"])
+	workflow_df = pandas.DataFrame(workflow_info["message"])
+	genomes_sequenced = len(workflow_df)
+	all_variants = []
+	for i in workflow_df.index:
+		if(isinstance(workflow_df.iloc[i]['aaSubstitutions'], str)):
+			all_variants.append(workflow_df.iloc[i]['aaSubstitutions'].split(','))
+		if(isinstance(workflow_df.iloc[i]['aaDeletions'], str)):
+			all_variants.append(workflow_df.iloc[i]['aaDeletions'].split(','))
+	all_variants = list(itertools.chain(*all_variants))
+	unique_variants = pandas.unique(all_variants).tolist()
+	variants_catalogued = len(unique_variants)
+	lineages_catalogued = len(pandas.unique(workflow_df['lineage']))
+	states_covered = len(pandas.unique(workflow_df['State']))
+
+	map_data = []
+	for (key,value) in dict(collections.Counter(workflow_df['State'].tolist())).items():
+		map_data.append({
+			"name": key,
+			"value": value
+		})
+
+	download_obj = Frontend_Handler(
+		metadata = workflow_info["message"],
+		genomes_sequenced = genomes_sequenced,
+		variants_catalogued = variants_catalogued,
+		lineages_catalogued = lineages_catalogued,
+		states_covered = states_covered,
+		map_data = map_data
+	)
 	download_obj.save()
 
 def send_email_upload(user_info):
