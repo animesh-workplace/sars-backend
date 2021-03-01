@@ -35,6 +35,16 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 				"type": "ALL_METADATA",
 				"data": get_all_metadata(self.scope["user"])
 			}
+		elif(event["type"] == "DASHBOARD"):
+			result = {
+				"type": "DASHBOARD",
+				"data": get_dashboard(self.scope["user"])
+			}
+		elif(event["type"] == "MAP_DATA"):
+			result = {
+				"type": "MAP_DATA",
+				"data": get_map_data(self.scope["user"])
+			}
 		else:
 			result = {
 				"type": "ERROR"
