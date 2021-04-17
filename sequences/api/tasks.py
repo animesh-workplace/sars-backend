@@ -5,6 +5,7 @@ import numpy
 import base64
 import pandas
 import fuzzyset
+import pendulum
 import subprocess
 from Bio import SeqIO
 from time import sleep
@@ -39,6 +40,7 @@ def fix_metadata(self, user_info, metadata_json, timestamp):
 		# Adding Submission date and Collection month
 		metadata_df['Submission date'] = metadata_df['Collection date']
 		metadata_df['Collection month'] = pandas.to_datetime(metadata_df['Collection date'], format="%Y-%m-%d").dt.strftime('%b-%y')
+		metadata_df['Collection week'] = [ f"{pendulum.parse(str(i)).format('MMM')}-{ pendulum.parse(str(i)).week_of_month if(pendulum.parse(str(i)).week_of_month > 0) else pendulum.parse(str(i)).week_of_month + 52 }"  for i in metadata_df['Collection date']]
 
 		# Generate the save path
 		temp = str(timezone.now()).split('.')[0]
@@ -127,7 +129,7 @@ def combine_metadata(self):
 		zip_obj.write(f'{ settings.MEDIA_ROOT }/nextstrain_metadata.tsv', arcname = 'nextstrain_metadata.tsv')
 		zip_obj.write(f'{ settings.MEDIA_ROOT }/sequences_combined.fasta', arcname = 'sequences_combined.fasta')
 		zip_obj.close()
-		send_email_general.delay('Insacog_NIBMG', 20)
+		# send_email_general.delay('Insacog_NIBMG', 20)
 		return 'Combined all metadata and fasta'
 	except:
 		type_error = 'combine_metadata'
