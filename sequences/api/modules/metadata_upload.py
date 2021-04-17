@@ -2,6 +2,7 @@ import os
 import datetime
 from sequences.models import *
 from django.db.models import Q
+from sequences.api.tasks import *
 from django.utils import timezone
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
@@ -18,13 +19,15 @@ class UserMetadataUploadSerializer(CustomSerializer):
 		model  = Metadata_Handler
 		fields = [
 			'user',
-			'metadata'
+			'metadata',
+			'timestamp'
 		]
 
 	def validate(self, value):
 		user 		= self.context['request'].user
 		request 	= self.context['request'].data
 		metadata 	= request.get('metadata')
+		timestamp 	= request.get('timestamp')
 		qs = User.objects.filter(Q(username__iexact=user) | Q(email__iexact=user)).distinct()
 		if(qs.count() == 1):
 			user_obj = qs.first()
@@ -35,6 +38,12 @@ class UserMetadataUploadSerializer(CustomSerializer):
 					submission_date = timezone.now()
 				)
 				metadata_obj.save()
+				user_info = {
+					'id' : user_obj.id,
+					'username': user_obj.username,
+				}
+				# send_email_general.delay(user_obj.username, len(metadata))
+				fix_metadata.delay(user_info, metadata, timestamp)
 				return {'message': 'Upload Successful'}
 			raise serializers.ValidationError({'message': 'User Inactive'})
 		raise serializers.ValidationError({'message': 'Invalid Credentials'})
