@@ -7,6 +7,7 @@ from django.utils import timezone
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from .custom_serializer import CustomSerializer
+from sequences.api.tasks import send_email_general
 from django_celery_results.models import TaskResult
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import serializers, generics, status
