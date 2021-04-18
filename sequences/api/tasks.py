@@ -121,9 +121,22 @@ def combine_metadata(self):
 			purpose_of_sequencing = ['?' for i in combined_metadata.index]
 		)
 
+		SeqIO.write(combined_sequences, f'{ settings.MEDIA_ROOT }/sequences_combined.fasta', 'fasta')
+		nextclade_command = f"nextclade -i { settings.MEDIA_ROOT }/sequences_combined.fasta -t { settings.MEDIA_ROOT }/clade_label.tsv"
+		pangolin_update_command = f"pangolin --update"
+		pangolin_command = f"pangolin { settings.MEDIA_ROOT }/sequences_combined.fasta --outfile { settings.MEDIA_ROOT }/lineage_report.csv"
+		nextclade = subprocess.run(nextclade_command.split(' '))
+		pangolin = subprocess.run(pangolin_update_command.split(' '))
+		pangolin = subprocess.run(pangolin_command.split(' '))
+
+		nextclade_metadata = pandas.read_csv(f'{ settings.MEDIA_ROOT }/clade_label.tsv', delimiter = '\t', encoding = 'utf-8', low_memory = False)
+		pangolin_metadata = pandas.read_csv(f'{ settings.MEDIA_ROOT }/lineage_report.csv', delimiter = ',', encoding = 'utf-8', low_memory = False)
+
+		print(nextstrain_metadata)
+		print(pangolin_metadata)
+
 		combined_metadata.to_csv(f'{ settings.MEDIA_ROOT }/metadata_combined.tsv', sep = '\t', index = False)
 		nextstrain_metadata.to_csv(f'{ settings.MEDIA_ROOT }/nextstrain_metadata.tsv', sep = '\t', index = False)
-		SeqIO.write(combined_sequences, f'{ settings.MEDIA_ROOT }/sequences_combined.fasta', 'fasta')
 		zip_obj = ZipFile(f'{ settings.MEDIA_ROOT }/combined.zip', 'w', compression = ZIP_DEFLATED, compresslevel = 9)
 		zip_obj.write(f'{ settings.MEDIA_ROOT }/metadata_combined.tsv', arcname = 'metadata_combined.tsv')
 		zip_obj.write(f'{ settings.MEDIA_ROOT }/nextstrain_metadata.tsv', arcname = 'nextstrain_metadata.tsv')
