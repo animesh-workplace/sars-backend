@@ -114,12 +114,13 @@ def combine_metadata(self, upload_info, upload_date):
 		zip_obj_download.write(f'{path_for_files}/download_metadata.tsv', arcname = 'metadata_combined.tsv')
 		zip_obj_download.close()
 
-		# Running Nextclade and Pangolin
+		# Running Nextclade
 		nextclade_command = f"nextclade -i {path_for_files}/sequences_combined.fasta -t {path_for_files}/clade_label.tsv"
 		nextclade 	= subprocess.run(nextclade_command.split(' '), stdout = subprocess.DEVNULL)
 		nextclade_metadata = pandas.read_csv(f'{path_for_files}/clade_label.tsv', delimiter = '\t', encoding = 'utf-8', low_memory = False)
 		nextclade_metadata.rename(columns = {'seqName': 'strain'}, inplace = True)
 
+		# Running Pangolin
 		pangolin_update_command = f"pangolin --update"
 		pangolin_command = f"pangolin {path_for_files}/sequences_combined.fasta --outfile {path_for_files}/lineage_report.csv"
 		pangolin 	= subprocess.run(pangolin_update_command.split(' '))
