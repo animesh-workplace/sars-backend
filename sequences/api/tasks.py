@@ -22,6 +22,10 @@ load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
 @shared_task(bind=True)
 def fix_metadata(self, user_info, metadata_json, timestamp):
 	try:
+		upload_info = {
+			'username': user_info['username'],
+			'uploaded': len(metadata_json)
+		}
 		metadata_df = pandas.DataFrame.from_dict(metadata_json)
 
 		# Fix State information
@@ -52,7 +56,7 @@ def fix_metadata(self, user_info, metadata_json, timestamp):
 		save_path = os.path.join(save_path, f'fixed_metadata_{timestamp}.tsv')
 
 		metadata_df.to_csv(save_path, sep = '\t', index = False)
-		combine_metadata.delay()
+		combine_metadata.delay(upload_info, upload_date)
 		return 'Metadata Fixed & Saved'
 	except:
 		type_error = 'fix_metadata'
@@ -60,15 +64,23 @@ def fix_metadata(self, user_info, metadata_json, timestamp):
 		return 'Got into a error! Calling Admin'
 
 @shared_task(bind=True)
-def combine_metadata(self):
+def combine_metadata(self, upload_info, upload_date):
 	try:
+		# Create path and folder for all combined files
+		path_for_files = os.path.join(settings.MEDIA_ROOT, 'combined_files', upload_date)
+		os.makedirs(path_for_files, exist_ok = True)
+
+		# Initializing all required data
 		nextstrain_labels = ['strain', 'virus', 'gisaid_epi_isl', 'genbank_accession', 'date', 'region', 'country', 'division', 'location', 'region_exposure', 'country_exposure', 'division_exposure', 'segment', 'length', 'host', 'age', 'sex', 'originating_lab', 'submitting_lab', 'authors', 'url', 'title', 'paper_url', 'date_submitted', 'purpose_of_sequencing']
-		combined_metadata = pandas.DataFrame(columns = ['Virus name', 'Type', 'Passage details/history', 'Collection date', 'Collection month', 'Submission date', 'Country', 'State', 'District', 'Location', 'Additional location information', 'Host', 'Additional host information', 'Gender', 'Patient age', 'Patient status', 'Specimen source', 'Outbreak', 'Last vaccinated', 'Treatment', 'Sequencing technology', 'Assembly method', 'Coverage', 'Originating lab', 'Originating lab address', 'Submitting lab', 'Submitting lab address', 'Sample ID given by the submitting lab', 'Authors'])
+		metadata_labels = ['Virus name', 'Type', 'Passage details/history', 'Collection date', 'Country', 'State', 'District', 'Location', 'Additional location information', 'Host', 'Additional host information', 'Gender', 'Patient age', 'Patient status', 'Specimen source', 'Outbreak', 'Last vaccinated', 'Treatment', 'Sequencing technology', 'Assembly method', 'Coverage', 'Originating lab', 'Originating lab address', 'Submitting lab', 'Submitting lab address', 'Sample ID given by the submitting lab', 'Authors']
+		combined_metadata = pandas.DataFrame()
 		combined_sequences = []
 		combined_sequences_label = []
 		combined_sequences_length = []
-		ignore_dir = ['user_16_test']
-		ignore_file = ['template_metadata.csv', 'metadata_combined.tsv', 'nextstrain_metadata.tsv', 'sequences_combined.fasta']
+		ignore_dir = ['user_16_test', 'combined_files']
+		ignore_file = ['template_metadata.csv']
+
+		# Traversing all paths and combining all sequences and metadata
 		for path, dirs, files in os.walk(settings.MEDIA_ROOT):
 			if(not (sum(list(map(lambda x: (x in ignore_dir), path.split('/')))) or sum(list(map(lambda x: (x in ignore_file), files))))):
 				if(files):
@@ -92,6 +104,31 @@ def combine_metadata(self):
 		combined_metadata = combined_metadata[combined_metadata['Virus name'].str.strip().astype(bool)]
 		combined_metadata.reset_index(drop = True, inplace = True)
 		combined_metadata.drop_duplicates(subset = ['Virus name'], ignore_index = True, inplace = True)
+
+		# For download button
+		for_download_metadata = combined_metadata[metadata_labels]
+		for_download_metadata.to_csv(f'{path_for_files}/download_metadata.tsv', sep = '\t', index = False)
+		SeqIO.write(combined_sequences, f'{path_for_files}/sequences_combined.fasta', 'fasta')
+
+		# Running Nextclade and Pangolin
+		nextclade_command = f"nextclade -i {path_for_files}/sequences_combined.fasta -t {path_for_files}/clade_label.tsv"
+		pangolin_update_command = f"pangolin --update"
+		pangolin_command = f"pangolin {path_for_files}/sequences_combined.fasta --outfile {path_for_files}/lineage_report.csv"
+		nextclade 	= subprocess.run(nextclade_command.split(' '), stdout = subprocess.DEVNULL)
+		pangolin 	= subprocess.run(pangolin_update_command.split(' '))
+		pangolin 	= subprocess.run(pangolin_command.split(' '), stdout = subprocess.DEVNULL)
+
+		nextclade_metadata = pandas.read_csv(f'{path_for_files}/clade_label.tsv', delimiter = '\t', encoding = 'utf-8', low_memory = False)
+		pangolin_metadata = pandas.read_csv(f'{path_for_files}/lineage_report.csv', delimiter = ',', encoding = 'utf-8', low_memory = False)
+		nextclade_metadata.rename(columns = {'seqName': 'strain'}, inplace = True)
+		pangolin_metadata.rename(columns = {'taxon': 'strain'}, inplace = True)
+		nextclade_pangolin = pandas.merge(
+			nextclade_metadata[['strain', 'clade', 'totalInsertions', 'totalMissing', 'totalNonACGTNs', 'nonACGTNs', 'substitutions', 'deletions', 'aaSubstitutions', 'aaDeletions']],
+			pangolin_metadata[['strain', 'lineage', 'note']],
+			on = 'strain', how = 'inner'
+		)
+
+		# For Nextstrain Analysis
 		nextstrain_metadata = pandas.DataFrame(columns = nextstrain_labels)
 		nextstrain_metadata = nextstrain_metadata.assign(
 			strain = combined_metadata['Virus name'],
@@ -120,29 +157,18 @@ def combine_metadata(self):
 			date_submitted = combined_metadata['Submission date'],
 			purpose_of_sequencing = ['?' for i in combined_metadata.index]
 		)
+		nextstrain_metadata = nextstrain_metadata.merge(nextclade_pangolin, on = 'strain', how = 'inner')
+		nextstrain_metadata.to_csv(f'{path_for_files}/nextstrain_metadata.tsv', sep = '\t', index = False)
+		combined_metadata.to_csv(f'{path_for_files}/metadata_combined.tsv', sep = '\t', index = False)
 
-		SeqIO.write(combined_sequences, f'{ settings.MEDIA_ROOT }/sequences_combined.fasta', 'fasta')
-		nextclade_command = f"nextclade -i { settings.MEDIA_ROOT }/sequences_combined.fasta -t { settings.MEDIA_ROOT }/clade_label.tsv"
-		pangolin_update_command = f"pangolin --update"
-		pangolin_command = f"pangolin { settings.MEDIA_ROOT }/sequences_combined.fasta --outfile { settings.MEDIA_ROOT }/lineage_report.csv"
-		nextclade = subprocess.run(nextclade_command.split(' '))
-		pangolin = subprocess.run(pangolin_update_command.split(' '))
-		pangolin = subprocess.run(pangolin_command.split(' '))
-
-		nextclade_metadata = pandas.read_csv(f'{ settings.MEDIA_ROOT }/clade_label.tsv', delimiter = '\t', encoding = 'utf-8', low_memory = False)
-		pangolin_metadata = pandas.read_csv(f'{ settings.MEDIA_ROOT }/lineage_report.csv', delimiter = ',', encoding = 'utf-8', low_memory = False)
-
-		print(nextstrain_metadata)
-		print(pangolin_metadata)
-
-		combined_metadata.to_csv(f'{ settings.MEDIA_ROOT }/metadata_combined.tsv', sep = '\t', index = False)
-		nextstrain_metadata.to_csv(f'{ settings.MEDIA_ROOT }/nextstrain_metadata.tsv', sep = '\t', index = False)
-		zip_obj = ZipFile(f'{ settings.MEDIA_ROOT }/combined.zip', 'w', compression = ZIP_DEFLATED, compresslevel = 9)
-		zip_obj.write(f'{ settings.MEDIA_ROOT }/metadata_combined.tsv', arcname = 'metadata_combined.tsv')
-		zip_obj.write(f'{ settings.MEDIA_ROOT }/nextstrain_metadata.tsv', arcname = 'nextstrain_metadata.tsv')
-		zip_obj.write(f'{ settings.MEDIA_ROOT }/sequences_combined.fasta', arcname = 'sequences_combined.fasta')
+		# Compressing necessary files to email
+		zip_obj = ZipFile(f'{path_for_files}/combined.zip', 'w', compression = ZIP_DEFLATED, compresslevel = 9)
+		zip_obj.write(f'{path_for_files}/metadata_combined.tsv', arcname = 'metadata_combined.tsv')
+		zip_obj.write(f'{path_for_files}/nextstrain_metadata.tsv', arcname = 'nextstrain_metadata.tsv')
+		zip_obj.write(f'{path_for_files}/sequences_combined.fasta', arcname = 'sequences_combined.fasta')
 		zip_obj.close()
-		# send_email_general.delay('Insacog_NIBMG', 20)
+
+		send_email_general.delay(upload_info['username'], upload_info['uploaded'], path_for_files, len(combined_metadata))
 		return 'Combined all metadata and fasta'
 	except:
 		type_error = 'combine_metadata'
@@ -178,22 +204,20 @@ def send_email_error(self, type_error):
 		return 'Mail couldnot be sent'
 
 @shared_task(bind=True)
-def send_email_general(self, username, count):
+def send_email_general(self, username, count, path, total_length):
 	mailing_list = [
 		('aks1@nibmg.ac.in', 'Animesh Kumar Singh'),
-		# ('sahinshaagt2010@gmail.com', 'Check animesh')
 	]
 	error = None
-	with open(f'{ settings.MEDIA_ROOT }/combined.zip', 'rb') as f:
+	with open(f'{path}/combined.zip', 'rb') as f:
 		data = f.read()
 	encoded = base64.b64encode(data).decode()
 
 	attached_file = Attachment()
-	print(dir(attached_file))
-	attached_file.file_content = encoded
-	attached_file.file_type = "application/zip"
-	attached_file.file_name = "combined.zip"
-	attached_file.disposition = "attachment"
+	attached_file.file_content 	= encoded
+	attached_file.disposition 	= "attachment"
+	attached_file.file_name 	= "combined.zip"
+	attached_file.file_type 	= "application/zip"
 
 	for i in mailing_list:
 		message = Mail(
@@ -207,7 +231,9 @@ def send_email_general(self, username, count):
 							This is an automated mail to alert you of the deposition of
 							<strong>{ count } samples by { username.split('_')[1] }</strong>.
 							The pipeline to generate report has been activated and
-							soon you will get another mail with the combined metadata and fasta.
+							soon you will get another mail with all the reports. Please find attached with
+							this mail a zip containing combined metadata (General and Nextstrain) and combined sequences
+							<strong>(Total = {total_length})</strong>.
 						</p>
 						<p>
 						With Regards,<br>
