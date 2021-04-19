@@ -109,19 +109,24 @@ def combine_metadata(self, upload_info, upload_date):
 		for_download_metadata = combined_metadata[metadata_labels]
 		for_download_metadata.to_csv(f'{path_for_files}/download_metadata.tsv', sep = '\t', index = False)
 		SeqIO.write(combined_sequences, f'{path_for_files}/sequences_combined.fasta', 'fasta')
+		zip_obj_download = ZipFile(f'{path_for_files}/download.zip', 'w', compression = ZIP_DEFLATED, compresslevel = 9)
+		zip_obj_download.write(f'{path_for_files}/sequences_combined.fasta', arcname = 'sequences_combined.fasta')
+		zip_obj_download.write(f'{path_for_files}/download_metadata.tsv', arcname = 'metadata_combined.tsv')
+		zip_obj_download.close()
 
 		# Running Nextclade and Pangolin
 		nextclade_command = f"nextclade -i {path_for_files}/sequences_combined.fasta -t {path_for_files}/clade_label.tsv"
+		nextclade 	= subprocess.run(nextclade_command.split(' '), stdout = subprocess.DEVNULL)
+		nextclade_metadata = pandas.read_csv(f'{path_for_files}/clade_label.tsv', delimiter = '\t', encoding = 'utf-8', low_memory = False)
+		nextclade_metadata.rename(columns = {'seqName': 'strain'}, inplace = True)
+
 		pangolin_update_command = f"pangolin --update"
 		pangolin_command = f"pangolin {path_for_files}/sequences_combined.fasta --outfile {path_for_files}/lineage_report.csv"
-		nextclade 	= subprocess.run(nextclade_command.split(' '), stdout = subprocess.DEVNULL)
 		pangolin 	= subprocess.run(pangolin_update_command.split(' '))
 		pangolin 	= subprocess.run(pangolin_command.split(' '), stdout = subprocess.DEVNULL)
-
-		nextclade_metadata = pandas.read_csv(f'{path_for_files}/clade_label.tsv', delimiter = '\t', encoding = 'utf-8', low_memory = False)
 		pangolin_metadata = pandas.read_csv(f'{path_for_files}/lineage_report.csv', delimiter = ',', encoding = 'utf-8', low_memory = False)
-		nextclade_metadata.rename(columns = {'seqName': 'strain'}, inplace = True)
 		pangolin_metadata.rename(columns = {'taxon': 'strain'}, inplace = True)
+
 		nextclade_pangolin = pandas.merge(
 			nextclade_metadata[['strain', 'clade', 'totalInsertions', 'totalMissing', 'totalNonACGTNs', 'nonACGTNs', 'substitutions', 'deletions', 'aaSubstitutions', 'aaDeletions']],
 			pangolin_metadata[['strain', 'lineage', 'note']],
@@ -207,6 +212,8 @@ def send_email_error(self, type_error):
 def send_email_general(self, username, count, path, total_length):
 	mailing_list = [
 		('aks1@nibmg.ac.in', 'Animesh Kumar Singh'),
+		('nkb1@nibmg.ac.in', 'Dr. Nidhan Biswas'),
+		('paul.antara02@gmail.com', 'Antara Paul')
 	]
 	error = None
 	with open(f'{path}/combined.zip', 'rb') as f:
