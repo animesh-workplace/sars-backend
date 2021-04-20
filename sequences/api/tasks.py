@@ -109,9 +109,9 @@ def combine_metadata(self, upload_info, upload_date):
 		for_download_metadata = combined_metadata[metadata_labels]
 		for_download_metadata.to_csv(f'{path_for_files}/download_metadata.tsv', sep = '\t', index = False)
 		SeqIO.write(combined_sequences, f'{path_for_files}/sequences_combined.fasta', 'fasta')
-		zip_obj_download = ZipFile(f'{path_for_files}/download.zip', 'w', compression = ZIP_DEFLATED, compresslevel = 9)
-		zip_obj_download.write(f'{path_for_files}/sequences_combined.fasta', arcname = 'sequences_combined.fasta')
-		zip_obj_download.write(f'{path_for_files}/download_metadata.tsv', arcname = 'metadata_combined.tsv')
+		zip_obj_download = ZipFile(f'{path_for_files}/INSACOG_data_{upload_date}.zip', 'w', compression = ZIP_DEFLATED, compresslevel = 9)
+		zip_obj_download.write(f'{path_for_files}/sequences_combined.fasta', arcname = f'sequences_combined_{upload_date}.fasta')
+		zip_obj_download.write(f'{path_for_files}/download_metadata.tsv', arcname = f'metadata_combined_{upload_date}.tsv')
 		zip_obj_download.close()
 
 		# Running Nextclade
@@ -174,7 +174,7 @@ def combine_metadata(self, upload_info, upload_date):
 		zip_obj.write(f'{path_for_files}/sequences_combined.fasta', arcname = 'sequences_combined.fasta')
 		zip_obj.close()
 
-		send_email_general.delay(upload_info['username'], upload_info['uploaded'], path_for_files, len(combined_metadata))
+		# send_email_general.delay(upload_info['username'], upload_info['uploaded'], path_for_files, len(combined_metadata))
 		return 'Combined all metadata and fasta'
 	except:
 		type_error = 'combine_metadata'
