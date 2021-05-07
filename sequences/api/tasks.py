@@ -7,6 +7,7 @@ import pandas
 import fuzzyset
 import pendulum
 import subprocess
+import collections
 from Bio import SeqIO
 from time import sleep
 from celery import shared_task
@@ -62,6 +63,39 @@ def fix_metadata(self, user_info, metadata_json, timestamp):
 		type_error = 'fix_metadata'
 		send_email_error.delay(type_error)
 		return 'Got into a error! Calling Admin'
+
+
+def get_state_info():
+	try:
+		combined_metadata = pandas.DataFrame()
+		ignore_dir = ['user_16_test', 'combined_files']
+		ignore_file = ['template_metadata.csv']
+
+		# Traversing all paths and combining all sequences and metadata
+		for path, dirs, files in os.walk(settings.MEDIA_ROOT):
+			if(not (sum(list(map(lambda x: (x in ignore_dir), path.split('/')))) or sum(list(map(lambda x: (x in ignore_file), files))))):
+				if(files):
+					for i in files:
+						type = i.split('_')[0]
+						if(type == 'fixed'):
+							metadata_url = os.path.join(path, i)
+							metadata = pandas.read_csv(metadata_url, delimiter = '\t', encoding = 'utf-8', low_memory = False)
+							if(not len(metadata.keys().tolist()) >= 27):
+								metadata = pandas.read_csv(metadata_url, delimiter = ',', encoding = 'utf-8', low_memory = False)
+							combined_metadata = pandas.concat([combined_metadata, metadata])
+
+		combined_metadata['Virus name'].replace('', numpy.nan, inplace = True)
+		combined_metadata.dropna(subset = ['Virus name'], inplace = True)
+		combined_metadata = combined_metadata[combined_metadata['Virus name'].str.strip().astype(bool)]
+		combined_metadata.reset_index(drop = True, inplace = True)
+		combined_metadata.drop_duplicates(subset = ['Virus name'], ignore_index = True, inplace = True)
+
+		return dict(collections.Counter(combined_metadata['State']))
+	except:
+		type_error = 'get_state_info'
+		send_email_error.delay(type_error)
+		return 'Got into a error! Calling Admin'
+
 
 @shared_task(bind=True)
 def combine_metadata(self, upload_info, upload_date):
