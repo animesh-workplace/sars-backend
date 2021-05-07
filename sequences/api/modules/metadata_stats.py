@@ -4,6 +4,7 @@ import datetime
 import itertools
 from sequences.models import *
 from django.db.models import Q
+from sequences.api.tasks import *
 from django.utils import timezone
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
@@ -40,6 +41,30 @@ class UserMetadataStatsSerializer(CustomSerializer):
 class UserMetadataStatsAPI(generics.GenericAPIView):
 	queryset                = Metadata_objects
 	serializer_class        = UserMetadataStatsSerializer
+	permission_classes      = []
+
+	def post(self, request, *args, **kwargs):
+		if(not bool(request.data)):
+			serializer = self.get_serializer(data = request.data)
+			if(serializer.is_valid()):
+				return Response(serializer.object)
+			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'message': 'Invalid Payload'}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserMetadataStateStatsSerializer(CustomSerializer):
+	class Meta:
+		model  = Metadata_Handler
+		fields = [
+			'user'
+		]
+
+	def validate(self, value):
+		return get_state_info()
+
+
+class UserMetadataStateStatsAPI(generics.GenericAPIView):
+	queryset                = Metadata_objects
+	serializer_class        = UserMetadataStateStatsSerializer
 	permission_classes      = []
 
 	def post(self, request, *args, **kwargs):
