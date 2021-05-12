@@ -7,7 +7,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/2.2/howto/deployment/wsgi/
 """
 
-# from jobs.api.consumer import *
+from sequences.api.consumer import *
 from django.conf.urls import url
 from django.urls import include, re_path
 from .token_auth import TokenAuthMiddleware
@@ -21,7 +21,7 @@ application = ProtocolTypeRouter({
 			TokenAuthMiddleware(
 					URLRouter(
 							[
-								# url(r'^wsa/jobs/(?P<task_id>[^/]+)/$', JobConsumer, name='job-consumer'),
+								url(r'^wsa/data/$', TestConsumer, name='job-consumer'),
 								# url(r'^wsa/jobs/(?P<task_id>[^/]+)/usage$', JobConsumerUsage, name='job-consumer-usage'),
 
 							]
