@@ -21,7 +21,7 @@ application = ProtocolTypeRouter({
 			TokenAuthMiddleware(
 					URLRouter(
 							[
-								url(r'^wsa/data/$', TestConsumer, name='job-consumer'),
+								url(r'^wsa/data/$', TestConsumer, name='test-consumer'),
 								# url(r'^wsa/jobs/(?P<task_id>[^/]+)/usage$', JobConsumerUsage, name='job-consumer-usage'),
 
 							]
