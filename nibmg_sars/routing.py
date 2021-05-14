@@ -7,22 +7,28 @@ For more information on this file, see
 https://docs.djangoproject.com/en/2.2/howto/deployment/wsgi/
 """
 
-from sequences.api.consumer import *
+import os
+from dotenv import load_dotenv
 from django.conf.urls import url
+from sequences.api.consumer import *
 from django.urls import include, re_path
 from .token_auth import TokenAuthMiddleware
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 application = ProtocolTypeRouter({
 	'websocket': AllowedHostsOriginValidator(
 			TokenAuthMiddleware(
 					URLRouter(
 							[
-								url(r'^wsa/data/$', TestConsumer, name='test-consumer'),
-								# url(r'^wsa/jobs/(?P<task_id>[^/]+)/usage$', JobConsumerUsage, name='job-consumer-usage'),
+								url(os.getenv('BASE_URL'), URLRouter([
+									url(r'^wsa/data/$', TestConsumer, name='test-consumer'),
+									# url(r'^wsa/jobs/(?P<task_id>[^/]+)/usage$', JobConsumerUsage, name='job-consumer-usage'),
+								]))
 
 							]
 						)
