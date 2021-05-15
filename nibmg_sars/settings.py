@@ -117,7 +117,7 @@ USE_TZ          = os.getenv('USE_TZ')
 
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT     = os.path.join(BASE_DIR, 'static')
-STATIC_URL      = '/static/'
+STATIC_URL      = f"/{os.getenv('BASE_URL')}static/"
 
 # Media files (CSS, JavaScript, Images)
 MEDIA_ROOT      = os.path.join(BASE_DIR, 'media')
