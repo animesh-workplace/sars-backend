@@ -121,7 +121,7 @@ STATIC_URL      = f"/{os.getenv('BASE_URL')}static/"
 
 # Media files (CSS, JavaScript, Images)
 MEDIA_ROOT      = os.path.join(BASE_DIR, 'media')
-MEDIA_URL       = '/media/'
+MEDIA_URL       = f"/{os.getenv('BASE_URL')}media/"
 
 #Test Zone
 REMOTE_ROOT     = os.getenv('REMOTE_ROOT')
