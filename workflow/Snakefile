@@ -33,10 +33,13 @@ def send_data_to_websocket(data_type, tool, message):
 	sleep(1)
 	ws.close()
 
+onsuccess:
+	send_data_to_websocket("SUCCESS", None, "Completed Workflow")
+
 rule all:
 	input:
 		results = expand(
-				"{base_path}/combined_files/{date}/{combined_file}",
+				"{base_path}/combined_files/{date}/log/{combined_file}",
 				base_path=config['base_path'],
 				date=str(pendulum.now('Asia/Kolkata')).split('T')[0],
 				combined_file=['update_log']
