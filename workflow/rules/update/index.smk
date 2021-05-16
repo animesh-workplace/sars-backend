@@ -1,12 +1,15 @@
 rule update:
 	message: "Updating nextclade and pangolin"
 	output:
-		os.path.join('{base_path}', 'combined_files', '{date}', 'update_log')
+		os.path.join('{base_path}', 'combined_files', '{date}', 'log', 'update_log')
 	run:
-		shell(
-			"""
-				pangolin --update
-				# npm update --global @neherlab/nextclade
-				touch {output}
-			"""
-		)
+		try:
+			shell(
+				"""
+					pangolin --update
+					# npm update --global @neherlab/nextclade
+					touch {output}
+				"""
+			)
+		except:
+			send_data_to_websocket('ERROR', 'update', 'Error occured while updating nextclade and pangolin software')
