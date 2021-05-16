@@ -1,5 +1,6 @@
 import os
 import time
+import yaml
 import arrow
 import numpy
 import base64
@@ -48,8 +49,7 @@ def fix_metadata(self, user_info, metadata_json, timestamp):
 		metadata_df['Collection week'] = [ f"{pendulum.parse(str(i)).format('MMM')}-{ pendulum.parse(str(i)).week_of_month if(pendulum.parse(str(i)).week_of_month > 0) else pendulum.parse(str(i)).week_of_month + 52 }"  for i in metadata_df['Collection date']]
 
 		# Generate the save path
-		temp = str(timezone.now()).split('.')[0]
-		upload_date = temp.split(' ')[0]
+		upload_date = pendulum.now().to_datetime_string().split(' ')[0]
 		path = 'user_{0}_{1}/{2}'.format(user_info['id'], user_info['username'], upload_date)
 
 		save_path = os.path.join(settings.MEDIA_ROOT, path)
@@ -57,13 +57,25 @@ def fix_metadata(self, user_info, metadata_json, timestamp):
 		save_path = os.path.join(save_path, f'fixed_metadata_{timestamp}.tsv')
 
 		metadata_df.to_csv(save_path, sep = '\t', index = False)
-		combine_metadata.delay(upload_info, upload_date)
+		create_config_file(upload_info)
+		# combine_metadata.delay(upload_info, upload_date)
 		return 'Metadata Fixed & Saved'
 	except:
 		type_error = 'fix_metadata'
 		send_email_error.delay(type_error)
 		return 'Got into a error! Calling Admin'
 
+
+def create_config_file(upload_info):
+	upload_date = pendulum.now().to_datetime_string().replace(' ', '_')
+	config_data = {
+		"analysis_time": upload_date,
+		"base_path": settings.MEDIA_ROOT,
+		"uploaded_by": upload_info['username'],
+		"sequences_uploaded": upload_info['uploaded'],
+	}
+	configfile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'config', f"config_{upload_date}.yaml")
+	yaml.dump(config_data, open(configfile_loc, 'w'))
 
 def get_state_info():
 	try:
@@ -247,8 +259,8 @@ def send_email_error(self, type_error):
 def send_email_general(self, username, count, path, total_length):
 	mailing_list = [
 		('aks1@nibmg.ac.in', 'Animesh Kumar Singh'),
-		('nkb1@nibmg.ac.in', 'Dr. Nidhan Biswas'),
-		('paul.antara02@gmail.com', 'Antara Paul')
+		# ('nkb1@nibmg.ac.in', 'Dr. Nidhan Biswas'),
+		# ('paul.antara02@gmail.com', 'Antara Paul')
 	]
 	error = None
 	with open(f'{path}/combined.zip', 'rb') as f:
