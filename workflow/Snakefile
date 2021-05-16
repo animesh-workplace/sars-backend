@@ -1,4 +1,5 @@
 import os
+import json
 import numpy
 import arrow
 import base64
@@ -10,9 +11,27 @@ import subprocess
 import collections
 from tqdm import tqdm
 from Bio import SeqIO
+from time import sleep
 from Bio.Seq import Seq
+from dotenv import load_dotenv
 from pandas import ExcelWriter
+from websocket import create_connection
 from zipfile import ZipFile, ZIP_DEFLATED
+
+def send_data_to_websocket(data_type, tool, message):
+	load_dotenv('.env')
+	ws = create_connection(f"ws://{os.getenv('WEBSOCKET_URL')}/{os.getenv('BASE_URL')}wsa/backend/")
+	websocket_data = {
+		"type": data_type,
+		"data": {
+			"tool": tool,
+			"message": message,
+			"timestamp": str(pendulum.now('Asia/Kolkata')),
+		}
+	}
+	ws.send(json.dumps(websocket_data))
+	sleep(1)
+	ws.close()
 
 rule all:
 	input:
