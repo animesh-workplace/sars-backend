@@ -1,3 +1,4 @@
+import pendulum
 import jsonfield
 from django.db import models
 from django.conf import settings
@@ -7,8 +8,7 @@ from .storage import OverwriteStorage
 # Create your functions here
 def user_directory_path(instance, filename):
 	# File will be uploaded to MEDIA_ROOT/user_<id>_<username>/file/<filename>
-	temp = str(timezone.now()).split('.')[0]
-	save_time = temp.split(' ')[0]
+	save_time = pendulum.now().to_datetime_string().split(' ')[0]
 	return 'user_{0}_{1}/{2}/{3}'.format(instance.user.id, instance.user, save_time, filename)
 
 # Create your models here.
