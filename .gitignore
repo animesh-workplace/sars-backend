@@ -6,6 +6,7 @@ dump.rdb
 db.sqlite3
 virtual_env/
 media/
+workflow/config/
 migrations/
 
 # Virtualenv related
