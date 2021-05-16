@@ -38,3 +38,23 @@ class TestConsumer(AsyncJsonWebsocketConsumer):
 			"message": event['data']
 		}
 		await self.send_json(data)
+
+
+class BackendConsumer(AsyncJsonWebsocketConsumer):
+	async def connect(self):
+		task_id = 'Backend_Update_Consumer'
+		await self.accept()
+		await self.channel_layer.group_add(task_id, self.channel_name)
+		data = {
+			'message': f'You have connected to {task_id}',
+		}
+		await self.send_json(data)
+
+	async def receive_json(self, event):
+		task_id = 'Backend_Update_Consumer'
+		print(event)
+
+	async def disconnect(self, close_code):
+		task_id = 'Backend_Update_Consumer'
+		await self.channel_layer.group_discard(task_id, self.channel_name)
+		await self.close()
