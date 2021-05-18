@@ -80,7 +80,7 @@ def create_config_file(upload_info):
 @shared_task(bind=True)
 def run_pipeline(self, configfile_loc):
 	snakefile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'Snakefile')
-	command = f"snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 2"
+	command = f"snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 20"
 	snakemake_command = subprocess.run(command.split(' '))
 	return 'Pipeline run completed'
 
