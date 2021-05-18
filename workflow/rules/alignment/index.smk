@@ -1,5 +1,6 @@
 checkpoint partition_sequences:
 	input:
+		update = rules.update.output,
 		sequences = rules.combine_data.output.sequences
 	output:
 		split_sequences = directory(os.path.join("{base_path}", "combined_files", "{date}", "alignment", "split_sequences/pre/"))
