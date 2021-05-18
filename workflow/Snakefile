@@ -40,15 +40,15 @@ rule all:
 	input:
 		results = expand(
 				"{base_path}/combined_files/{date}/log/{combined_file}",
+				combined_file=['update_log'],
 				base_path=config['base_path'],
 				date=str(pendulum.now('Asia/Kolkata')).split('T')[0],
-				combined_file=['update_log']
 			),
 		mutation_results = expand(
 				"{base_path}/combined_files/{date}/Analysis/{analysis_file}",
 				base_path=config['base_path'],
+				analysis_file=['state_wise', 'top_mutation.xlsx'],
 				date=str(pendulum.now('Asia/Kolkata')).split('T')[0],
-				analysis_file=['state_wise', 'top_mutation.xlsx']
 			),
 		# voi_distribution = os.path.join(config['result_path'], 'voi_distribution', 'voi_distribution.xlsx')
 
