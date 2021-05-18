@@ -1,3 +1,19 @@
+rule get_pangolin:
+	message: "Finding the pangolin lineage for each sequence"
+	input: rules.aggregate_alignments.output
+	threads: 20
+	output:
+		lineage_report = os.path.join("{base_path}", "combined_files", "{date}", "lineage_report.csv")
+	run:
+		try:
+			shell(
+				"""
+					pangolin {input} --outfile {output.lineage_report} > pangolin_output1 2> pangolin_output2
+				"""
+			)
+		except:
+			send_data_to_websocket('ERROR', 'get_pangolin', 'Error occured while getting pangolin lineage')
+
 rule get_clade:
 	message: "Finding the clade definitions for each sequence"
 	input: rules.aggregate_alignments.output
@@ -14,31 +30,13 @@ rule get_clade:
 		except:
 			send_data_to_websocket('ERROR', 'get_clade', 'Error occured while getting clade definitions from nextclade')
 
-
-rule get_pangolin:
-	message: "Finding the pangolin lineage for each sequence"
-	input: rules.aggregate_alignments.output
-	threads: 20
-	output:
-		lineage_report = os.path.join("{base_path}", "combined_files", "{date}", "lineage_report.csv")
-	run:
-		try:
-			shell(
-				"""
-					echo pangolin {input} --outfile {output.lineage_report}
-					pangolin {input} --outfile {output.lineage_report}
-				"""
-			)
-		except:
-			send_data_to_websocket('ERROR', 'get_pangolin', 'Error occured while getting pangolin lineage')
-
 rule combine_clade_pangolin:
 	message: "Creating a new metadata with clade and lineage definitions"
 	input:
+		lineage = rules.get_pangolin.output.lineage_report,
 		clade = rules.get_clade.output.clade_label,
 		metadata = rules.combine_data.output.metadata,
 		sequences = rules.combine_data.output.sequences,
-		lineage = rules.get_pangolin.output.lineage_report,
 	output:
 		nextstrain = os.path.join("{base_path}", "combined_files", "{date}", "nextstrain_metadata.tsv")
 	run:
