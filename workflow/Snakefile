@@ -38,13 +38,13 @@ onsuccess:
 
 rule all:
 	input:
-		results = expand(
-				"{base_path}/combined_files/{date}/log/{combined_file}",
-				combined_file=['update_log'],
-				base_path=config['base_path'],
-				date=str(pendulum.now('Asia/Kolkata')).split('T')[0],
-			),
-		nextstrain_metadata = os.path.join(config['base_path'], 'combined_files', str(pendulum.now('Asia/Kolkata')).split('T')[0], 'nextstrain_metadata.tsv'),
+		# results = expand(
+		# 		"{base_path}/combined_files/{date}/log/{combined_file}",
+		# 		combined_file=['update_log'],
+		# 		base_path=config['base_path'],
+		# 		date=str(pendulum.now('Asia/Kolkata')).split('T')[0],
+		# 	),
+		# nextstrain_metadata = os.path.join(config['base_path'], 'combined_files', str(pendulum.now('Asia/Kolkata')).split('T')[0], 'nextstrain_metadata.tsv'),
 		mutation_results = expand(
 				"{base_path}/combined_files/{date}/Analysis/{analysis_file}",
 				base_path=config['base_path'],
