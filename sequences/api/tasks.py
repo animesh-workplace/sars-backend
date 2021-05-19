@@ -17,6 +17,7 @@ from django.conf import settings
 from django.utils import timezone
 from sendgrid import SendGridAPIClient
 from zipfile import ZipFile, ZIP_DEFLATED
+from .ssh_job_submission import RemoteClient
 from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType, Disposition
 
 load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
@@ -59,7 +60,7 @@ def fix_metadata(self, user_info, metadata_json, timestamp):
 		metadata_df.to_csv(save_path, sep = '\t', index = False)
 		config_date = pendulum.now().to_datetime_string().replace(' ', '_')
 		create_config_file.delay(upload_info, config_date)
-		create_config_file.delay(upload_info, config_date)
+		# create_config_file.delay(upload_info, config_date)
 		return 'Metadata Fixed & Saved'
 	except:
 		type_error = 'fix_metadata'
@@ -77,14 +78,31 @@ def create_config_file(self, upload_info, upload_date):
 	}
 	configfile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'config', f"config_{upload_date}.yaml")
 	yaml.dump(config_data, open(configfile_loc, 'w'))
+	# run_ssh_self.delay()
 	run_pipeline()
 
 def run_pipeline():
 	configfile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'config', 'config.yaml')
 	snakefile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'Snakefile')
-	command = f"snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 4"
-	snakemake_command = subprocess.run(command.split(' '))
+	command = f"exec snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 4 --until top_mutation"
+	snakemake_command = subprocess.run(command, shell = True)
 	return 'Pipeline run completed'
+
+@shared_task(bind=True)
+def run_ssh_self(self):
+	configfile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'config', 'config.yaml')
+	snakefile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'Snakefile')
+	host 				= os.getenv('REMOTE_HOST')
+	user 				= os.getenv('REMOTE_USER')
+	port				= os.getenv('REMOTE_PORT')
+	remote_path 		= os.getenv('REMOTE_PATH')
+	ssh_key_filepath 	= os.getenv('SSH_KEY_FILEPATH')
+	remote = RemoteClient(host, user, port, ssh_key_filepath, remote_path)
+	remote.connect_to_remote()
+	stdin, stdout, stderr = remote.client.exec_command(f'echo $$; cd {remote_path} && exec snakemake --cores 4 --configfile {configfile_loc} --snakefile {snakefile_loc}')
+	for line in iter(stdout.readline, ""):
+		print(line, end="")
+	return f'Completed Job Submission to {user}@{host}'
 
 # def get_state_info():
 # 	try:
