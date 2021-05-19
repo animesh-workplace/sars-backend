@@ -57,16 +57,18 @@ def fix_metadata(self, user_info, metadata_json, timestamp):
 		save_path = os.path.join(save_path, f'fixed_metadata_{timestamp}.tsv')
 
 		metadata_df.to_csv(save_path, sep = '\t', index = False)
-		create_config_file(upload_info)
+		config_date = pendulum.now().to_datetime_string().replace(' ', '_')
+		create_config_file.delay(upload_info, config_date)
+		create_config_file.delay(upload_info, config_date)
 		return 'Metadata Fixed & Saved'
 	except:
 		type_error = 'fix_metadata'
 		send_email_error.delay(type_error)
 		return 'Got into a error! Calling Admin'
 
-
-def create_config_file(upload_info):
-	upload_date = pendulum.now().to_datetime_string().replace(' ', '_')
+@shared_task(bind=True)
+def create_config_file(self, upload_info, upload_date):
+	# upload_date = pendulum.now().to_datetime_string().replace(' ', '_')
 	config_data = {
 		"analysis_time": upload_date,
 		"base_path": settings.MEDIA_ROOT,
@@ -75,12 +77,12 @@ def create_config_file(upload_info):
 	}
 	configfile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'config', f"config_{upload_date}.yaml")
 	yaml.dump(config_data, open(configfile_loc, 'w'))
-	run_pipeline.delay(configfile_loc)
+	run_pipeline()
 
-@shared_task(bind=True)
-def run_pipeline(self, configfile_loc):
+def run_pipeline():
+	configfile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'config', 'config.yaml')
 	snakefile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'Snakefile')
-	command = f"snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 20"
+	command = f"snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 4"
 	snakemake_command = subprocess.run(command.split(' '))
 	return 'Pipeline run completed'
 
