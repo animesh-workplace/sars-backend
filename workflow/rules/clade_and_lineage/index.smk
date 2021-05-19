@@ -1,41 +1,65 @@
-rule get_clade_and_pangolin:
-	message: "Finding the clade definitions for each sequence"
-	input: rules.aggregate_alignments.output
-	threads: 20
-	output:
-		clade_label = os.path.join("{base_path}", "combined_files", "{date}", "clade_label.tsv"),
-		lineage_report = os.path.join("{base_path}", "combined_files", "{date}", "lineage_report.csv")
-	run:
-		try:
-			pangolin_command = f'pangolin {input} --outfile {output.lineage_report}'
-			subprocess.run(pangolin_command.split(' '))
-			shell(
-				"""
-					nextclade -i {input} -t {output.clade_label} -j {threads}
-				"""
-			)
-		except:
-			send_data_to_websocket('ERROR', 'get_clade', 'Error occured while getting clade definitions from nextclade')
+# rule get_pangolin:
+# 	message: "Finding the pangolin lineage for each sequence"
+# 	input: rules.aggregate_alignments.output
+# 	threads: 20
+# 	output:
+# 		lineage_report = os.path.join("{base_path}", "combined_files", "{date}", "lineage_report.csv")
+# 	run:
+# 		try:
+# 			shell(
+# 				"""
+# 					pangolin {input} --outfile {output.lineage_report} > pangolin_output1 2> pangolin_output2
+# 				"""
+# 			)
+# 		except:
+# 			send_data_to_websocket('ERROR', 'get_pangolin', 'Error occured while getting pangolin lineage')
+
+# rule get_clade:
+# 	message: "Finding the clade definitions for each sequence"
+# 	input: rules.aggregate_alignments.output
+# 	threads: 20
+# 	output:
+# 		clade_label = os.path.join("{base_path}", "combined_files", "{date}", "clade_label.tsv")
+# 	run:
+# 		try:
+# 			shell(
+# 				"""
+# 					nextclade -i {input} -t {output.clade_label} -j {threads}
+# 				"""
+# 			)
+# 		except:
+# 			send_data_to_websocket('ERROR', 'get_clade', 'Error occured while getting clade definitions from nextclade')
 
 rule combine_clade_pangolin:
 	message: "Creating a new metadata with clade and lineage definitions"
 	input:
-		lineage = rules.get_clade_and_pangolin.output.lineage_report,
-		clade = rules.get_clade_and_pangolin.output.clade_label,
+		alignment = rules.aggregate_alignments.output,
 		metadata = rules.combine_data.output.metadata,
 		sequences = rules.combine_data.output.sequences,
 	output:
+		clade_label = os.path.join("{base_path}", "combined_files", "{date}", "clade_label.tsv"),
+		lineage_report = os.path.join("{base_path}", "combined_files", "{date}", "lineage_report.csv"),
 		nextstrain = os.path.join("{base_path}", "combined_files", "{date}", "nextstrain_metadata.tsv")
+	threads: 20
 	run:
 		try:
-			nextstrain_labels = ['strain', 'virus', 'gisaid_epi_isl', 'genbank_accession', 'date', 'region', 'country', 'division', 'location', 'region_exposure', 'country_exposure', 'division_exposure', 'segment', 'length', 'host', 'age', 'sex', 'originating_lab', 'submitting_lab', 'authors', 'url', 'title', 'paper_url', 'date_submitted', 'purpose_of_sequencing']
-			metadata = pandas.read_csv(input.metadata, delimiter = '\t', encoding = 'utf-8', low_memory = False)
-			sequence = SeqIO.to_dict(SeqIO.parse(input.sequences, 'fasta'))
+			shell(
+				"""
+					pangolin {input.alignment} --outfile {output.lineage_report}
+					nextclade -i {input.alignment} -t {output.clade_label} -j {threads}
+				"""
+			)
 
-			nextclade_metadata = pandas.read_csv(input.clade, delimiter = '\t', encoding = 'utf-8', low_memory = False)
+			nextstrain_labels = ['strain', 'virus', 'gisaid_epi_isl', 'genbank_accession', 'date', 'region', 'country', 'division', 'location', 'region_exposure', 'country_exposure', 'division_exposure', 'segment', 'length', 'host', 'age', 'sex', 'originating_lab', 'submitting_lab', 'authors', 'url', 'title', 'paper_url', 'date_submitted', 'purpose_of_sequencing']
+			metadata = pandas.read_csv(str(input.metadata), delimiter = '\t', encoding = 'utf-8', low_memory = False)
+			sequence = SeqIO.to_dict(SeqIO.parse(str(input.sequences), 'fasta'))
+
+			nextclade_metadata = pandas.read_csv(str(output.clade_label), delimiter = '\t', encoding = 'utf-8', low_memory = False)
+			print(nextclade_metadata)
 			nextclade_metadata.rename(columns = {'seqName': 'strain'}, inplace = True)
 
-			pangolin_metadata = pandas.read_csv(input.lineage, delimiter = ',', encoding = 'utf-8', low_memory = False)
+			pangolin_metadata = pandas.read_csv(str(output.lineage_report), delimiter = ',', encoding = 'utf-8', low_memory = False)
+			print(pangolin_metadata)
 			pangolin_metadata.rename(columns = {'taxon': 'strain'}, inplace = True)
 
 			nextclade_pangolin = pandas.merge(
