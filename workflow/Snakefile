@@ -7,6 +7,7 @@ import pandas
 import fuzzyset
 import pendulum
 import itertools
+import traceback
 import subprocess
 import collections
 from tqdm import tqdm
