@@ -28,7 +28,7 @@ rule top_mutation:
 			top_aaDeletions = dict(collections.Counter(aaDeletions))
 			pandas.DataFrame.from_dict(data=[top_aaDeletions], orient='columns').transpose().to_excel(writer, 'deletions', header = True)
 
-			for i in tqdm(genes):
+			for i in genes:
 				gene_aaSubstitution = []
 				for j in aaSubstitution:
 					if(j.startswith(f'{i}')):
@@ -41,7 +41,7 @@ rule top_mutation:
 			os.makedirs(os.path.join(output.state_wise_mutation, 'metadata'), exist_ok = True)
 			os.makedirs(os.path.join(output.state_wise_mutation, 'mutations'), exist_ok = True)
 
-			for i in tqdm(all_states):
+			for i in all_states:
 				writer_state = ExcelWriter(os.path.join(output.state_wise_mutation, 'mutations', f"{i.replace(' ','_')}_mutations.xlsx"))
 				temp = []
 				os.makedirs(os.path.join(output.state_wise_mutation, 'metadata', f"{i.replace(' ','_')}"), exist_ok = True)
@@ -73,5 +73,6 @@ rule top_mutation:
 					pandas.DataFrame.from_dict(data=[gene_subsitution_counter], orient='columns').transpose().to_excel(writer_state, j, header = True)
 
 				writer_state.save()
-		except:
-			send_data_to_websocket('ERROR', 'top_mutation', 'Error occured while getting top mutations')
+		except Exception as e:
+			send_data_to_websocket('ERROR', 'top_mutation', traceback.format_exc())
+			raise
