@@ -17,7 +17,8 @@ checkpoint partition_sequences:
 				"""
 			)
 		except:
-			send_data_to_websocket('ERROR', 'partition_sequences', 'Error occured while paritioning sequences')
+			send_data_to_websocket('ERROR', 'partition_sequences', traceback.format_exc())
+			raise
 
 rule partitions_intermediate:
 	message:
@@ -37,7 +38,8 @@ rule partitions_intermediate:
 				"""
 			)
 		except:
-			send_data_to_websocket('ERROR', 'partitions_intermediate', 'Error occured while partitioning intermediates')
+			send_data_to_websocket('ERROR', 'partitions_intermediate', traceback.format_exc())
+			raise
 
 rule align:
 	message:
@@ -65,7 +67,8 @@ rule align:
 				"""
 			)
 		except:
-			send_data_to_websocket('ERROR', 'align', 'Error occured while aligning sequences')
+			send_data_to_websocket('ERROR', 'align', traceback.format_exc())
+			raise
 
 def _get_alignments(wildcards):
 	checkpoint_output = checkpoints.partition_sequences.get(**wildcards).output[0]
@@ -88,4 +91,5 @@ rule aggregate_alignments:
 				"""
 			)
 		except:
-			send_data_to_websocket('ERROR', 'aggregate_alignments', 'Error occured while combining aligned sequences')
+			send_data_to_websocket('ERROR', 'aggregate_alignments', traceback.format_exc())
+			raise
