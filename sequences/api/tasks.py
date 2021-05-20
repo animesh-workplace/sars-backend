@@ -59,7 +59,7 @@ def fix_metadata(self, user_info, metadata_json, timestamp):
 
 		metadata_df.to_csv(save_path, sep = '\t', index = False)
 		config_date = pendulum.now().to_datetime_string().replace(' ', '_')
-		create_config_file.delay(upload_info, config_date)
+		# create_config_file.delay(upload_info, config_date)
 		# create_config_file.delay(upload_info, config_date)
 		return 'Metadata Fixed & Saved'
 	except:
