@@ -12,4 +12,5 @@ rule update:
 				"""
 			)
 		except:
-			send_data_to_websocket('ERROR', 'update', 'Error occured while updating nextclade and pangolin software')
+			send_data_to_websocket('ERROR', 'update', traceback.format_exc())
+			raise
