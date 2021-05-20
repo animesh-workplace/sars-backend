@@ -46,4 +46,5 @@ rule combine_data:
 			combined_metadata[metadata_labels].to_csv(output.metadata, sep = '\t', index = False)
 			SeqIO.write(combined_sequences, output.sequences, 'fasta')
 		except:
-			send_data_to_websocket('ERROR', 'combine_data', 'Error occured while combining files')
+			send_data_to_websocket('ERROR', 'combine_data', traceback.format_exc())
+			raise
