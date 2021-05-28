@@ -49,13 +49,13 @@ rule all:
 		mutation_results = expand(
 				"{base_path}/combined_files/{date}/Analysis/{analysis_file}",
 				base_path=config['base_path'],
-				analysis_file=['state_wise', 'top_mutation.xlsx'],
+				analysis_file=['state_wise', 'top_mutation.xlsx', 'specific_voc_report.xlsx'],
 				date=str(pendulum.now('Asia/Kolkata')).split('T')[0],
 			),
-		# voi_distribution = os.path.join(config['result_path'], 'voi_distribution', 'voi_distribution.xlsx')
 
 include: "rules/update/index.smk"
 include: "rules/combine_data/index.smk"
 include: "rules/alignment/index.smk"
 include: "rules/clade_and_lineage/index.smk"
 include: "rules/top_mutation/index.smk"
+include: "rules/voc_table/index.smk"
