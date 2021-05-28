@@ -59,8 +59,7 @@ def fix_metadata(self, user_info, metadata_json, timestamp):
 
 		metadata_df.to_csv(save_path, sep = '\t', index = False)
 		config_date = pendulum.now().to_datetime_string().replace(' ', '_')
-		# create_config_file.delay(upload_info, config_date)
-		# create_config_file.delay(upload_info, config_date)
+		create_config_file.delay(upload_info, config_date)
 		return 'Metadata Fixed & Saved'
 	except:
 		type_error = 'fix_metadata'
@@ -84,7 +83,7 @@ def create_config_file(self, upload_info, upload_date):
 def run_pipeline():
 	configfile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'config', 'config.yaml')
 	snakefile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'Snakefile')
-	command = f"exec snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 4 --until top_mutation"
+	command = f"exec snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 4"
 	snakemake_command = subprocess.run(command, shell = True)
 	return 'Pipeline run completed'
 
