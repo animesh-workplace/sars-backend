@@ -63,6 +63,8 @@ rule combine_clade_pangolin:
 			nextstrain_metadata = pandas.DataFrame(columns = nextstrain_labels)
 			nextstrain_metadata = nextstrain_metadata.assign(
 				strain = metadata['Virus name'],
+				lab_id = metadata['Sample ID given by the submitting lab'],
+				last_vaccinated = metadata['Last vaccinated'],
 				virus = metadata['Type'],
 				gisaid_epi_isl = [f'EPI_ISL_{i}' for i in metadata.index],
 				genbank_accession = ['?' for i in metadata.index],
