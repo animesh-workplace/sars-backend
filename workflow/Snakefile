@@ -4,6 +4,7 @@ import numpy
 import arrow
 import base64
 import pandas
+import pathlib
 import fuzzyset
 import pendulum
 import itertools
@@ -39,23 +40,38 @@ onsuccess:
 
 rule all:
 	input:
-		# results = expand(
-		# 		"{base_path}/combined_files/{date}/log/{combined_file}",
-		# 		combined_file=['update_log'],
+		# combined_results = expand(
+		# 		"{base_path}/Analysis/{date}/combined_files/{combined_file}",
 		# 		base_path=config['base_path'],
-		# 		date=str(pendulum.now('Asia/Kolkata')).split('T')[0],
+		# 		date=config['analysis_time'].split('_')[0],
+		# 		combined_file=['combined_metadata.tsv', 'combined_sequences.fasta'],
 		# 	),
-		# nextstrain_metadata = os.path.join(config['base_path'], 'combined_files', str(pendulum.now('Asia/Kolkata')).split('T')[0], 'nextstrain_metadata.tsv'),
-		mutation_results = expand(
-				"{base_path}/combined_files/{date}/Analysis/{analysis_file}",
+		# alignment = expand(
+		# 		"{base_path}/Analysis/{date}/alignment/{aligned_file}",
+		# 		base_path=config['base_path'],
+		# 		date=config['analysis_time'].split('_')[0],
+		# 		aligned_file=['combined_sequences_aligned.fasta'],
+		# 	),
+		nextstrain = expand(
+				"{base_path}/Analysis/{date}/nextstrain/{nextstrain_file}",
 				base_path=config['base_path'],
-				analysis_file=['state_wise', 'top_mutation.xlsx', 'specific_voc_report.xlsx'],
-				date=str(pendulum.now('Asia/Kolkata')).split('T')[0],
+				date=config['analysis_time'].split('_')[0],
+				nextstrain_file=['nextstrain_metadata.tsv'],
 			),
+		# analysis_results = expand(
+		# 		"{base_path}/Analysis/{date}/reports/{analysis_file}",
+		# 		base_path=config['base_path'],
+		# 		date=config['analysis_time'].split('_')[0],
+		# 		analysis_file=['clade_report.tsv', 'lineage_report.csv'],
+		# 		# analysis_file=['clade_report', 'lineage_report', 'mutation_count_report', 'specific_voc_report', 'state_wise'],
+		# 	),
 
 include: "rules/update/index.smk"
 include: "rules/combine_data/index.smk"
 include: "rules/alignment/index.smk"
+include: "rules/reports/clade_report.smk"
+include: "rules/reports/lineage_report.smk"
 include: "rules/clade_and_lineage/index.smk"
-include: "rules/top_mutation/index.smk"
-include: "rules/voc_table/index.smk"
+
+# include: "rules/top_mutation/index.smk"
+# include: "rules/voc_table/index.smk"
