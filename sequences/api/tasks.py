@@ -68,7 +68,7 @@ def fix_metadata(self, user_info, metadata_json, timestamp):
 
 @shared_task(bind=True)
 def create_config_file(self, upload_info, upload_date):
-	# upload_date = pendulum.now().to_datetime_string().replace(' ', '_')
+	upload_date = pendulum.now().to_datetime_string().replace(' ', '_')
 	config_data = {
 		"analysis_time": upload_date,
 		"base_path": settings.MEDIA_ROOT,
@@ -77,7 +77,6 @@ def create_config_file(self, upload_info, upload_date):
 	}
 	configfile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'config', f"config_{upload_date}.yaml")
 	yaml.dump(config_data, open(configfile_loc, 'w'))
-	# run_ssh_self.delay()
 	run_pipeline()
 
 def run_pipeline():
@@ -86,172 +85,6 @@ def run_pipeline():
 	command = f"exec snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 4"
 	snakemake_command = subprocess.run(command, shell = True)
 	return 'Pipeline run completed'
-
-@shared_task(bind=True)
-def run_ssh_self(self):
-	configfile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'config', 'config.yaml')
-	snakefile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'Snakefile')
-	host 				= os.getenv('REMOTE_HOST')
-	user 				= os.getenv('REMOTE_USER')
-	port				= os.getenv('REMOTE_PORT')
-	remote_path 		= os.getenv('REMOTE_PATH')
-	ssh_key_filepath 	= os.getenv('SSH_KEY_FILEPATH')
-	remote = RemoteClient(host, user, port, ssh_key_filepath, remote_path)
-	remote.connect_to_remote()
-	stdin, stdout, stderr = remote.client.exec_command(f'echo $$; cd {remote_path} && exec snakemake --cores 4 --configfile {configfile_loc} --snakefile {snakefile_loc}')
-	for line in iter(stdout.readline, ""):
-		print(line, end="")
-	return f'Completed Job Submission to {user}@{host}'
-
-# def get_state_info():
-# 	try:
-# 		combined_metadata = pandas.DataFrame()
-# 		ignore_dir = ['user_16_test', 'combined_files']
-# 		ignore_file = ['template_metadata.csv']
-
-# 		# Traversing all paths and combining all sequences and metadata
-# 		for path, dirs, files in os.walk(settings.MEDIA_ROOT):
-# 			if(not (sum(list(map(lambda x: (x in ignore_dir), path.split('/')))) or sum(list(map(lambda x: (x in ignore_file), files))))):
-# 				if(files):
-# 					for i in files:
-# 						type = i.split('_')[0]
-# 						if(type == 'fixed'):
-# 							metadata_url = os.path.join(path, i)
-# 							metadata = pandas.read_csv(metadata_url, delimiter = '\t', encoding = 'utf-8', low_memory = False)
-# 							if(not len(metadata.keys().tolist()) >= 27):
-# 								metadata = pandas.read_csv(metadata_url, delimiter = ',', encoding = 'utf-8', low_memory = False)
-# 							combined_metadata = pandas.concat([combined_metadata, metadata])
-
-# 		combined_metadata['Virus name'].replace('', numpy.nan, inplace = True)
-# 		combined_metadata.dropna(subset = ['Virus name'], inplace = True)
-# 		combined_metadata = combined_metadata[combined_metadata['Virus name'].str.strip().astype(bool)]
-# 		combined_metadata.reset_index(drop = True, inplace = True)
-# 		combined_metadata.drop_duplicates(subset = ['Virus name'], ignore_index = True, inplace = True)
-
-# 		return dict(collections.Counter(combined_metadata['State']))
-# 	except:
-# 		type_error = 'get_state_info'
-# 		send_email_error.delay(type_error)
-# 		return 'Got into a error! Calling Admin'
-
-
-# @shared_task(bind=True)
-# def combine_metadata(self, upload_info, upload_date):
-# 	try:
-# 		# Create path and folder for all combined files
-# 		path_for_files = os.path.join(settings.MEDIA_ROOT, 'combined_files', upload_date)
-# 		os.makedirs(path_for_files, exist_ok = True)
-
-# 		# Initializing all required data
-# 		nextstrain_labels = ['strain', 'virus', 'gisaid_epi_isl', 'genbank_accession', 'date', 'region', 'country', 'division', 'location', 'region_exposure', 'country_exposure', 'division_exposure', 'segment', 'length', 'host', 'age', 'sex', 'originating_lab', 'submitting_lab', 'authors', 'url', 'title', 'paper_url', 'date_submitted', 'purpose_of_sequencing']
-# 		metadata_labels = ['Virus name', 'Type', 'Passage details/history', 'Collection date', 'Country', 'State', 'District', 'Location', 'Additional location information', 'Host', 'Additional host information', 'Gender', 'Patient age', 'Patient status', 'Specimen source', 'Outbreak', 'Last vaccinated', 'Treatment', 'Sequencing technology', 'Assembly method', 'Coverage', 'Originating lab', 'Originating lab address', 'Submitting lab', 'Submitting lab address', 'Sample ID given by the submitting lab', 'Authors']
-# 		combined_metadata = pandas.DataFrame()
-# 		combined_sequences = []
-# 		combined_sequences_label = []
-# 		combined_sequences_length = []
-# 		ignore_dir = ['user_16_test', 'combined_files']
-# 		ignore_file = ['template_metadata.csv']
-
-# 		# Traversing all paths and combining all sequences and metadata
-# 		for path, dirs, files in os.walk(settings.MEDIA_ROOT):
-# 			if(not (sum(list(map(lambda x: (x in ignore_dir), path.split('/')))) or sum(list(map(lambda x: (x in ignore_file), files))))):
-# 				if(files):
-# 					for i in files:
-# 						type = i.split('_')[0]
-# 						if(type == 'fixed'):
-# 							metadata_url = os.path.join(path, i)
-# 							metadata = pandas.read_csv(metadata_url, delimiter = '\t', encoding = 'utf-8', low_memory = False)
-# 							if(not len(metadata.keys().tolist()) >= 27):
-# 								metadata = pandas.read_csv(metadata_url, delimiter = ',', encoding = 'utf-8', low_memory = False)
-# 							combined_metadata = pandas.concat([combined_metadata, metadata])
-# 						elif(type == 'sequence'):
-# 							for j in SeqIO.parse(os.path.join(path, i), 'fasta'):
-# 								if(not j.id in combined_sequences_label):
-# 									combined_sequences.append(j)
-# 									combined_sequences_label.append(j.id)
-# 									combined_sequences_length.append(len(j))
-
-# 		combined_metadata['Virus name'].replace('', numpy.nan, inplace = True)
-# 		combined_metadata.dropna(subset = ['Virus name'], inplace = True)
-# 		combined_metadata = combined_metadata[combined_metadata['Virus name'].str.strip().astype(bool)]
-# 		combined_metadata.reset_index(drop = True, inplace = True)
-# 		combined_metadata.drop_duplicates(subset = ['Virus name'], ignore_index = True, inplace = True)
-
-# 		# For download button
-# 		for_download_metadata = combined_metadata[metadata_labels]
-# 		for_download_metadata.to_csv(f'{path_for_files}/download_metadata.tsv', sep = '\t', index = False)
-# 		SeqIO.write(combined_sequences, f'{path_for_files}/sequences_combined.fasta', 'fasta')
-# 		zip_obj_download = ZipFile(f'{path_for_files}/INSACOG_data_{upload_date}.zip', 'w', compression = ZIP_DEFLATED, compresslevel = 9)
-# 		zip_obj_download.write(f'{path_for_files}/sequences_combined.fasta', arcname = f'sequences_combined_{upload_date}.fasta')
-# 		zip_obj_download.write(f'{path_for_files}/download_metadata.tsv', arcname = f'metadata_combined_{upload_date}.tsv')
-# 		zip_obj_download.close()
-
-# 		# Running Nextclade
-# 		nextclade_command = f"nextclade -i {path_for_files}/sequences_combined.fasta -t {path_for_files}/clade_label.tsv"
-# 		nextclade 	= subprocess.run(nextclade_command.split(' '), stdout = subprocess.DEVNULL)
-# 		nextclade_metadata = pandas.read_csv(f'{path_for_files}/clade_label.tsv', delimiter = '\t', encoding = 'utf-8', low_memory = False)
-# 		nextclade_metadata.rename(columns = {'seqName': 'strain'}, inplace = True)
-
-# 		# Running Pangolin
-# 		pangolin_update_command = f"pangolin --update"
-# 		pangolin_command = f"pangolin {path_for_files}/sequences_combined.fasta --outfile {path_for_files}/lineage_report.csv"
-# 		pangolin 	= subprocess.run(pangolin_update_command.split(' '))
-# 		pangolin 	= subprocess.run(pangolin_command.split(' '), stdout = subprocess.DEVNULL)
-# 		pangolin_metadata = pandas.read_csv(f'{path_for_files}/lineage_report.csv', delimiter = ',', encoding = 'utf-8', low_memory = False)
-# 		pangolin_metadata.rename(columns = {'taxon': 'strain'}, inplace = True)
-
-# 		nextclade_pangolin = pandas.merge(
-# 			nextclade_metadata[['strain', 'clade', 'totalInsertions', 'totalMissing', 'totalNonACGTNs', 'nonACGTNs', 'substitutions', 'deletions', 'aaSubstitutions', 'aaDeletions']],
-# 			pangolin_metadata[['strain', 'lineage', 'note']],
-# 			on = 'strain', how = 'inner'
-# 		)
-
-# 		# For Nextstrain Analysis
-# 		nextstrain_metadata = pandas.DataFrame(columns = nextstrain_labels)
-# 		nextstrain_metadata = nextstrain_metadata.assign(
-# 			strain = combined_metadata['Virus name'],
-# 			virus = combined_metadata['Type'],
-# 			gisaid_epi_isl = [f'EPI_ISL_{i}' for i in combined_metadata.index],
-# 			genbank_accession = ['?' for i in combined_metadata.index],
-# 			date = combined_metadata['Collection date'],
-# 			region = combined_metadata['Location'],
-# 			country = combined_metadata['Country'],
-# 			division = combined_metadata['State'],
-# 			location = combined_metadata['District'],
-# 			region_exposure = combined_metadata['Location'],
-# 			country_exposure = combined_metadata['Country'],
-# 			division_exposure = combined_metadata['State'],
-# 			segment = ['genome' for i in combined_metadata.index],
-# 			length = combined_sequences_length,
-# 			host = combined_metadata['Host'],
-# 			age = combined_metadata['Patient age'],
-# 			sex = combined_metadata['Gender'],
-# 			originating_lab = combined_metadata['Originating lab'],
-# 			submitting_lab = combined_metadata['Submitting lab'],
-# 			authors = combined_metadata['Authors'],
-# 			url = ['?' for i in combined_metadata.index],
-# 			title = ['?' for i in combined_metadata.index],
-# 			paper_url = ['?' for i in combined_metadata.index],
-# 			date_submitted = combined_metadata['Submission date'],
-# 			purpose_of_sequencing = ['?' for i in combined_metadata.index]
-# 		)
-# 		nextstrain_metadata = nextstrain_metadata.merge(nextclade_pangolin, on = 'strain', how = 'inner')
-# 		nextstrain_metadata.to_csv(f'{path_for_files}/nextstrain_metadata.tsv', sep = '\t', index = False)
-# 		combined_metadata.to_csv(f'{path_for_files}/metadata_combined.tsv', sep = '\t', index = False)
-
-# 		# Compressing necessary files to email
-# 		zip_obj = ZipFile(f'{path_for_files}/combined.zip', 'w', compression = ZIP_DEFLATED, compresslevel = 9)
-# 		zip_obj.write(f'{path_for_files}/metadata_combined.tsv', arcname = 'metadata_combined.tsv')
-# 		zip_obj.write(f'{path_for_files}/nextstrain_metadata.tsv', arcname = 'nextstrain_metadata.tsv')
-# 		zip_obj.write(f'{path_for_files}/sequences_combined.fasta', arcname = 'sequences_combined.fasta')
-# 		zip_obj.close()
-
-# 		# send_email_general.delay(upload_info['username'], upload_info['uploaded'], path_for_files, len(combined_metadata))
-# 		return 'Combined all metadata and fasta'
-# 	except:
-# 		type_error = 'combine_metadata'
-# 		send_email_error.delay(type_error)
-# 		return 'Got into a error! Calling Admin'
 
 @shared_task(bind=True)
 def send_email_error(self, type_error):
