@@ -1,8 +1,12 @@
 rule combine_data:
 	message: "Collecting all fixed data and combining them"
+	input:
+		rules.update.log
 	output:
-		metadata = os.path.join('{base_path}', 'combined_files', '{date}', 'combined_metadata.tsv'),
-		sequences = os.path.join('{base_path}', 'combined_files', '{date}', 'combined_sequences.fasta'),
+		metadata = os.path.join('{base_path}', 'Analysis', '{date}', 'combined_files', 'combined_metadata.tsv'),
+		sequences = os.path.join('{base_path}', 'Analysis', '{date}', 'combined_files', 'combined_sequences.fasta'),
+	log:
+		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'combine_data_error.log')
 	run:
 		try:
 			# Initializing all required data
@@ -14,8 +18,8 @@ rule combine_data:
 			ignore_file = ['template_metadata.csv']
 
 			# Create path and folder for all combined files
-			upload_date = str(pendulum.now('Asia/Kolkata')).split('T')[0]
-			path_for_files = os.path.join(config['base_path'], 'combined_files', upload_date)
+			upload_date = config['analysis_time'].split('_')[0]
+			path_for_files = os.path.join(config['base_path'], 'Analysis', upload_date, 'combined_files')
 			os.makedirs(path_for_files, exist_ok = True)
 
 			# Traversing all paths and combining all sequences and metadata
@@ -46,5 +50,7 @@ rule combine_data:
 			combined_metadata[metadata_labels].to_csv(output.metadata, sep = '\t', index = False)
 			SeqIO.write(combined_sequences, output.sequences, 'fasta')
 		except:
-			send_data_to_websocket('ERROR', 'combine_data', traceback.format_exc())
+			error_traceback = traceback.format_exc()
+			send_data_to_websocket('ERROR', 'combine_data', error_traceback)
+			pathlib.Path(str(log)).write_text(error_traceback)
 			raise
