@@ -1,11 +1,15 @@
 checkpoint partition_sequences:
+	message:
+		"""
+			Splitting sequences into {params.sequences_per_group} per group for faster clade reports
+		"""
 	input:
 		update = rules.update.log,
-		sequences = rules.combine_data.output.sequences
+		sequences = rules.combine_fixed_data.output.sequences
 	output:
 		split_sequences = directory(os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_sequences/pre/"))
 	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'partition_sequences_error.log')
+		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'alignment/partition_sequences_error.log')
 	params:
 		sequences_per_group = 150
 	run:
@@ -27,15 +31,14 @@ checkpoint partition_sequences:
 rule partitions_intermediate:
 	message:
 		"""
-		partitions_intermediate: Copying sequence fastas
-		{wildcards.cluster}
+			Copying sequence fastas for cluster: {wildcards.cluster}
 		"""
 	input:
 		os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_sequences/pre/{cluster}.fasta")
 	output:
 		os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_sequences/post/{cluster}.fasta")
 	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'partitions_intermediate/{cluster}_error.log')
+		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'alignment/partitions_intermediate/{cluster}_error.log')
 	run:
 		try:
 			shell(
@@ -52,9 +55,9 @@ rule partitions_intermediate:
 rule align:
 	message:
 		"""
-		Aligning sequences to {input.reference}
-		  - gaps relative to reference are considered real
-		Cluster:  {wildcards.cluster}
+			Aligning sequences to {input.reference}
+			  - gaps relative to reference are considered real
+			Cluster:  {wildcards.cluster}
 		"""
 	input:
 		sequences = rules.partitions_intermediate.output,
@@ -62,7 +65,7 @@ rule align:
 	output:
 		alignment = os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_alignments/{cluster}.fasta")
 	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'align/{cluster}_error.log')
+		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'alignment/align/{cluster}_error.log')
 	threads: 2
 	run:
 		try:
@@ -90,13 +93,16 @@ def _get_alignments(wildcards):
 	)
 
 rule aggregate_alignments:
-	message: "Collecting alignments"
+	message:
+		"""
+			Collecting alignments
+		"""
 	input:
 		alignments = _get_alignments
 	output:
 		alignment = os.path.join("{base_path}", "Analysis", "{date}", "alignment", "combined_sequences_aligned.fasta")
 	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'aggregate_alignments_error.log')
+		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'alignment/aggregate_alignments_error.log')
 	run:
 		try:
 			shell(
