@@ -1,5 +1,5 @@
-rule voc_report:
-	message: "Get Specific VoC/VoI report"
+rule voc_report_overall:
+	message: "Get Specific VoC/VoI report (Overall)"
 	input:
 		metadata = rules.combine_clade_lineage.output.nextstrain,
 	output:
