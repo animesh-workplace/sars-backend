@@ -7,7 +7,8 @@ rule combine_clade_lineage:
 		clade_report = rules.clade_report.output.clade_report,
 		lineage_report = rules.lineage_report.output.lineage_report,
 	output:
-		nextstrain = os.path.join("{base_path}", "Analysis", "{date}", "nextstrain", "nextstrain_metadata.tsv")
+		nextstrain = os.path.join("{base_path}", "Analysis", "{date}", "nextstrain", "nextstrain_metadata.tsv"),
+		insacog_datahub = os.path.join("{base_path}", "Analysis", "{date}", "nextstrain", "insacog_datahub_metadata.tsv")
 	log:
 		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'combine_clade_lineage_error.log')
 	run:
@@ -65,7 +66,11 @@ rule combine_clade_lineage:
 
 			nextstrain_metadata = nextstrain_metadata.merge(nextclade_pangolin, on = 'strain', how = 'inner')
 			nextstrain_metadata.to_csv(output.nextstrain, sep = '\t', index = False)
-			storage.store("nextstrain_metadata", nextstrain_metadata.to_dict())
+
+			# For INSACOG DataHub
+			nextclade_pangolin.rename(columns = {'strain': 'Virus name'}, inplace = True)
+			insacog_datahub_metadata = metadata.merge(nextclade_pangolin, on = 'Virus name', how = 'inner')
+			insacog_datahub_metadata.to_csv(output.insacog_datahub, sep = '\t', index = False)
 		except:
 			error_traceback = traceback.format_exc()
 			send_data_to_websocket('ERROR', 'combine_clade_lineage', error_traceback)
