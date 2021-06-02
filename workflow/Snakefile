@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 from pandas import ExcelWriter
 from websocket import create_connection
 from zipfile import ZipFile, ZIP_DEFLATED
+from pytools.persistent_dict import PersistentDict
 
 def send_data_to_websocket(data_type, tool, message):
 	load_dotenv('.env')
@@ -37,6 +38,8 @@ def send_data_to_websocket(data_type, tool, message):
 
 onsuccess:
 	send_data_to_websocket("SUCCESS", None, "Completed Workflow")
+
+storage = PersistentDict("insacog_storage")
 
 rule all:
 	input:
@@ -62,16 +65,15 @@ rule all:
 				"{base_path}/Analysis/{date}/reports/{analysis_file}",
 				base_path=config['base_path'],
 				date=config['analysis_time'].split('_')[0],
-				analysis_file=['clade_report.tsv', 'lineage_report.csv'],
+				analysis_file=['mutation_count_report.xlsx', 'state_wise', 'voc_report.xlsx'],
 				# analysis_file=['clade_report', 'lineage_report', 'mutation_count_report', 'specific_voc_report', 'state_wise'],
 			),
 
 include: "rules/update/index.smk"
-include: "rules/combine_data/index.smk"
+include: "rules/combine_data/combine_fixed_data.smk"
 include: "rules/alignment/index.smk"
 include: "rules/reports/clade_report.smk"
 include: "rules/reports/lineage_report.smk"
-# include: "rules/clade_and_lineage/index.smk"
-
-# include: "rules/top_mutation/index.smk"
-# include: "rules/voc_table/index.smk"
+include: "rules/combine_data/combine_clade_lineage.smk"
+include: "rules/reports/mutation_report.smk"
+include: "rules/reports/voc_report.smk"
