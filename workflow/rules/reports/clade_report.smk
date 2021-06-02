@@ -1,39 +1,43 @@
 checkpoint partition_alignment:
+	message:
+		"""
+			Splitting alignments into {params.alignment_per_group} per group for faster clade reports
+		"""
 	input:
-		sequences = rules.aggregate_alignments.output.alignment
+		alignment = rules.aggregate_alignments.output.alignment
 	output:
-		split_sequences = directory(os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_sequences/pre/"))
+		split_alignment = directory(os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_alignment/pre/"))
 	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'partition_alignment_error.log')
+		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'clade_report/partition_alignment_error.log')
 	params:
-		sequences_per_group = 150
+		alignment_per_group = 150
 	run:
 		try:
 			shell(
 				"""
 				python workflow/scripts/partition-sequences.py \
-					--sequences {input.sequences} \
-					--output-dir {output.split_sequences} \
-					--sequences-per-group {params.sequences_per_group} \
+					--sequences {input.alignment} \
+					--output-dir {output.split_alignment} \
+					--sequences-per-group {params.alignment_per_group} \
 				"""
 			)
 		except:
 			error_traceback = traceback.format_exc()
-			send_data_to_websocket('ERROR', 'partition_sequences', error_traceback)
+			send_data_to_websocket('ERROR', 'partition_alignment', error_traceback)
 			pathlib.Path(str(log)).write_text(error_traceback)
 			raise
 
-rule partitions_alignment_intermediate:
+rule partition_alignment_intermediate:
 	message:
 		"""
-		partitions_alignment_intermediate: Copying sequence fastas {wildcards.clade_cluster}
+			Copying sequence fasta for cluster: {wildcards.clade_cluster}
 		"""
 	input:
-		os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_sequences/pre/{clade_cluster}.fasta")
+		os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_alignment/pre/{clade_cluster}.fasta")
 	output:
-		os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_sequences/post/{clade_cluster}.fasta")
+		os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_alignment/post/{clade_cluster}.fasta")
 	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'partitions_alignment_intermediate/{clade_cluster}_error.log')
+		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'clade_report/partitions_alignment_intermediate/{clade_cluster}_error.log')
 	run:
 		try:
 			shell(
@@ -43,27 +47,29 @@ rule partitions_alignment_intermediate:
 			)
 		except:
 			error_traceback = traceback.format_exc()
-			send_data_to_websocket('ERROR', 'partitions_alignment_intermediate', error_traceback)
+			send_data_to_websocket('ERROR', 'partition_alignment_intermediate', error_traceback)
 			pathlib.Path(str(log)).write_text(error_traceback)
 			raise
 
 rule split_clade_report:
 	message:
 		"""
-		Generating Clade report for Cluster: {wildcards.clade_cluster}
+			Generating clade report for cluster:
+				- using nextclade
+			Cluster: {wildcards.clade_cluster}
 		"""
 	input:
-		sequences = rules.partitions_alignment_intermediate.output,
+		split_alignment = rules.partition_alignment_intermediate.output,
 	output:
-		alignment = os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_report/{clade_cluster}.tsv")
+		split_report = os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_report/{clade_cluster}.tsv")
 	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'split_clade_report/{clade_cluster}_error.log')
+		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'clade_report/split_clade_report/{clade_cluster}_error.log')
 	threads: 2
 	run:
 		try:
 			shell(
 				"""
-					nextclade -i {input.sequences} -t {output.alignment} -j {threads}
+					nextclade -i {input.split_alignment} -t {output.split_report} -j {threads}
 				"""
 			)
 		except:
@@ -72,28 +78,31 @@ rule split_clade_report:
 			pathlib.Path(str(log)).write_text(error_traceback)
 			raise
 
-def _get_alignments(wildcards):
+def _get_split_clade_report(wildcards):
 	checkpoint_output = checkpoints.partition_alignment.get(**wildcards).output[0]
 	return expand(
 			os.path.join(wildcards.base_path, "Analysis", wildcards.date, "reports", "clade_report/split_report/{i}.tsv"),
 			i = glob_wildcards(os.path.join(checkpoint_output, "{i}.fasta")).i
 	)
 
-rule aggregate_split_clade_report:
-	message: "Collecting clade reports"
+rule clade_report:
+	message:
+		"""
+			Collecting clade reports
+		"""
 	input:
-		alignments = _get_alignments
+		split_clade_report = _get_split_clade_report
 	output:
-		alignment = os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report.tsv")
+		clade_report = os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report.tsv")
 	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'aggregate_alignments_error.log')
+		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'clade_report/aggregate_split_clade_report_error.log')
 	run:
 		try:
-			shell(
-				"""
-					cat {input.alignments} > {output.alignment}
-				"""
-			)
+			combined_clade_report = pandas.DataFrame()
+			for report_url in input.split_clade_report:
+				clade_report = pandas.read_csv(report_url, delimiter = '\t', encoding = 'utf-8', low_memory = False)
+				combined_clade_report = pandas.concat([combined_clade_report, clade_report])
+			combined_clade_report.to_csv(output.clade_report, sep = '\t', index = False)
 		except:
 			error_traceback = traceback.format_exc()
 			send_data_to_websocket('ERROR', 'aggregate_split_clade_report', error_traceback)
