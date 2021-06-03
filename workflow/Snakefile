@@ -22,7 +22,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 from pytools.persistent_dict import PersistentDict
 
 def send_data_to_websocket(data_type, tool, message):
-	load_dotenv('.env')
+	load_dotenv(".env")
 	ws = create_connection(f"ws://{os.getenv('WEBSOCKET_URL')}/{os.getenv('BASE_URL')}wsa/backend/")
 	websocket_data = {
 		"type": data_type,
@@ -45,9 +45,14 @@ rule all:
 	input:
 		analysis_results = expand(
 				"{base_path}/Analysis/{date}/reports/{analysis_file}",
-				base_path=config['base_path'],
-				date=config['analysis_time'].split('_')[0],
-				analysis_file=['mutation_count_report.xlsx', 'voc_report.xlsx'],
+				base_path=config["base_path"],
+				date=config["analysis_time"].split("_")[0],
+				analysis_file=[
+					"voc_id_report.xlsx",
+					"mutation_count_report.xlsx",
+					"voc_state_monthly_report.xlsx",
+					"lineage_substitution_deletion_report.tsv",
+				],
 			),
 
 include: "rules/update/index.smk"
@@ -58,4 +63,6 @@ include: "rules/reports/lineage_report.smk"
 include: "rules/combine_data/combine_clade_lineage.smk"
 include: "rules/split_data/split_state.smk"
 include: "rules/reports/mutation_report.smk"
-include: "rules/reports/voc_report.smk"
+include: "rules/reports/voc_id_report.smk"
+include: "rules/reports/lineage_substitution_deletion_report.smk"
+include: "rules/reports/voc_progress_report.smk"
