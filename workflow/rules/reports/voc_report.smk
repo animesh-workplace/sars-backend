@@ -4,9 +4,8 @@ rule voc_report:
 		split_state = rules.split_state.output.state_wise_path,
 		metadata = rules.combine_clade_lineage.output.nextstrain
 	output:
-		voc_report = os.path.join("{base_path}/Analysis/{date}/reports", "voc_report.xlsx")
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'voc_report_error.log')
+		voc_report = "{base_path}/Analysis/{date}/reports/voc_report.xlsx"
+	log: "{base_path}/Analysis/{date}/log/voc_report_error.log"
 	run:
 		try:
 			shell(
