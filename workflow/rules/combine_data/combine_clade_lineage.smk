@@ -66,6 +66,13 @@ rule combine_clade_lineage:
 			nextstrain_metadata = nextstrain_metadata.merge(nextclade_pangolin, on = 'strain', how = 'inner')
 			nextstrain_metadata.to_csv(output.nextstrain, sep = '\t', index = False)
 
+			# Copy sequences
+			shell(
+				f"""
+					cp {input.sequences} {wildcards.base_path}/Analysis/{wildcards.date}/nextstrain/nextstrain_sequences.fasta
+				"""
+			)
+
 			# For INSACOG DataHub
 			nextclade_pangolin.rename(columns = {'strain': 'Virus name'}, inplace = True)
 			insacog_datahub_metadata = metadata.merge(nextclade_pangolin, on = 'Virus name', how = 'inner')
