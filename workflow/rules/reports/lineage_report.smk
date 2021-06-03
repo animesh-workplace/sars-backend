@@ -3,9 +3,8 @@ rule lineage_report:
 	input: rules.aggregate_alignments.output
 	threads: 20
 	output:
-		lineage_report = os.path.join("{base_path}", "Analysis", "{date}", "reports", "lineage_report.csv")
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'lineage_report_error.log')
+		lineage_report = "{base_path}/Analysis/{date}/reports/lineage_report.csv"
+	log: "{base_path}/Analysis/{date}/log/lineage_report_error.log"
 	run:
 		try:
 			shell(
