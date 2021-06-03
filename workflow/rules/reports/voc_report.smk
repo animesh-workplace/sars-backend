@@ -1,26 +1,39 @@
-rule voc_report_overall:
-	message: "Get Specific VoC/VoI report (Overall)"
+rule voc_report:
+	message: "Get Specific VoC/VoI report (Overall & State wise)"
 	input:
-		metadata = rules.combine_clade_lineage.output.nextstrain,
+		split_state = rules.split_state.output.state_wise_path,
+		metadata = rules.combine_clade_lineage.output.nextstrain
 	output:
 		voc_report = os.path.join("{base_path}/Analysis/{date}/reports", "voc_report.xlsx")
+	log:
+		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'voc_report_error.log')
 	run:
-		with open("workflow/resources/voc_tracking.json") as f:
-			voc_to_track = json.loads(f.read())
+		try:
+			shell(
+				"""
+					python workflow/scripts/voc_report.py \
+						--metadata {input.metadata} \
+						--output {output.voc_report}
+				"""
+			)
+			print('Generating VoC/VoI report state wise')
 
-		metadata = pandas.read_csv(input.metadata, delimiter = '\t', encoding = 'utf-8', low_memory = False)
-		voc_type_writer = ExcelWriter(output.voc_report)
+			metadata = pandas.read_csv(input.metadata, delimiter = '\t', encoding = 'utf-8')
+			all_states = pandas.unique(metadata['division']).tolist()
 
-		for voc_type, entries in voc_to_track.items():
-			voc_metadata = pandas.DataFrame()
-			for i in entries:
-				if('pangolin' in list(i.keys())):
-					voc_metadata = pandas.concat([ voc_metadata, metadata.loc[metadata['lineage'].isin(i['pangolin'])] ])
-				if('nextstrain' in list(i.keys())):
-					voc_metadata = pandas.concat([ voc_metadata, metadata.loc[metadata['clade'].isin(i['nextstrain'])] ])
-
-			voc_metadata.reset_index(drop = True, inplace = True)
-			voc_metadata.drop_duplicates(subset = ['strain'], ignore_index = True, inplace = True)
-			voc_metadata[['strain', 'lab_id', 'division', 'location', 'date', 'lineage', 'clade', 'scorpio_call']].to_excel(voc_type_writer, f'{voc_type}', index = False)
-
-		voc_type_writer.save()
+			for i in all_states:
+				print(i)
+				state_metadata_url = f"{wildcards.base_path}/Analysis/{wildcards.date}/reports/state_wise/{i.replace(' ','_')}/{i.replace(' ','_')}_metadata.tsv"
+				state_output_url = f"{wildcards.base_path}/Analysis/{wildcards.date}/reports/state_wise/{i.replace(' ','_')}/{i.replace(' ','_')}_voc_report.xlsx"
+				shell(
+					f"""
+						python workflow/scripts/voc_report.py \
+							--metadata {state_metadata_url} \
+							--output {state_output_url}
+					"""
+				)
+		except Exception as e:
+			error_traceback = traceback.format_exc()
+			send_data_to_websocket('ERROR', 'voc_report', error_traceback)
+			pathlib.Path(str(log)).write_text(error_traceback)
+			raise
