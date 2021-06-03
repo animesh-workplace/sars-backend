@@ -7,10 +7,9 @@ rule combine_clade_lineage:
 		clade_report = rules.clade_report.output.clade_report,
 		lineage_report = rules.lineage_report.output.lineage_report,
 	output:
-		nextstrain = os.path.join("{base_path}", "Analysis", "{date}", "nextstrain", "nextstrain_metadata.tsv"),
-		insacog_datahub = os.path.join("{base_path}", "Analysis", "{date}", "nextstrain", "insacog_datahub_metadata.tsv")
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'combine_clade_lineage_error.log')
+		nextstrain = "{base_path}/Analysis/{date}/nextstrain/nextstrain_metadata.tsv",
+		insacog_datahub = "{base_path}/Analysis/{date}/nextstrain/insacog_datahub_metadata.tsv"
+	log: "{base_path}/Analysis/{date}/log/combine_clade_lineage_error.log"
 	run:
 		try:
 			nextstrain_labels = ['strain', 'virus', 'gisaid_epi_isl', 'genbank_accession', 'date', 'region', 'country', 'division', 'location', 'region_exposure', 'country_exposure', 'division_exposure', 'segment', 'length', 'host', 'age', 'sex', 'originating_lab', 'submitting_lab', 'authors', 'url', 'title', 'paper_url', 'date_submitted', 'purpose_of_sequencing']
