@@ -43,30 +43,11 @@ storage = PersistentDict("insacog_storage")
 
 rule all:
 	input:
-		# combined_results = expand(
-		# 		"{base_path}/Analysis/{date}/combined_files/{combined_file}",
-		# 		base_path=config['base_path'],
-		# 		date=config['analysis_time'].split('_')[0],
-		# 		combined_file=['combined_metadata.tsv', 'combined_sequences.fasta'],
-		# 	),
-		# alignment = expand(
-		# 		"{base_path}/Analysis/{date}/alignment/{aligned_file}",
-		# 		base_path=config['base_path'],
-		# 		date=config['analysis_time'].split('_')[0],
-		# 		aligned_file=['combined_sequences_aligned.fasta'],
-		# 	),
-		# nextstrain = expand(
-		# 		"{base_path}/Analysis/{date}/nextstrain/{nextstrain_file}",
-		# 		base_path=config['base_path'],
-		# 		date=config['analysis_time'].split('_')[0],
-		# 		nextstrain_file=['nextstrain_metadata.tsv'],
-		# 	),
 		analysis_results = expand(
 				"{base_path}/Analysis/{date}/reports/{analysis_file}",
 				base_path=config['base_path'],
 				date=config['analysis_time'].split('_')[0],
-				analysis_file=['mutation_count_report.xlsx', 'state_wise', 'voc_report.xlsx'],
-				# analysis_file=['clade_report', 'lineage_report', 'mutation_count_report', 'specific_voc_report', 'state_wise'],
+				analysis_file=['mutation_count_report.xlsx', 'voc_report.xlsx'],
 			),
 
 include: "rules/update/index.smk"
@@ -75,5 +56,6 @@ include: "rules/alignment/index.smk"
 include: "rules/reports/clade_report.smk"
 include: "rules/reports/lineage_report.smk"
 include: "rules/combine_data/combine_clade_lineage.smk"
+include: "rules/split_data/split_state.smk"
 include: "rules/reports/mutation_report.smk"
 include: "rules/reports/voc_report.smk"
