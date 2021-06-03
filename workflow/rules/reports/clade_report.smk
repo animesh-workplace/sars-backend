@@ -6,9 +6,8 @@ checkpoint partition_alignment:
 	input:
 		alignment = rules.aggregate_alignments.output.alignment
 	output:
-		split_alignment = directory(os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_alignment/pre/"))
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'clade_report/partition_alignment_error.log')
+		split_alignment = directory("{base_path}/Analysis/{date}/reports/clade_report/split_alignment/pre/")
+	log: "{base_path}/Analysis/{date}/log/clade_report/partition_alignment_error.log"
 	params:
 		alignment_per_group = 150
 	run:
@@ -32,12 +31,9 @@ rule partition_alignment_intermediate:
 		"""
 			Copying sequence fasta for cluster: {wildcards.clade_cluster}
 		"""
-	input:
-		os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_alignment/pre/{clade_cluster}.fasta")
-	output:
-		os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_alignment/post/{clade_cluster}.fasta")
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'clade_report/partitions_alignment_intermediate/{clade_cluster}_error.log')
+	input: "{base_path}/Analysis/{date}/reports/clade_report/split_alignment/pre/{clade_cluster}.fasta"
+	output: "{base_path}/Analysis/{date}/reports/clade_report/split_alignment/post/{clade_cluster}.fasta"
+	log: "{base_path}/Analysis/{date}/log/clade_report/partitions_alignment_intermediate/{clade_cluster}_error.log"
 	run:
 		try:
 			shell(
@@ -61,9 +57,8 @@ rule split_clade_report:
 	input:
 		split_alignment = rules.partition_alignment_intermediate.output,
 	output:
-		split_report = os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report/split_report/{clade_cluster}.tsv")
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'clade_report/split_clade_report/{clade_cluster}_error.log')
+		split_report = "{base_path}/Analysis/{date}/reports/clade_report/split_report/{clade_cluster}.tsv"
+	log: "{base_path}/Analysis/{date}/log/clade_report/split_clade_report/{clade_cluster}_error.log"
 	threads: 2
 	run:
 		try:
@@ -93,9 +88,8 @@ rule clade_report:
 	input:
 		split_clade_report = _get_split_clade_report
 	output:
-		clade_report = os.path.join("{base_path}", "Analysis", "{date}", "reports", "clade_report.tsv")
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'clade_report/aggregate_split_clade_report_error.log')
+		clade_report = "{base_path}/Analysis/{date}/reports/clade_report.tsv"
+	log: "{base_path}/Analysis/{date}/log/clade_report/aggregate_split_clade_report_error.log"
 	run:
 		try:
 			combined_clade_report = pandas.DataFrame()
