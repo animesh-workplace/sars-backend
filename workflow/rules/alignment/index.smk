@@ -7,9 +7,8 @@ checkpoint partition_sequences:
 		update = rules.update.log,
 		sequences = rules.combine_fixed_data.output.sequences
 	output:
-		split_sequences = directory(os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_sequences/pre/"))
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'alignment/partition_sequences_error.log')
+		split_sequences = directory("{base_path}/Analysis/{date}/alignment/split_sequences/pre/")
+	log: os.path.join("{base_path}/Analysis/{date}/log/alignment/partition_sequences_error.log")
 	params:
 		sequences_per_group = 150
 	run:
@@ -33,12 +32,9 @@ rule partitions_intermediate:
 		"""
 			Copying sequence fastas for cluster: {wildcards.cluster}
 		"""
-	input:
-		os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_sequences/pre/{cluster}.fasta")
-	output:
-		os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_sequences/post/{cluster}.fasta")
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'alignment/partitions_intermediate/{cluster}_error.log')
+	input: "{base_path}/Analysis/{date}/alignment/split_sequences/pre/{cluster}.fasta"
+	output: "{base_path}/Analysis/{date}/alignment/split_sequences/post/{cluster}.fasta"
+	log: os.path.join("{base_path}/Analysis/{date}/log/alignment/partitions_intermediate/{cluster}_error.log")
 	run:
 		try:
 			shell(
@@ -64,8 +60,7 @@ rule align:
 		reference = 'workflow/resources/reference_seq.fasta'
 	output:
 		alignment = os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_alignments/{cluster}.fasta")
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'alignment/align/{cluster}_error.log')
+	log: "{base_path}/Analysis/{date}/log/alignment/align/{cluster}_error.log"
 	threads: 2
 	run:
 		try:
@@ -88,7 +83,7 @@ rule align:
 def _get_alignments(wildcards):
 	checkpoint_output = checkpoints.partition_sequences.get(**wildcards).output[0]
 	return expand(
-			os.path.join(wildcards.base_path, "Analysis", wildcards.date, "alignment", "split_alignments/{i}.fasta"),
+			os.path.join(wildcards.base_path, "Analysis", wildcards.date, "alignment/split_alignments/{i}.fasta"),
 			i=glob_wildcards(os.path.join(checkpoint_output, "{i}.fasta")).i
 	)
 
@@ -101,8 +96,7 @@ rule aggregate_alignments:
 		alignments = _get_alignments
 	output:
 		alignment = os.path.join("{base_path}", "Analysis", "{date}", "alignment", "combined_sequences_aligned.fasta")
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'alignment/aggregate_alignments_error.log')
+	log: "{base_path}/Analysis/{date}/log/alignment/align/aggregate_alignments_error.log"
 	run:
 		try:
 			shell(
