@@ -1,7 +1,6 @@
 rule update:
 	message: "Updating nextclade and pangolin"
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'update_error.log')
+	log: "{base_path}/Analysis/{date}/log/update_error.log"
 	run:
 		try:
 			shell(
