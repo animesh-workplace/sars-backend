@@ -3,10 +3,9 @@ rule combine_fixed_data:
 	input:
 		rules.update.log
 	output:
-		metadata = os.path.join('{base_path}', 'Analysis', '{date}', 'combined_files', 'combined_metadata.tsv'),
-		sequences = os.path.join('{base_path}', 'Analysis', '{date}', 'combined_files', 'combined_sequences.fasta'),
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'combine_data_error.log')
+		metadata = "{base_path}/Analysis/{date}/combined_files/combined_metadata.tsv",
+		sequences = "{base_path}/Analysis/{date}/combined_files/combined_sequences.fasta",
+	log: "{base_path}/Analysis/{date}/log/combine_data_error.log"
 	run:
 		try:
 			# Initializing all required data
@@ -18,12 +17,11 @@ rule combine_fixed_data:
 			ignore_file = ['template_metadata.csv']
 
 			# Create path and folder for all combined files
-			upload_date = config['analysis_time'].split('_')[0]
-			path_for_files = os.path.join(config['base_path'], 'Analysis', upload_date, 'combined_files')
+			path_for_files = f"{wildcards.base_path}/Analysis/{wildcards.date}/combined_files"
 			os.makedirs(path_for_files, exist_ok = True)
 
 			# Traversing all paths and combining all sequences and metadata
-			for path, dirs, files in os.walk(config['base_path']):
+			for path, dirs, files in os.walk(wildcards.base_path):
 				if(not (sum(list(map(lambda x: (x in ignore_dir), path.split('/')))) or sum(list(map(lambda x: (x in ignore_file), files))))):
 					if(files):
 						for i in files:
