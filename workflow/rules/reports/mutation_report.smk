@@ -4,9 +4,8 @@ rule mutation_report:
 		split_state = rules.split_state.output.state_wise_path,
 		metadata = rules.combine_clade_lineage.output.nextstrain
 	output:
-		overall_mutation = os.path.join("{base_path}/Analysis/{date}/reports", "mutation_count_report.xlsx"),
-	log:
-		os.path.join('{base_path}', 'Analysis', '{date}', 'log', 'mutation_report_error.log')
+		overall_mutation = "{base_path}/Analysis/{date}/reports/mutation_count_report.xlsx"
+	log: "{base_path}/Analysis/{date}/log/mutation_report_error.log"
 	run:
 		try:
 			shell(
