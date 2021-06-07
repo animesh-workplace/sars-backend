@@ -1,6 +1,7 @@
 rule combine_fixed_data:
 	message: "Collecting all fixed data and combining them"
 	input:
+		rules.clean_data.output,
 		rules.update.log
 	output:
 		metadata = "{base_path}/Analysis/{date}/combined_files/combined_metadata.tsv",
@@ -21,18 +22,18 @@ rule combine_fixed_data:
 			os.makedirs(path_for_files, exist_ok = True)
 
 			# Traversing all paths and combining all sequences and metadata
-			for path, dirs, files in os.walk(wildcards.base_path):
+			for path, dirs, files in os.walk(f"{wildcards.base_path}/Fixed_data"):
 				if(not (sum(list(map(lambda x: (x in ignore_dir), path.split('/')))) or sum(list(map(lambda x: (x in ignore_file), files))))):
 					if(files):
 						for i in files:
-							type = i.split('_')[0]
-							if(type == 'fixed'):
+							file_type = i.split('_')[0]
+							if(file_type == 'fixed'):
 								metadata_url = os.path.join(path, i)
 								metadata = pandas.read_csv(metadata_url, delimiter = '\t', encoding = 'utf-8', low_memory = False)
 								if(not len(metadata.keys().tolist()) >= 27):
 									metadata = pandas.read_csv(metadata_url, delimiter = ',', encoding = 'utf-8', low_memory = False)
 								combined_metadata = pandas.concat([combined_metadata, metadata])
-							elif(type == 'sequence'):
+							elif(file_type == 'sequence'):
 								for j in SeqIO.parse(os.path.join(path, i), 'fasta'):
 									if(not j.id in combined_sequences_label):
 										combined_sequences.append(j)
