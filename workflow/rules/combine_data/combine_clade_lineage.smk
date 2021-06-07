@@ -69,7 +69,7 @@ rule combine_clade_lineage:
 			# Copy sequences
 			shell(
 				f"""
-					cp {input.sequences} {wildcards.base_path}/Analysis/{wildcards.date}/nextstrain/nextstrain_sequences.fasta
+					cp {input.alignment} {wildcards.base_path}/Analysis/{wildcards.date}/nextstrain/nextstrain_sequences.fasta
 				"""
 			)
 
