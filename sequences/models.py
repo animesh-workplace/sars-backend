@@ -7,9 +7,9 @@ from .storage import OverwriteStorage
 
 # Create your functions here
 def user_directory_path(instance, filename):
-	# File will be uploaded to MEDIA_ROOT/user_<id>_<username>/file/<filename>
+	# File will be uploaded to MEDIA_ROOT/Uploaded_data/user_<id>_<username>/file/<filename>
 	save_time = pendulum.now().to_datetime_string().split(' ')[0]
-	return 'user_{0}_{1}/{2}/{3}'.format(instance.user.id, instance.user, save_time, filename)
+	return 'Uploaded_data/user_{0}_{1}/{2}/{3}'.format(instance.user.id, instance.user, save_time, filename)
 
 # Create your models here.
 class File_Handler(models.Model):
