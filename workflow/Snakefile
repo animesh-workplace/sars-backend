@@ -38,11 +38,11 @@ def send_data_to_websocket(data_type, tool, message):
 
 
 onsuccess:
-	send_data_to_websocket("SUCCESS", None, "Completed Workflow")
+	send_data_to_websocket("SUCCESS", "Workflow", "Completed Workflow")
 
-onerror:
-	error_traceback = traceback.format_exc()
-	send_data_to_websocket("ERROR", "Workflow", error_traceback)
+# onerror:
+# 	error_traceback = traceback.format_exc()
+# 	send_data_to_websocket("ERROR", "Workflow", error_traceback)
 
 storage = PersistentDict("insacog_storage")
 
