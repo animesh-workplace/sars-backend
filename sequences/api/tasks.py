@@ -39,18 +39,25 @@ def create_config_file(self, upload_info):
 	return 'Pipeline run completed'
 
 @shared_task(bind=True)
-def send_email_error(self, type_error):
+def send_email_error(self, username, error_type, traceback):
 	message = Mail(
 		from_email		= os.getenv('SENDGRID_EMAIL'),
 		to_emails		= ('aks1@nibmg.ac.in', 'Animesh Kumar Singh'),
-		subject 		= f'🆘INSACOG DataHub automated mail: Error Information {type_error} Test Hub',
+		subject 		= f'🆘INSACOG DataHub automated mail: Error Information { error_type } Test Hub',
 		html_content	= f"""
 			<div>
 				<strong>Dear Animesh Kumar Singh,</strong>
 					<p>
-						This is an automated mail to alert you of an error that occured during the generation of
-						combined fasta/metadata. Manually run the fix_metadata and combine_metadata function.
+						This is an automated mail to alert you of an error that occured during the analysis
+						and report generation which was started after the submission of { username.split('_')[1] }.
 					</p>
+
+					<p>Traceback of the error</p>
+
+					<hr>
+						<pre>{ traceback }</pre>
+					<hr>
+
 					<p>
 					With Regards,<br>
 					INSACOG DataHub
@@ -102,6 +109,6 @@ def send_email_general(self, username, count, total_length):
 	except Exception as e:
 		error_traceback = traceback.format_exc()
 		print(error_traceback)
-		return 'Mail could not be sent'
+		return "Mail couldn\'t be sent"
 
-	return 'Mail Sent'
+	return "Mail Sent"
