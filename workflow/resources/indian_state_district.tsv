@@ -1,7 +1,7 @@
 State	District
-Andaman and Nicobar Island (UT)	Nicobar
-Andaman and Nicobar Island (UT)	North and Middle Andaman
-Andaman and Nicobar Island (UT)	South Andaman
+Andaman & Nicobar Island	Nicobar
+Andaman & Nicobar Island	North & Middle Andaman
+Andaman & Nicobar Island	South Andaman
 Andhra Pradesh	Anantapur
 Andhra Pradesh	Chittoor
 Andhra Pradesh	East Godavari
@@ -111,7 +111,7 @@ Bihar	Siwan
 Bihar	Supaul
 Bihar	Vaishali
 Bihar	West Champaran
-Chandigarh (UT)	Chandigarh
+Chandigarh	Chandigarh
 Chhattisgarh	Balod
 Chhattisgarh	Baloda Bazar
 Chhattisgarh	Balrampur
@@ -139,20 +139,20 @@ Chhattisgarh	Rajnandgaon
 Chhattisgarh	Sukma
 Chhattisgarh	Surajpur
 Chhattisgarh	Surguja
-Dadra and Nagar Haveli (UT)	Dadra & Nagar Haveli
-Daman and Diu (UT)	Daman
-Daman and Diu (UT)	Diu
-Delhi (NCT)	Central Delhi
-Delhi (NCT)	East Delhi
-Delhi (NCT)	New Delhi
-Delhi (NCT)	North Delhi
-Delhi (NCT)	North East Delhi
-Delhi (NCT)	North West Delhi
-Delhi (NCT)	Shahdara
-Delhi (NCT)	South Delhi
-Delhi (NCT)	South East Delhi
-Delhi (NCT)	South West Delhi
-Delhi (NCT)	West Delhi
+Dadra and Nagar Haveli and Daman and Diu	Dadra & Nagar Haveli
+Dadra and Nagar Haveli and Daman and Diu	Daman
+Dadra and Nagar Haveli and Daman and Diu	Diu
+Delhi	Central Delhi
+Delhi	East Delhi
+Delhi	New Delhi
+Delhi	North Delhi
+Delhi	North East Delhi
+Delhi	North West Delhi
+Delhi	Shahdara
+Delhi	South Delhi
+Delhi	South East Delhi
+Delhi	South West Delhi
+Delhi	West Delhi
 Goa	North Goa
 Goa	South Goa
 Gujarat	Ahmedabad
@@ -222,26 +222,26 @@ Himachal Pradesh	Shimla
 Himachal Pradesh	Sirmour
 Himachal Pradesh	Solan
 Himachal Pradesh	Una
-Jammu and Kashmir (UT)	Anantnag
-Jammu and Kashmir (UT)	Bandipore
-Jammu and Kashmir (UT)	Baramulla
-Jammu and Kashmir (UT)	Budgam
-Jammu and Kashmir (UT)	Doda
-Jammu and Kashmir (UT)	Ganderbal
-Jammu and Kashmir (UT)	Jammu
-Jammu and Kashmir (UT)	Kathua
-Jammu and Kashmir (UT)	Kishtwar
-Jammu and Kashmir (UT)	Kulgam
-Jammu and Kashmir (UT)	Kupwara
-Jammu and Kashmir (UT)	Poonch
-Jammu and Kashmir (UT)	Pulwama
-Jammu and Kashmir (UT)	Rajouri
-Jammu and Kashmir (UT)	Ramban
-Jammu and Kashmir (UT)	Reasi
-Jammu and Kashmir (UT)	Samba
-Jammu and Kashmir (UT)	Shopian
-Jammu and Kashmir (UT)	Srinagar
-Jammu and Kashmir (UT)	Udhampur
+Jammu & Kashmir	Anantnag
+Jammu & Kashmir	Bandipore
+Jammu & Kashmir	Baramulla
+Jammu & Kashmir	Budgam
+Jammu & Kashmir	Doda
+Jammu & Kashmir	Ganderbal
+Jammu & Kashmir	Jammu
+Jammu & Kashmir	Kathua
+Jammu & Kashmir	Kishtwar
+Jammu & Kashmir	Kulgam
+Jammu & Kashmir	Kupwara
+Jammu & Kashmir	Poonch
+Jammu & Kashmir	Pulwama
+Jammu & Kashmir	Rajouri
+Jammu & Kashmir	Ramban
+Jammu & Kashmir	Reasi
+Jammu & Kashmir	Samba
+Jammu & Kashmir	Shopian
+Jammu & Kashmir	Srinagar
+Jammu & Kashmir	Udhampur
 Jharkhand	Bokaro
 Jharkhand	Chatra
 Jharkhand	Deoghar
@@ -269,8 +269,8 @@ Jharkhand	West Singhbhum
 Karnataka	Bagalkot
 Karnataka	Bellary
 Karnataka	Belagavi
-Karnataka	Bengaluru (Bangalore) Rural
-Karnataka	Bengaluru (Bangalore) Urban
+Karnataka	Bengaluru Rural
+Karnataka	Bengaluru Urban
 Karnataka	Bidar
 Karnataka	Chamarajanagar
 Karnataka	Chikballapur
@@ -310,9 +310,9 @@ Kerala	Pathanamthitta
 Kerala	Thiruvananthapuram
 Kerala	Thrissur
 Kerala	Wayanad
-Ladakh(UT)	Kargil
-Ladakh(UT)	Leh
-Lakshadweep (UT)	Lakshadweep
+Ladakh	Kargil
+Ladakh	Leh
+Lakshadweep	Lakshadweep
 Madhya Pradesh	Agar Malwa
 Madhya Pradesh	Alirajpur
 Madhya Pradesh	Anuppur
@@ -477,10 +477,10 @@ Odisha	Rayagada
 Odisha	Sambalpur
 Odisha	Sonepur
 Odisha	Sundargarh
-Puducherry (UT)	Karaikal
-Puducherry (UT)	Mahe
-Puducherry (UT)	Puducherry
-Puducherry (UT)	Yanam
+Puducherry	Karaikal
+Puducherry	Mahe
+Puducherry	Puducherry
+Puducherry	Yanam
 Punjab	Amritsar
 Punjab	Barnala
 Punjab	Bathinda
