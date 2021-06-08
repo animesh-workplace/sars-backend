@@ -29,7 +29,6 @@ rule combine_clade_lineage:
 			)
 
 			region_type = pandas.read_csv('workflow/resources/indian_region.tsv', delimiter = '\t', encoding = 'utf-8').set_index('State').T.to_dict()
-
 			# For Nextstrain Analysis
 			nextstrain_metadata = pandas.DataFrame(columns = nextstrain_labels)
 			nextstrain_metadata = nextstrain_metadata.assign(
