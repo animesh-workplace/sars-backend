@@ -42,9 +42,8 @@ class UserMetadataUploadSerializer(CustomSerializer):
 					'username': user_obj.username,
 					'uploaded': len(metadata)
 				}
+				send_email_upload(user_info)
 				create_config_file.delay(user_info)
-				# send_email_general.delay(user_obj.username, len(metadata))
-				# fix_metadata.delay(user_info, metadata, timestamp)
 				return {'message': 'Upload Successful'}
 			raise serializers.ValidationError({'message': 'User Inactive'})
 		raise serializers.ValidationError({'message': 'Invalid Credentials'})
