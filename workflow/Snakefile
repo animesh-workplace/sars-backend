@@ -29,7 +29,11 @@ def send_data_to_websocket(data_type, tool, message):
 		"data": {
 			"tool": tool,
 			"message": message,
-			"timestamp": str(pendulum.now('Asia/Kolkata')),
+			"username": config["uploaded_by"],
+			"upload_time": config["analysis_time"],
+			"uploaded": config["sequences_uploaded"],
+			"total_seq": storage.fetch("total_count"),
+			"timestamp": pendulum.now("Asia/Kolkata").format("YYYY-MM-DD_hh-mm-ss-A"),
 		}
 	}
 	ws.send(json.dumps(websocket_data))
@@ -40,23 +44,14 @@ def send_data_to_websocket(data_type, tool, message):
 onsuccess:
 	send_data_to_websocket("SUCCESS", "Workflow", "Completed Workflow")
 
-# onerror:
-# 	error_traceback = traceback.format_exc()
-# 	send_data_to_websocket("ERROR", "Workflow", error_traceback)
-
 storage = PersistentDict("insacog_storage")
 
 rule all:
 	input:
-		# fixed_data = expand(
-		# 		"{base_path}/Fixed_data/{date}/",
-		# 		base_path=config["base_path"],
-		# 		date=config["analysis_time"].replace(':', '-'),
-		# 	),
 		analysis_results = expand(
 				"{base_path}/Analysis/{date}/reports/{analysis_file}",
 				base_path=config["base_path"],
-				date=config["analysis_time"].replace(":", "-"),
+				date=config["analysis_time"],
 				analysis_file=[
 					"voc_id_report.xlsx",
 					"mutation_count_report.xlsx",
