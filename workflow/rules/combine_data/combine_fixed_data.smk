@@ -1,8 +1,8 @@
 rule combine_fixed_data:
 	message: "Collecting all fixed data and combining them"
 	input:
-		rules.clean_data.output,
-		rules.update.log
+		cleaned_data = rules.clean_data.output,
+		update_log = rules.update.log
 	output:
 		metadata = "{base_path}/Analysis/{date}/combined_files/combined_metadata.tsv",
 		sequences = "{base_path}/Analysis/{date}/combined_files/combined_sequences.fasta",
@@ -22,7 +22,7 @@ rule combine_fixed_data:
 			os.makedirs(path_for_files, exist_ok = True)
 
 			# Traversing all paths and combining all sequences and metadata
-			for path, dirs, files in os.walk(f"{wildcards.base_path}/Fixed_data"):
+			for path, dirs, files in os.walk(str(input.cleaned_data)):
 				if(not (sum(list(map(lambda x: (x in ignore_dir), path.split('/')))) or sum(list(map(lambda x: (x in ignore_file), files))))):
 					if(files):
 						for i in files:
