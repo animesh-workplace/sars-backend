@@ -52,11 +52,10 @@ class BackendConsumer(AsyncJsonWebsocketConsumer):
 
 	async def receive_json(self, event):
 		task_id = 'Backend_Update_Consumer'
-		print(event)
 		if(event['type'] == 'SUCCESS'):
-			send_email_general.delay('Insacog_Test', event['data']['tool'], event['data']['message'])
+			send_email_success(event['data'])
 		elif(event['type'] == 'ERROR'):
-			send_email_error.delay('Insacog_Test', event['data']['tool'], event['data']['message'])
+			send_email_error(event['data'])
 
 	async def disconnect(self, close_code):
 		task_id = 'Backend_Update_Consumer'
