@@ -57,14 +57,18 @@ rule split_clade_report:
 	input:
 		split_alignment = rules.partition_alignment_intermediate.output,
 	output:
-		split_report = "{base_path}/Analysis/{date}/reports/clade_report/split_report/{clade_cluster}.tsv"
+		split_report = "{base_path}/Analysis/{date}/reports/clade_report/split_report/{clade_cluster}.tsv",
+		split_other = directory("{base_path}/Analysis/{date}/reports/clade_report/split_extra/split_{clade_cluster}")
 	log: "{base_path}/Analysis/{date}/log/clade_report/split_clade_report/{clade_cluster}_error.log"
 	threads: 2
 	run:
 		try:
 			shell(
 				"""
-					nextclade -i {input.split_alignment} -t {output.split_report} -j {threads}
+					nextclade --input-fasta {input.split_alignment} --output-tsv {output.split_report} --jobs {threads} \
+					--input-root-seq workflow/resources/reference.fasta --input-tree workflow/resources/tree.json \
+					--input-qc-config workflow/resources/qc.json --input-pcr-primers workflow/resources/primers.csv \
+					--input-gene-map workflow/resources/genemap.gff --output-dir {output.split_other}
 				"""
 			)
 		except:
