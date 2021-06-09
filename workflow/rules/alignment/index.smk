@@ -57,7 +57,7 @@ rule align:
 		"""
 	input:
 		sequences = rules.partitions_intermediate.output,
-		reference = 'workflow/resources/reference_seq.fasta'
+		reference = 'workflow/resources/data/reference.fasta'
 	output:
 		alignment = os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_alignments/{cluster}.fasta")
 	log: "{base_path}/Analysis/{date}/log/alignment/align/{cluster}_error.log"
