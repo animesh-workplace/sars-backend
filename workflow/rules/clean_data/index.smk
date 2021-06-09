@@ -38,7 +38,7 @@ rule clean_data:
 								fixed_collection_date = [arrow.get(i, ['YYYY-MM-DD', 'DD-MM-YYYY', 'YYYY/MM/DD', 'DD/MM/YYYY', 'MM-DD-YYYY']).date() for i in metadata['Collection date']]
 								metadata['Collection date'] = fixed_collection_date
 
-								fixed_gender = [ 'Unknown' if(len(fs_gender.get(i)) > 1) else fs_gender.get(i)[0][1] for i in metadata['Gender'] ]
+								fixed_gender = [ 'Unknown' if(i!=i or len(fs_gender.get(i)) > 1) else fs_gender.get(i)[0][1] for i in metadata['Gender'] ]
 								metadata['Gender'] = fixed_gender
 
 								metadata['Submitting lab'] = rgsl.split('_')[-1]
