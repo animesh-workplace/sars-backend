@@ -48,6 +48,8 @@ rule combine_fixed_data:
 			# For download button
 			combined_metadata[metadata_labels].to_csv(output.metadata, sep = '\t', index = False)
 			SeqIO.write(combined_sequences, output.sequences, 'fasta')
+
+			storage.store("total_count", len(combined_metadata))
 		except:
 			error_traceback = traceback.format_exc()
 			send_data_to_websocket('ERROR', 'combine_data', error_traceback)
