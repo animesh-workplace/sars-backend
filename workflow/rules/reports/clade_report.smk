@@ -66,9 +66,9 @@ rule split_clade_report:
 			shell(
 				"""
 					nextclade --input-fasta {input.split_alignment} --output-tsv {output.split_report} --jobs {threads} \
-					--input-root-seq workflow/resources/reference.fasta --input-tree workflow/resources/tree.json \
-					--input-qc-config workflow/resources/qc.json --input-pcr-primers workflow/resources/primers.csv \
-					--input-gene-map workflow/resources/genemap.gff --output-dir {output.split_other}
+					--input-root-seq workflow/resources/data/reference.fasta --input-tree workflow/resources/data/tree.json \
+					--input-qc-config workflow/resources/data/qc.json --input-pcr-primers workflow/resources/data/primers.csv \
+					--input-gene-map workflow/resources/data/genemap.gff --output-dir {output.split_other}
 				"""
 			)
 		except:
