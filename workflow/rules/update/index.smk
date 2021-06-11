@@ -16,7 +16,7 @@ rule update:
 				shell(
 					f"""
 						git -C {nextstrain_path}/source pull
-						cp -r {nextstrain_path}/source/data/sars-cov-2/ workflow/resources/data
+						cp -rf {nextstrain_path}/source/data/sars-cov-2/. workflow/resources/data/
 					"""
 				)
 			else:
