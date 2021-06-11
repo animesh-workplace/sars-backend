@@ -16,6 +16,7 @@ pip-selfcheck.json
 
 # Django related
 OneDrive/
+o365_token.txt
 
 
 # Byte-compiled / optimized / DLL files
