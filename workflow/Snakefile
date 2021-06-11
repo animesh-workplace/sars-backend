@@ -48,17 +48,11 @@ storage = PersistentDict("insacog_storage")
 
 rule all:
 	input:
-		analysis_results = expand(
-				"{base_path}/Analysis/{date}/reports/{analysis_file}",
+		uploaded_files = expand(
+			"{base_path}/Analysis/{date}/log/upload_error.log",
 				base_path=config["base_path"],
 				date=config["analysis_time"],
-				analysis_file=[
-					"voc_id_report.xlsx",
-					"mutation_count_report.xlsx",
-					"voc_state_monthly_report.xlsx",
-					"lineage_substitution_deletion_report.tsv",
-				],
-			),
+		)
 
 include: "rules/update/index.smk"
 include: "rules/clean_data/index.smk"
@@ -72,3 +66,4 @@ include: "rules/reports/mutation_report.smk"
 include: "rules/reports/voc_id_report.smk"
 include: "rules/reports/lineage_substitution_deletion_report.smk"
 include: "rules/reports/voc_progress_report.smk"
+include: "rules/upload/index.smk"
