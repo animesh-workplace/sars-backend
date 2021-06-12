@@ -84,6 +84,7 @@ def send_email_success(workflow_info):
 		storage = account.storage()
 		my_drive = storage.get_default_drive()
 		search_files = my_drive.search(workflow_info["upload_time"], limit=1)
+		link = ""
 		for i in search_files:
 			link = i.share_with_link(share_type='view').share_link
 		message = account.new_message()
@@ -119,11 +120,16 @@ def send_email_success(workflow_info):
 						</ul>
 					</p>
 					<p>
-						<a href="{ link }" target="_blank"
-							style="background-color:#1b1d1e;border:1px solid #373b3e;border-radius:18px;color:#c6c1b9;display:inline-block;font-size:13px;font-weight:bold;line-height:36px;text-align:center;text-decoration:none;width:200px;"
-						>
-							Click here to go to Drive
-						</a>
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
+						  <tr>
+							<td align="center" bgcolor="#19cca3" role="presentation" style="border:none;border-radius:6px;cursor:auto;padding:11px 20px;background:#19cca3;" valign="middle">
+							  <a href="{link}" target="_blank"
+							  		style="background:#19cca3;color:#ffffff;font-family:Helvetica, sans-serif;font-size:18px;font-weight:600;line-height:120%;Margin:0;text-decoration:none;text-transform:none;">
+								Click here!
+							  </a>
+							</td>
+						  </tr>
+						</table>
 					</p>
 					<p>
 						With Regards,<br>
