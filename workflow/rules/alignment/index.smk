@@ -8,7 +8,7 @@ checkpoint partition_sequences:
 		sequences = rules.combine_fixed_data.output.sequences
 	output:
 		split_sequences = directory("{base_path}/Analysis/{date}/alignment/split_sequences/pre/")
-	log: os.path.join("{base_path}/Analysis/{date}/log/alignment/partition_sequences_error.log")
+	log: "{base_path}/Analysis/{date}/log/alignment/partition_sequences_error.log"
 	params:
 		sequences_per_group = 150
 	run:
