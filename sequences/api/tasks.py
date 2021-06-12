@@ -16,10 +16,10 @@ from celery import shared_task
 from dotenv import load_dotenv
 from django.conf import settings
 from django.utils import timezone
-from sendgrid import SendGridAPIClient
 from zipfile import ZipFile, ZIP_DEFLATED
-from .ssh_job_submission import RemoteClient
-from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType, Disposition
+# from sendgrid import SendGridAPIClient
+# from .ssh_job_submission import RemoteClient
+# from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType, Disposition
 
 load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
 
@@ -52,7 +52,7 @@ def send_email_upload(user_info):
 				Dear all,
 					<p>
 						This is an automated mail to alert you of the submission of
-						<strong style="background-color:#FFC748;">{ user_info['uploaded'] } samples by
+						<strong style="background-color:#FFC748;text-decoration:none;">{ user_info['uploaded'] } samples by
 						{ user_info['username'].split('_')[1] }</strong>.
 						The pipeline to generate report has been activated and
 						soon you will get another mail with all the reports.
@@ -95,15 +95,14 @@ def send_email_success(workflow_info):
 				Dear all,
 					<p>
 						This is an automated mail to provide the link for the report generated after the submission of
-						<strong style="background-color:#FFC748;">{ workflow_info['uploaded'] }
+						<strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['uploaded'] }
 						samples by { workflow_info['username'].split('_')[1] }</strong>.<br>
 						The pipeline has analyzed total
-						<strong style="background-color:#FFC748;">{ workflow_info['total_seq'] } sequences</strong> and took
-						<strong style="background-color:#FFC748;">{ end_time.diff(start_time).in_minutes() } minutes</strong> starting at
-						<strong style="background-color:#FFC748;">{ start_time.to_day_datetime_string() }</strong> and completing at
-						<strong style="background-color:#FFC748;">{ end_time.to_day_datetime_string() }</strong> to generate reports.
+						<strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['total_seq'] } sequences</strong> and took
+						<strong style="background-color:#FFC748;text-decoration:none;">{ end_time.diff(start_time).in_minutes() } minutes</strong> starting at
+						<strong style="background-color:#FFC748;text-decoration:none;">{ start_time.to_day_datetime_string() }</strong> and completing at
+						<strong style="background-color:#FFC748;text-decoration:none;">{ end_time.to_day_datetime_string() }</strong> to generate reports.
 					</p>
-						<br>
 					<p>
 						The link contains following files:
 						<ul>
@@ -119,15 +118,13 @@ def send_email_success(workflow_info):
 							<li>Logs</li>
 						</ul>
 					</p>
-						<br>
 					<p>
 						<a href="{ link }" target="_blank"
-							style="background-color:#1b1d1e;border:1px solid #373b3e;border-radius:18px;color:#c6c1b9;display:inline-block;font-size:13px;font-weight:bold;line-height:36px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;"
+							style="background-color:#1b1d1e;border:1px solid #373b3e;border-radius:18px;color:#c6c1b9;display:inline-block;font-size:13px;font-weight:bold;line-height:36px;text-align:center;text-decoration:none;width:200px;"
 						>
 							Click here to go to Drive
 						</a>
 					</p>
-						<br>
 					<p>
 						With Regards,<br>
 						INSACOG DataHub
@@ -161,18 +158,18 @@ def send_email_error(workflow_info):
 					<p>
 						This is an automated mail to alert you of an error that occured during the analysis
 						and report generation which was started after the submission of
-						<strong style="background-color:#FFC748;">{ workflow_info['uploaded'] } samples by
+						<strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['uploaded'] } samples by
 						{ workflow_info['username'].split('_')[1] }</strong>. The workflow started at
-						<strong style="background-color:#FFC748;">{ start_time.to_day_datetime_string() }</strong> and error occured at
-						<strong style="background-color:#FFC748;">{ end_time.to_day_datetime_string() }</strong>.
+						<strong style="background-color:#FFC748;text-decoration:none;">{ start_time.to_day_datetime_string() }</strong> and error occured at
+						<strong style="background-color:#FFC748;text-decoration:none;">{ end_time.to_day_datetime_string() }</strong>.
 					</p>
 
 					<p>
-						Traceback of the error which occured in the step <strong style="background-color:#FFC748;">{ workflow_info['tool'] }</strong>
+						Traceback of the error which occured in the step <strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['tool'] }</strong>
 					</p>
 
 					<hr>
-						<pre style="font-family:'Open Sans';background-color:#E5F1DC;">{ workflow_info['message'] }</pre>
+						<pre style="font-family:'Open Sans';background-color:#E5F1DC;text-decoration:none;">{ workflow_info['message'] }</pre>
 					<hr>
 
 					<p>
