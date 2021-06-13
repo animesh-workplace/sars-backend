@@ -35,7 +35,7 @@ def create_config_file(self, upload_info):
 	configfile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'config', f"config_{upload_date}.yaml")
 	yaml.dump(config_data, open(configfile_loc, 'w'))
 	snakefile_loc = os.path.join(settings.BASE_DIR, 'workflow', 'Snakefile')
-	command = f"exec snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores {int(os.cpu_count()*0.75)}"
+	command = f"exec snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 20"
 	snakemake_command = subprocess.run(command, shell = True)
 	return 'Pipeline run completed'
 
