@@ -59,19 +59,18 @@ rule align:
 		sequences = rules.partitions_intermediate.output,
 		reference = 'workflow/resources/data/reference.fasta'
 	output:
-		alignment = os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_alignments/{cluster}.fasta")
+		alignment = os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_alignments/{cluster}.fasta"),
+		alignment_other = directory("{base_path}/Analysis/{date}/reports/clade_report/split_extra/split_{clade_cluster}")
 	log: "{base_path}/Analysis/{date}/log/alignment/align/{cluster}_error.log"
 	threads: 2
 	run:
 		try:
 			shell(
 				"""
-				augur align \
-					--sequences {input.sequences} \
-					--reference-sequence {input.reference} \
-					--output {output.alignment} \
-					--nthreads {threads} \
-					--remove-reference \
+				nextalign \
+					--sequences {input.sequences} --reference {input.reference} --jobs {threads} \
+					--genemap workflow/resources/data/genemap.gff --output-fasta {output.alignment} \
+					--output-dir {output.alignment_other}
 				"""
 			)
 		except:
