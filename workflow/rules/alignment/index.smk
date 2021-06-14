@@ -60,7 +60,7 @@ rule align:
 		reference = 'workflow/resources/data/reference.fasta'
 	output:
 		alignment = os.path.join("{base_path}", "Analysis", "{date}", "alignment", "split_alignments/{cluster}.fasta"),
-		alignment_other = directory("{base_path}/Analysis/{date}/reports/clade_report/split_extra/split_{cluster}")
+		alignment_other = directory("{base_path}/Analysis/{date}/alignment/split_extra/split_{cluster}")
 	log: "{base_path}/Analysis/{date}/log/alignment/align/{cluster}_error.log"
 	threads: 2
 	run:
