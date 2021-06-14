@@ -70,7 +70,7 @@ rule align:
 				nextalign \
 					--sequences {input.sequences} --reference {input.reference} --jobs {threads} \
 					--genemap workflow/resources/data/genemap.gff --output-fasta {output.alignment} \
-					--output-dir {output.alignment_other}
+					--output-dir {output.alignment_other} --genes=E,M,N,ORF1a,ORF1b,ORF3a,ORF6,ORF7a,ORF7b,ORF8,ORF9b,S
 				"""
 			)
 		except:
