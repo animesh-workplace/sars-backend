@@ -162,7 +162,7 @@ def send_email_success(workflow_info):
 					</p>
 					<p>
 						<a href="{ link }" target="_blank"
-							style="background-color:#1b1d1e;border:1px solid #373b3e;border-radius:18px;color:#c6c1b9;display:inline-block;font-size:13px;font-weight:bold;line-height:36px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;"
+							style="background-color:#1b1d1e;border:1px solid #373b3e;border-radius:8px;color:#c6c1b9;display:inline-block;font-size:14px;font-weight:bold;line-height:36px;text-align:center;text-decoration:none;width:200px;"
 						>
 							Click here to go to Drive
 						</a>
