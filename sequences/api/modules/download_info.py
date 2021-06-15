@@ -28,10 +28,9 @@ class UserDownloadInfoSerializer(CustomSerializer):
 		if(qs.count() == 1):
 			user_obj = qs.first()
 			if(user_obj.is_active):
-				path = os.path.join(settings.MEDIA_ROOT, 'combined_files')
-				last_download_date = sorted(os.listdir(path))[-1]
+				download_obj = Download_Handler.objects.last()
 				return {
-					'date': last_download_date
+					'link': download_obj.download_link
 				}
 			raise serializers.ValidationError({'message': 'User Inactive'})
 		raise serializers.ValidationError({'message': 'Invalid Credentials'})
