@@ -7,17 +7,19 @@ import base64
 import pandas
 import fuzzyset
 import pendulum
+import itertools
 import subprocess
 import collections
 from Bio import SeqIO
 from time import sleep
 from O365 import Account
+from django.db.models import Q
 from celery import shared_task
 from dotenv import load_dotenv
 from django.conf import settings
 from django.utils import timezone
 from zipfile import ZipFile, ZIP_DEFLATED
-from sequences.models import Download_Handler
+from sequences.models import Download_Handler, Metadata_Handler
 # from sendgrid import SendGridAPIClient
 # from .ssh_job_submission import RemoteClient
 # from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType, Disposition
@@ -39,6 +41,14 @@ def create_config_file(self, upload_info):
 	command = f"exec snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 20"
 	snakemake_command = subprocess.run(command, shell = True)
 	return 'Pipeline run completed'
+
+def get_my_metadata(user_obj):
+	temp = []
+	metadata_qs = Metadata_Handler.objects.filter(Q(user=user_obj))
+	for index,i in enumerate(metadata_qs):
+		temp.append(i.metadata)
+	return_dict = list(itertools.chain(*temp))
+	return return_dict
 
 def create_download_link(workflow_info):
 	download_link = f"{os.getenv('DOWNLOAD_URL')}/INSACOG_data_{workflow_info['upload_time']}.zip"
