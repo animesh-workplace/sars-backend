@@ -21,3 +21,7 @@ class Metadata_Handler(models.Model):
 	user 			= models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='User')
 	submission_date = models.DateTimeField(auto_now=False, auto_now_add=False, null=True)
 	metadata 		= jsonfield.JSONField()
+
+class Download_Handler(models.Model):
+	creation_date = models.DateTimeField(auto_now=True)
+	download_link = models.CharField(max_length=500, blank=True)
