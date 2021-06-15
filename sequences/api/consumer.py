@@ -25,12 +25,12 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 	async def receive_json(self, event):
 		username = self.scope['user'].username
 		if(event['type'] == 'MY_METADATA'):
-			get_my_metadata(event['data'])
+			data = get_my_metadata(self.scope['user'])
 		await self.channel_layer.group_send(
 			username,
 				{
 					'type': 'task_message',
-					'data': event["data"],
+					'data': data,
 				}
 		)
 
