@@ -52,8 +52,8 @@ rule combine_fixed_data:
 
 			print("Creating zip")
 			zip_obj_download = ZipFile(output.download_zip, "w", compression = ZIP_DEFLATED, compresslevel = 9)
-			zip_obj_download.write(output.sequences)
-			zip_obj_download.write(output.metadata)
+			zip_obj_download.write(output.sequences, arcname="combined_sequences.fasta")
+			zip_obj_download.write(output.metadata, arcname="combined_metadata.tsv")
 			zip_obj_download.close()
 
 			send_data_to_websocket('SUCCESS_ZIP', 'combine_data', None)
