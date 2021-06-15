@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 from django.conf.urls import url
 from sequences.api.consumer import *
 from django.urls import include, re_path
-from .token_auth import TokenAuthMiddleware
+from .token_auth import JWTAuthMiddleware
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
@@ -22,7 +22,7 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 application = ProtocolTypeRouter({
 	'websocket': AllowedHostsOriginValidator(
-			TokenAuthMiddleware(
+			JWTAuthMiddleware(
 					URLRouter(
 							[
 								url(os.getenv('BASE_URL'), URLRouter([
