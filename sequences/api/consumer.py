@@ -10,13 +10,17 @@ init(autoreset=True)
 
 class TestConsumer(AsyncJsonWebsocketConsumer):
 	async def connect(self):
-		task_id = 'sars-ws'
-		await self.accept()
-		await self.channel_layer.group_add(task_id, self.channel_name)
-		data = {
-			'message': f'You have connected to {task_id}',
-		}
-		await self.send_json(data)
+		try:
+			if(self.scope['user'].is_authenticated):
+				task_id = 'sars-ws'
+				await self.accept()
+				await self.channel_layer.group_add(task_id, self.channel_name)
+				data = {
+					'message': f'You have connected to {task_id}',
+				}
+				await self.send_json(data)
+		except:
+			await self.close()
 
 	async def receive_json(self, event):
 		task_id = 'sars-ws'
