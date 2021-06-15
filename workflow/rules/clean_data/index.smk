@@ -43,6 +43,8 @@ rule clean_data:
 
 								metadata['Submitting lab'] = rgsl.split('_')[-1]
 								metadata['Submission date'] = metadata['Collection date']
+								metadata['Location'] = 'Asia'
+								metadata['Country'] = 'India'
 
 								# fixed_district = []
 								# for i in metadata.index:
