@@ -8,22 +8,22 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 init(autoreset=True)
 
-class TestConsumer(AsyncJsonWebsocketConsumer):
+class FrontendConsumer(AsyncJsonWebsocketConsumer):
 	async def connect(self):
 		try:
 			if(self.scope['user'].is_authenticated):
-				task_id = 'sars-ws'
+				task_id = self.scope['user'].username
 				await self.accept()
 				await self.channel_layer.group_add(task_id, self.channel_name)
 				data = {
-					'message': f'You have connected to {task_id}',
+					'message': f'Welcome! {task_id} to Frontend Websocket',
 				}
 				await self.send_json(data)
 		except:
 			await self.close()
 
 	async def receive_json(self, event):
-		task_id = 'sars-ws'
+		task_id = self.scope['user'].username
 		await self.channel_layer.group_send(
 			task_id,
 				{
@@ -33,7 +33,7 @@ class TestConsumer(AsyncJsonWebsocketConsumer):
 		)
 
 	async def disconnect(self, close_code):
-		task_id = 'sars-ws'
+		task_id = self.scope['user'].username
 		await self.channel_layer.group_discard(task_id, self.channel_name)
 		await self.close()
 
