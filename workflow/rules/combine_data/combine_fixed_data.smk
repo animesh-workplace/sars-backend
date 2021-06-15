@@ -6,6 +6,7 @@ rule combine_fixed_data:
 	output:
 		metadata = "{base_path}/Analysis/{date}/combined_files/combined_metadata.tsv",
 		sequences = "{base_path}/Analysis/{date}/combined_files/combined_sequences.fasta",
+		download_zip = "{base_path}/Download/INSACOG_data_{date}.zip"
 	log: "{base_path}/Analysis/{date}/log/combine_data_error.log"
 	run:
 		try:
@@ -49,6 +50,13 @@ rule combine_fixed_data:
 			combined_metadata[metadata_labels].to_csv(output.metadata, sep = '\t', index = False)
 			SeqIO.write(combined_sequences, output.sequences, 'fasta')
 
+			print("Creating zip")
+			zip_obj_download = ZipFile(output.download_zip, "w", compression = ZIP_DEFLATED, compresslevel = 9)
+			zip_obj_download.write(output.sequences)
+			zip_obj_download.write(output.metadata)
+			zip_obj_download.close()
+
+			send_data_to_websocket('SUCCESS_ZIP', 'combine_data', None)
 			storage.store("total_count", len(combined_metadata))
 		except:
 			error_traceback = traceback.format_exc()
