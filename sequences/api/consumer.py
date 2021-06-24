@@ -8,29 +8,35 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 init(autoreset=True)
 
-class TestConsumer(AsyncJsonWebsocketConsumer):
+class FrontendConsumer(AsyncJsonWebsocketConsumer):
 	async def connect(self):
-		task_id = 'sars-ws'
-		await self.accept()
-		await self.channel_layer.group_add(task_id, self.channel_name)
-		data = {
-			'message': f'You have connected to {task_id}',
-		}
-		await self.send_json(data)
+		try:
+			if(self.scope['user'].is_authenticated):
+				username = self.scope['user'].username
+				await self.accept()
+				await self.channel_layer.group_add(username, self.channel_name)
+				data = {
+					'message': f'Welcome! {username} to Frontend Websocket',
+				}
+				await self.send_json(data)
+		except:
+			await self.close()
 
 	async def receive_json(self, event):
-		task_id = 'sars-ws'
+		username = self.scope['user'].username
+		if(event['type'] == 'MY_METADATA'):
+			data = get_my_metadata(self.scope['user'])
 		await self.channel_layer.group_send(
-			task_id,
+			username,
 				{
 					'type': 'task_message',
-					'data': event["data"],
+					'data': data,
 				}
 		)
 
 	async def disconnect(self, close_code):
-		task_id = 'sars-ws'
-		await self.channel_layer.group_discard(task_id, self.channel_name)
+		username = self.scope['user'].username
+		await self.channel_layer.group_discard(username, self.channel_name)
 		await self.close()
 
 	async def task_message(self, event):
@@ -42,16 +48,16 @@ class TestConsumer(AsyncJsonWebsocketConsumer):
 
 class BackendConsumer(AsyncJsonWebsocketConsumer):
 	async def connect(self):
-		task_id = 'Backend_Update_Consumer'
+		group_name = 'Backend_Update_Consumer'
 		await self.accept()
-		await self.channel_layer.group_add(task_id, self.channel_name)
+		await self.channel_layer.group_add(group_name, self.channel_name)
 		data = {
-			'message': f'You have connected to {task_id}',
+			'message': f'You have connected to {group_name}',
 		}
 		await self.send_json(data)
 
 	async def receive_json(self, event):
-		task_id = 'Backend_Update_Consumer'
+		group_name = 'Backend_Update_Consumer'
 		if(event['type'] == 'SUCCESS'):
 			send_email_success(event['data'])
 		elif(event['type'] == 'ERROR'):
@@ -60,7 +66,7 @@ class BackendConsumer(AsyncJsonWebsocketConsumer):
 			create_download_link(event['data'])
 
 	async def disconnect(self, close_code):
-		task_id = 'Backend_Update_Consumer'
-		await self.channel_layer.group_discard(task_id, self.channel_name)
+		group_name = 'Backend_Update_Consumer'
+		await self.channel_layer.group_discard(group_name, self.channel_name)
 		await self.close()
 

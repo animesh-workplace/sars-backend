@@ -1,24 +1,26 @@
 {
 	"UK": 	[
 		{ "pangolin"	: ["B.1.1.7"] },
-		{ "nextstrain"	: ["20I/501Y.V1"] }
+		{ "nextstrain"	: ["20I (Alpha, V1)"] }
 	],
 	"SA": 	[
 		{ "pangolin" 	: ["B.1.351"] },
-		{ "nextstrain" 	: ["20H/501Y.V2"] }
+		{ "nextstrain" 	: ["20H (Beta, V2)"] }
 	],
 	"Brazil":	[
 		{ "pangolin" 	: ["P.1"] },
-		{ "nextstrain" 	: ["20J/501Y.V3"] }
+		{ "nextstrain" 	: ["20J (Gamma, V3)"] }
 	],
 	"B.1.617":	[
 		{ "pangolin" : ["B.1.617"] }
 	],
 	"B.1.617.1":	[
-		{ "pangolin" : ["B.1.617.1"] }
+		{ "pangolin" : ["B.1.617.1"] },
+		{ "nextstrain" 	: ["21B (Kappa)"] }
 	],
 	"B.1.617.2":	[
-		{ "pangolin" : ["B.1.617.2"] }
+		{ "pangolin" : ["B.1.617.2"] },
+		{ "nextstrain" 	: ["21A (Delta)"] }
 	],
 	"B.1.617.3":	[
 		{ "pangolin" : ["B.1.617.3"] }
@@ -28,5 +30,11 @@
 	],
 	"B.1.618":	[
 		{ "pangolin": ["B.1.618"] }
+	],
+	"AY.1":	[
+		{ "pangolin": ["AY.1"] }
+	],
+	"AY.2":	[
+		{ "pangolin": ["AY.2"] }
 	]
 }
