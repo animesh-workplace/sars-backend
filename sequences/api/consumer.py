@@ -76,6 +76,8 @@ class BackendConsumer(AsyncJsonWebsocketConsumer):
 			send_email_error(event["data"])
 		elif(event["type"] == "SUCCESS_ZIP"):
 			create_download_link(event["data"])
+		elif(event["type"] == "SUCCESS_METADATA"):
+			create_frontend_entry(event["data"])
 
 	async def disconnect(self, close_code):
 		group_name = "Backend_Update_Consumer"
