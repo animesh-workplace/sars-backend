@@ -25,3 +25,8 @@ class Metadata_Handler(models.Model):
 class Download_Handler(models.Model):
 	creation_date = models.DateTimeField(auto_now=True)
 	download_link = models.CharField(max_length=500, blank=True)
+
+class Frontend_Handler(models.Model):
+	metadata = jsonfield.JSONField()
+
+
