@@ -77,13 +77,7 @@ rule combine_clade_lineage:
 			insacog_datahub_metadata = metadata.merge(nextclade_pangolin, on = 'Virus name', how = 'inner')
 			insacog_datahub_metadata.to_csv(output.insacog_datahub, sep = '\t', index = False)
 
-			frontend_metadata = []
-
-			for (key, value) in insacog_datahub_metadata.T.to_dict().items():
-				frontend_metadata.append(value)
-
 			send_data_to_websocket('SUCCESS_METADATA', 'combine_clade_lineage', insacog_datahub_metadata.fillna(0).to_dict(orient="records"))
-
 			storage.store("total_count", len(insacog_datahub_metadata))
 		except:
 			error_traceback = traceback.format_exc()
