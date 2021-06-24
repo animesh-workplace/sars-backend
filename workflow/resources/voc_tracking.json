@@ -15,10 +15,12 @@
 		{ "pangolin" : ["B.1.617"] }
 	],
 	"B.1.617.1":	[
-		{ "pangolin" : ["B.1.617.1"] }
+		{ "pangolin" : ["B.1.617.1"] },
+		{ "nextstrain" 	: ["21B (Kappa)"] }
 	],
 	"B.1.617.2":	[
-		{ "pangolin" : ["B.1.617.2"] }
+		{ "pangolin" : ["B.1.617.2"] },
+		{ "nextstrain" 	: ["21A (Delta)"] }
 	],
 	"B.1.617.3":	[
 		{ "pangolin" : ["B.1.617.3"] }
