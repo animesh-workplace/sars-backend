@@ -1,5 +1,6 @@
 import os
 import time
+import json
 import yaml
 import arrow
 import numpy
@@ -19,7 +20,7 @@ from dotenv import load_dotenv
 from django.conf import settings
 from django.utils import timezone
 from zipfile import ZipFile, ZIP_DEFLATED
-from sequences.models import Download_Handler, Metadata_Handler
+from sequences.models import Download_Handler, Metadata_Handler, Frontend_Handler
 # from sendgrid import SendGridAPIClient
 # from .ssh_job_submission import RemoteClient
 # from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType, Disposition
@@ -50,13 +51,21 @@ def get_my_metadata(user_obj):
 	return_dict = list(itertools.chain(*temp))
 	return return_dict
 
+def get_all_metadata(user_obj):
+	frontend_obj = Frontend_Handler.objects.last()
+	return frontend_obj.metadata
+
 def create_download_link(workflow_info):
 	download_link = f"{os.getenv('DOWNLOAD_URL')}/INSACOG_data_{workflow_info['upload_time']}.zip"
 	download_obj = Download_Handler(download_link = download_link)
 	download_obj.save()
 
+def create_frontend_entry(workflow_info):
+	download_obj = Frontend_Handler(metadata = workflow_info["message"])
+	download_obj.save()
+
 def send_email_upload(user_info):
-	credentials = (os.getenv('ONEDRIVE_CLIENT'), os.getenv('ONEDRIVE_SECRET'))
+	credentials = (os.getenv('ONEDRIV E_CLIENT'), os.getenv('ONEDRIVE_SECRET'))
 	account = Account(credentials, auth_flow_type='authorization')
 	if(account.is_authenticated):
 		message = account.new_message()
