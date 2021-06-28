@@ -18,9 +18,9 @@ class File_Handler(models.Model):
 	sequences 		= models.FileField(upload_to=user_directory_path, storage=OverwriteStorage(), verbose_name='Sequence')
 
 class Metadata_Handler(models.Model):
-	user 			= models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='User')
-	submission_date = models.DateTimeField(auto_now=False, auto_now_add=False, null=True)
 	metadata 		= jsonfield.JSONField()
+	submission_date = models.DateTimeField(auto_now=False, auto_now_add=False, null=True)
+	user 			= models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='User')
 
 class Download_Handler(models.Model):
 	creation_date = models.DateTimeField(auto_now=True)
@@ -29,9 +29,12 @@ class Download_Handler(models.Model):
 class Frontend_Handler(models.Model):
 	metadata = jsonfield.JSONField()
 	map_data = jsonfield.JSONField()
+	bar_chart_data = jsonfield.JSONField()
+	unique_variants = jsonfield.JSONField()
+	last_updated = models.DateTimeField(auto_now=True)
+	states_covered = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
 	genomes_sequenced = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
 	variants_catalogued = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
 	lineages_catalogued = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
-	states_covered = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
 
 
