@@ -90,6 +90,7 @@ def create_frontend_entry(workflow_info):
 	states_covered = len(pandas.unique(workflow_df['State']))
 
 	map_data = []
+	bar_chart_data = {}
 	for (key,value) in dict(collections.Counter(workflow_df['State'].tolist())).items():
 		map_data.append({
 			"name": key,
@@ -102,12 +103,13 @@ def create_frontend_entry(workflow_info):
 		variants_catalogued = variants_catalogued,
 		lineages_catalogued = lineages_catalogued,
 		states_covered = states_covered,
+		unique_variants = unique_variants,
 		map_data = map_data
 	)
 	download_obj.save()
 
 def send_email_upload(user_info):
-	credentials = (os.getenv('ONEDRIV E_CLIENT'), os.getenv('ONEDRIVE_SECRET'))
+	credentials = (os.getenv('ONEDRIVE_CLIENT'), os.getenv('ONEDRIVE_SECRET'))
 	account = Account(credentials, auth_flow_type='authorization')
 	if(account.is_authenticated):
 		message = account.new_message()
