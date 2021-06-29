@@ -6,8 +6,8 @@ rule update:
 			print("Updating Pangolin")
 			shell(
 				"""
-					# pangolin --update
-					# pangolin --update-data
+					pangolin --update
+					pangolin --update-data
 				"""
 			)
 			print("Updating Nextclade")
@@ -15,15 +15,15 @@ rule update:
 			if(os.path.exists(f"{nextstrain_path}/source")):
 				shell(
 					f"""
-						# git -C {nextstrain_path}/source pull
-						# cp -rf {nextstrain_path}/source/data/sars-cov-2/. workflow/resources/data/
+						git -C {nextstrain_path}/source pull
+						cp -rf {nextstrain_path}/source/data/sars-cov-2/. workflow/resources/data/
 					"""
 				)
 			else:
 				shell(
 					f"""
-						# git clone https://github.com/nextstrain/nextclade.git {nextstrain_path}/source
-						# cp -r {nextstrain_path}/source/data/sars-cov-2/ workflow/resources/data
+						git clone https://github.com/nextstrain/nextclade.git {nextstrain_path}/source
+						cp -r {nextstrain_path}/source/data/sars-cov-2/ workflow/resources/data
 					"""
 				)
 		except:
