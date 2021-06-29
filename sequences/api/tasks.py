@@ -69,6 +69,10 @@ def get_map_data(user_obj):
 	frontend_obj = Frontend_Handler.objects.last()
 	return frontend_obj.map_data
 
+def get_bar_chart_data(user_obj):
+	frontend_obj = Frontend_Handler.objects.last()
+	return frontend_obj.bar_chart_data
+
 def create_download_link(workflow_info):
 	download_link = f"{os.getenv('DOWNLOAD_URL')}/INSACOG_data_{workflow_info['upload_time']}.zip"
 	download_obj = Download_Handler(download_link = download_link)
@@ -76,6 +80,12 @@ def create_download_link(workflow_info):
 
 def create_frontend_entry(workflow_info):
 	workflow_df = pandas.DataFrame(workflow_info["message"])
+	workflow_df['Collection date'] = pandas.to_datetime(workflow_df['Collection date'], format="%Y-%m-%d")
+	month_values = sorted(workflow_df['Collection date'])
+	month_keys = [i.strftime('%b-%Y') for i in month_values]
+	workflow_df['Collection month'] = month_keys
+	month_keys = pandas.DataFrame(month_keys)[0].unique().tolist()
+
 	genomes_sequenced = len(workflow_df)
 	all_variants = []
 	for i in workflow_df.index:
@@ -97,14 +107,43 @@ def create_frontend_entry(workflow_info):
 			"value": value
 		})
 
+	bar_chart_data['xAxis'] = {
+		"month": month_keys
+	}
+	bar_chart_data['India'] = {}
+	for i in pandas.unique(workflow_df['lineage']).tolist():
+		lineage_metadata = workflow_df.iloc[workflow_df.index[workflow_df['lineage'].isin([i])].tolist()]
+		bar_chart_data['India'][i] = {}
+		bar_chart_data['India'][i]['name'] = i
+		lineage_month = dict(collections.Counter(lineage_metadata['Collection month']))
+		for j in month_keys:
+			if(not j in list(lineage_month.keys())):
+				lineage_month[j] = 0
+		bar_chart_data['India'][i]['month'] = [lineage_month[i] for i in month_keys]
+
+	for i in pandas.unique(workflow_df['State']).tolist():
+		state_metadata = workflow_df.iloc[workflow_df.index[workflow_df['State'].isin([i])].tolist()]
+		state_metadata.reset_index(drop = True, inplace = True)
+		bar_chart_data[i] = {}
+		for j in pandas.unique(state_metadata['lineage']).tolist():
+			lineage_metadata = state_metadata.iloc[state_metadata.index[state_metadata['lineage'].isin([j])].tolist()]
+			bar_chart_data[i][j] = {}
+			bar_chart_data[i][j]['name'] = j
+			lineage_month = dict(collections.Counter(lineage_metadata['Collection month']))
+			for k in month_keys:
+				if(not k in list(lineage_month.keys())):
+					lineage_month[k] = 0
+			bar_chart_data[i][j]['month'] = [lineage_month[month] for month in month_keys]
+
 	download_obj = Frontend_Handler(
+		map_data = map_data,
+		bar_chart_data = bar_chart_data,
+		states_covered = states_covered,
+		unique_variants = unique_variants,
 		metadata = workflow_info["message"],
 		genomes_sequenced = genomes_sequenced,
 		variants_catalogued = variants_catalogued,
 		lineages_catalogued = lineages_catalogued,
-		states_covered = states_covered,
-		unique_variants = unique_variants,
-		map_data = map_data
 	)
 	download_obj.save()
 
