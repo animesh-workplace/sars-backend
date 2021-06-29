@@ -50,6 +50,16 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 				"type": "BAR_CHART_DATA",
 				"data": get_bar_chart_data(self.scope["user"])
 			}
+		elif(event["type"] == "TREEMAP_CHART_DATA"):
+			result = {
+				"type": "TREEMAP_CHART_DATA",
+				"data": get_treemap_chart_data(self.scope["user"])
+			}
+		elif(event["type"] == "LINEAGE_DEFINITION_DATA"):
+			result = {
+				"type": "LINEAGE_DEFINITION_DATA",
+				"data": get_lineage_definition_data(self.scope["user"])
+			}
 		else:
 			result = {
 				"type": "ERROR"
