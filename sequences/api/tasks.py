@@ -73,6 +73,14 @@ def get_bar_chart_data(user_obj):
 	frontend_obj = Frontend_Handler.objects.last()
 	return frontend_obj.bar_chart_data
 
+def get_treemap_chart_data(user_obj):
+	frontend_obj = Frontend_Handler.objects.last()
+	return frontend_obj.treemap_chart_data
+
+def get_lineage_definition_data(user_obj):
+	frontend_obj = Frontend_Handler.objects.last()
+	return frontend_obj.lineage_definition_data
+
 def create_download_link(workflow_info):
 	download_link = f"{os.getenv('DOWNLOAD_URL')}/INSACOG_data_{workflow_info['upload_time']}.zip"
 	download_obj = Download_Handler(download_link = download_link)
@@ -101,6 +109,11 @@ def create_frontend_entry(workflow_info):
 
 	map_data = []
 	bar_chart_data = {}
+	treemap_chart_data = {}
+	lineage_definition_data = {}
+	genes = ['E', 'M', 'N', 'ORF1a', 'ORF1b', 'ORF3a', 'ORF6', 'ORF7a', 'ORF7b', 'ORF8', 'ORF9b', 'S']
+	treemap_chart_data['genes'] = genes
+
 	for (key,value) in dict(collections.Counter(workflow_df['State'].tolist())).items():
 		map_data.append({
 			"name": key,
@@ -113,6 +126,13 @@ def create_frontend_entry(workflow_info):
 	bar_chart_data['India'] = {}
 	for i in pandas.unique(workflow_df['lineage']).tolist():
 		lineage_metadata = workflow_df.iloc[workflow_df.index[workflow_df['lineage'].isin([i])].tolist()]
+		lineage_count = len(lineage_metadata)
+		temp = []
+		for j in lineage_metadata['aaSubstitutions']:
+			if(isinstance(j, str)):
+				temp.append(j.split(','))
+		aaSubstitution = list(itertools.chain(*temp))
+		lineage_definition_data[i] = [key for index,key in enumerate(aaSubstitution) if(index<20)]
 		bar_chart_data['India'][i] = {}
 		bar_chart_data['India'][i]['name'] = i
 		lineage_month = dict(collections.Counter(lineage_metadata['Collection month']))
@@ -120,6 +140,52 @@ def create_frontend_entry(workflow_info):
 			if(not j in list(lineage_month.keys())):
 				lineage_month[j] = 0
 		bar_chart_data['India'][i]['month'] = [lineage_month[i] for i in month_keys]
+
+	treemap_chart_data['India'] = {}
+	temp = []
+	for i in workflow_df['aaSubstitutions']:
+		if(isinstance(i, str)):
+			temp.append(i.split(','))
+	aaSubstitution = list(itertools.chain(*temp))
+
+	for i in genes:
+		gene_aaSubstitution = []
+		treemap_chart_data['India'][i] = {}
+		for j in aaSubstitution:
+			if(j.startswith(f'{i}')):
+				gene_aaSubstitution.append(j)
+		gene_subsitution_counter = dict(collections.Counter(gene_aaSubstitution))
+		treemap_chart_data['India'][i]['name'] = i
+		treemap_chart_data['India'][i]['children'] = []
+		for index,value in gene_subsitution_counter.items():
+			treemap_chart_data['India'][i]['children'].append({
+				"name": index,
+				"value": value
+			})
+
+	for i in pandas.unique(workflow_df['State']).tolist():
+		state_metadata = workflow_df.iloc[workflow_df.index[workflow_df['State'].isin([i])].tolist()]
+		state_metadata.reset_index(drop = True, inplace = True)
+		treemap_chart_data[i] = {}
+		temp = []
+		for j in state_metadata['aaSubstitutions']:
+			if(isinstance(j, str)):
+				temp.append(j.split(','))
+		aaSubstitution = list(itertools.chain(*temp))
+		for j in genes:
+			gene_aaSubstitution = []
+			treemap_chart_data[i][j] = {}
+			for k in aaSubstitution:
+				if(k.startswith(f'{j}')):
+					gene_aaSubstitution.append(k)
+			gene_subsitution_counter = dict(collections.Counter(gene_aaSubstitution))
+			treemap_chart_data[i][j]['name'] = j
+			treemap_chart_data[i][j]['children'] = []
+			for index,value in gene_subsitution_counter.items():
+				treemap_chart_data[i][j]['children'].append({
+					"name": index,
+					"value": value
+				})
 
 	for i in pandas.unique(workflow_df['State']).tolist():
 		state_metadata = workflow_df.iloc[workflow_df.index[workflow_df['State'].isin([i])].tolist()]
@@ -142,8 +208,10 @@ def create_frontend_entry(workflow_info):
 		unique_variants = unique_variants,
 		metadata = workflow_info["message"],
 		genomes_sequenced = genomes_sequenced,
+		treemap_chart_data = treemap_chart_data,
 		variants_catalogued = variants_catalogued,
 		lineages_catalogued = lineages_catalogued,
+		lineage_definition_data = lineage_definition_data,
 	)
 	download_obj.save()
 
