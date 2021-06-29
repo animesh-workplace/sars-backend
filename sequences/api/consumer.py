@@ -45,6 +45,11 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 				"type": "MAP_DATA",
 				"data": get_map_data(self.scope["user"])
 			}
+		elif(event["type"] == "BAR_CHART_DATA"):
+			result = {
+				"type": "BAR_CHART_DATA",
+				"data": get_bar_chart_data(self.scope["user"])
+			}
 		else:
 			result = {
 				"type": "ERROR"
