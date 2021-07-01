@@ -86,7 +86,8 @@ def create_download_link(workflow_info):
 	download_obj = Download_Handler(download_link = download_link)
 	download_obj.save()
 
-def create_frontend_entry(workflow_info):
+@shared_task(bind=True)
+def create_frontend_entry(self, workflow_info):
 	workflow_df = pandas.DataFrame(workflow_info["message"])
 	workflow_df['Collection date'] = pandas.to_datetime(workflow_df['Collection date'], format="%Y-%m-%d")
 	month_values = sorted(workflow_df['Collection date'])
