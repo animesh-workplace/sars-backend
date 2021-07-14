@@ -1,4 +1,5 @@
 import os
+import math
 import time
 import json
 import yaml
@@ -51,10 +52,6 @@ def get_my_metadata(user_obj):
 	return_dict = list(itertools.chain(*temp))
 	return return_dict
 
-def get_all_metadata(user_obj):
-	frontend_obj = Frontend_Handler.objects.last()
-	return frontend_obj.metadata
-
 def get_dashboard(user_obj):
 	frontend_obj = Frontend_Handler.objects.last()
 	dashboard = {
@@ -64,6 +61,17 @@ def get_dashboard(user_obj):
 		"states_covered": int(frontend_obj.states_covered),
 	}
 	return dashboard
+
+def get_all_metadata(each_page, page):
+	frontend_obj = Frontend_Handler.objects.last()
+	start = 0 + (each_page * (page - 1))
+	end = (each_page - 1) + (each_page * (page -1))
+	required_metadata = frontend_obj.metadata[start:(end+1)]
+	data = {
+		"metadata": required_metadata,
+		"total_length": math.ceil(len(frontend_obj.metadata)/each_page)
+	}
+	return data
 
 def get_map_data(user_obj):
 	frontend_obj = Frontend_Handler.objects.last()
@@ -115,7 +123,7 @@ def create_frontend_entry(self, workflow_info):
 	genes = ['E', 'M', 'N', 'ORF1a', 'ORF1b', 'ORF3a', 'ORF6', 'ORF7a', 'ORF7b', 'ORF8', 'ORF9b', 'S']
 	treemap_chart_data['genes'] = genes
 
-	for (key,value) in dict(collections.Counter(workflow_df['State'].tolist())).items():
+	for (key,value) in dict(collections.Counter(workflow_df['District'].tolist())).items():
 		map_data.append({
 			"name": key,
 			"value": value
