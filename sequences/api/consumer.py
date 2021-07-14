@@ -33,7 +33,7 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 		elif(event["type"] == "ALL_METADATA"):
 			result = {
 				"type": "ALL_METADATA",
-				"data": get_all_metadata(self.scope["user"])
+				"data": get_all_metadata(event["filter"]["each_page"], event["filter"]["page"])
 			}
 		elif(event["type"] == "DASHBOARD"):
 			result = {
