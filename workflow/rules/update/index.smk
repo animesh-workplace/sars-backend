@@ -23,7 +23,7 @@ rule update:
 				shell(
 					f"""
 						git clone https://github.com/nextstrain/nextclade.git {nextstrain_path}/source
-						cp -r {nextstrain_path}/source/data/sars-cov-2/ workflow/resources/data
+						cp -r {nextstrain_path}/source/data/sars-cov-2/. workflow/resources/data/
 					"""
 				)
 		except:
