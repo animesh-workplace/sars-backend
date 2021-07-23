@@ -4,23 +4,35 @@
 		{ "nextstrain"	: ["20I (Alpha, V1)"] }
 	],
 	"Beta": 	[
-		{ "pangolin" 	: ["B.1.351"] },
+		{ "pangolin" 	: ["B.1.351", "B.1.351.2", "B.1.351.3"] },
 		{ "nextstrain" 	: ["20H (Beta, V2)"] }
 	],
 	"Gamma":	[
-		{ "pangolin" 	: ["P.1"] },
+		{ "pangolin" 	: ["P.1", "P.1.1", "P.1.2"] },
 		{ "nextstrain" 	: ["20J (Gamma, V3)"] }
 	],
-	"B.1.617":	[
-		{ "pangolin" : ["B.1.617"] }
+	"Delta":	[
+		{ "pangolin" : ["B.1.617.2", "AY.1", "AY.2"] },
+		{ "nextstrain" 	: ["21A (Delta)"] }
+	],
+	"Eta":	[
+		{ "pangolin" : ["B.1.525"] },
+		{ "nextstrain" 	: ["21D"] }
+	],
+	"Iota":	[
+		{ "pangolin" : ["B.1.526"] },
+		{ "nextstrain" 	: ["21F"] }
 	],
 	"Kappa":	[
 		{ "pangolin" : ["B.1.617.1"] },
 		{ "nextstrain" 	: ["21B (Kappa)"] }
 	],
-	"Delta":	[
-		{ "pangolin" : ["B.1.617.2"] },
-		{ "nextstrain" 	: ["21A (Delta)"] }
+	"Lambda":	[
+		{ "pangolin" : ["C.37"] },
+		{ "nextstrain" 	: ["21G"] }
+	],
+	"B.1.617":	[
+		{ "pangolin" : ["B.1.617"] }
 	],
 	"B.1.617.3":	[
 		{ "pangolin" : ["B.1.617.3"] }
@@ -33,5 +45,8 @@
 	],
 	"AY.2":	[
 		{ "pangolin": ["AY.2"] }
+	],
+	"AY.3":	[
+		{ "pangolin": ["AY.3"] }
 	]
 }
