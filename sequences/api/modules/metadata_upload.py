@@ -5,6 +5,7 @@ from django.db.models import Q
 from sequences.api.tasks import *
 from django.utils import timezone
 from rest_framework.response import Response
+from django.utils.encoding import force_text
 from django.contrib.auth import get_user_model
 from .custom_serializer import CustomSerializer
 from django_celery_results.models import TaskResult
@@ -28,25 +29,23 @@ class UserMetadataUploadSerializer(CustomSerializer):
 		request 	= self.context['request'].data
 		metadata 	= request.get('metadata')
 		timestamp 	= request.get('timestamp')
-		qs = User.objects.filter(Q(username__iexact=user) | Q(email__iexact=user)).distinct()
-		if(qs.count() == 1):
-			user_obj = qs.first()
-			if(user_obj.is_active):
+		if(user.is_authenticated):
+			if(user.is_active):
 				metadata_obj = Metadata_Handler(
-					user 			= user_obj,
+					user 			= user,
 					metadata 		= metadata,
 					submission_date = timezone.now()
 				)
 				metadata_obj.save()
 				user_info = {
-					'username': user_obj.username,
+					'username': user.username,
 					'uploaded': len(metadata)
 				}
 				send_email_upload(user_info)
 				create_config_file.delay(user_info)
 				return {'message': 'Upload Successful'}
 			raise serializers.ValidationError({'message': 'User Inactive'})
-		raise serializers.ValidationError({'message': 'Invalid Credentials'})
+		raise serializers.ValidationError({'message': 'Not Authenticated'})
 
 
 class UserMetadataUploadAPI(generics.GenericAPIView):
@@ -55,10 +54,8 @@ class UserMetadataUploadAPI(generics.GenericAPIView):
 	permission_classes      = []
 
 	def post(self, request, *args, **kwargs):
-		if(request.user.is_authenticated):
-			serializer = self.get_serializer(data = request.data)
-			if(serializer.is_valid()):
-				return Response(serializer.object)
-			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-		return Response({'message': 'Not Authenticated'}, status=status.HTTP_400_BAD_REQUEST)
+		serializer = self.get_serializer(data = request.data)
+		if(serializer.is_valid()):
+			return Response(serializer.object)
+		return Response({'message': serializer.errors['message'][0]}, status=status.HTTP_400_BAD_REQUEST)
 
