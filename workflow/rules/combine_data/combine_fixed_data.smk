@@ -56,8 +56,8 @@ rule combine_fixed_data:
 			zip_obj_download.write(output.metadata, arcname="combined_metadata.tsv")
 			zip_obj_download.close()
 
-			send_data_to_websocket('SUCCESS_ZIP', 'combine_data', None)
 			storage.store("total_count", len(combined_metadata))
+			send_data_to_websocket('SUCCESS_ZIP', 'combine_data', None)
 		except:
 			error_traceback = traceback.format_exc()
 			send_data_to_websocket('ERROR', 'combine_data', error_traceback)
