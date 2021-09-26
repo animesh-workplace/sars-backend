@@ -13,6 +13,7 @@ class Download_Handler_Manager(admin.ModelAdmin):
 
 class Frontend_Handler_Manager(admin.ModelAdmin):
 	list_display = ('id', 'last_updated')
+	exclude = ('metadata',)
 
 admin.site.register(File_Handler, File_Handler_Manager)
 admin.site.register(Metadata_Handler, Metadata_Handler_Manager)
