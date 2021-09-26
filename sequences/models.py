@@ -27,7 +27,7 @@ class Download_Handler(models.Model):
 	download_link = models.CharField(max_length=500, blank=True)
 
 class Frontend_Handler(models.Model):
-	metadata = jsonfield.JSONField()
+	# metadata = jsonfield.JSONField()
 	map_data = jsonfield.JSONField()
 	pie_chart_data = jsonfield.JSONField()
 	last_updated = models.DateTimeField(auto_now=True)
