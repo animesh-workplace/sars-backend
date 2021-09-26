@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from .modules.landing_stats import LandingStatsAPI
 from .modules.upload import UserFileUploadHandlerAPI
 from .modules.download_info import UserDownloadInfoAPI
 from .modules.metadata_upload import UserMetadataUploadAPI
@@ -6,6 +7,7 @@ from .modules.metadata_stats import UserMetadataStatsAPI, UserMetadataStateStats
 from .modules.metadata_info import UserMetadataInfoAPI, UserMetadataOnlyNameInfoAPI
 
 urlpatterns = [
+    url(r'^landing-stats/$', LandingStatsAPI.as_view(), name='landing-stats'),
     url(r'^metadata-info/$', UserMetadataInfoAPI.as_view(), name='metadata-info'),
     url(r'^file-upload/$', UserFileUploadHandlerAPI.as_view(), name='file-upload'),
     url(r'^metadata-stats/$', UserMetadataStatsAPI.as_view(), name='metadata-stats'),
