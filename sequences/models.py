@@ -28,11 +28,6 @@ class Download_Handler(models.Model):
 
 class Frontend_Handler(models.Model):
 	metadata = jsonfield.JSONField()
-	map_data = jsonfield.JSONField()
-	bar_chart_data = jsonfield.JSONField()
-	unique_variants = jsonfield.JSONField()
-	treemap_chart_data = jsonfield.JSONField()
-	lineage_definition_data = jsonfield.JSONField()
 	last_updated = models.DateTimeField(auto_now=True)
 	states_covered = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
 	genomes_sequenced = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
