@@ -47,8 +47,13 @@ def get_my_metadata(user_obj, each_page, page):
 	metadata = pandas.DataFrame(frontend_obj.metadata)
 	start = 0 + (each_page * (page - 1))
 	end = (each_page - 1) + (each_page * (page -1))
-	return_dict = metadata[metadata['Submitting lab'] == username].iloc[start:(end+1)].fillna('None').to_dict(orient="records")
-	return return_dict
+	user_metadata = metadata[metadata['Submitting lab'] == username]
+	required_metadata = user_metadata.iloc[start:(end+1)].fillna('None').to_dict(orient="records")
+	data = {
+		"metadata": required_metadata,
+		"total_length": math.ceil(len(user_metadata)/each_page)
+	}
+	return data
 
 def update_landing_data():
 	metadata_qs 	= Metadata_Handler.objects.all()
