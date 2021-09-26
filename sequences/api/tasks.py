@@ -120,7 +120,6 @@ def create_download_link(workflow_info):
 def create_frontend_entry(workflow_info):
 	metadata = pandas.read_csv(workflow_info['metadata_link'], delimiter = '\t', encoding = 'utf-8', low_memory = False)
 	metadata_json = metadata[['Virus name', 'Collection date', 'State', 'District', 'Gender', 'Patient age', 'Patient status', 'Last vaccinated', 'Treatment', 'Submitting lab', 'Originating lab', 'Sequencing technology', 'Assembly method', 'clade', 'lineage', 'scorpio_call', 'substitutions', 'aaSubstitutions', 'deletions', 'aaDeletions']].fillna('None').to_dict(orient="records")
-
 	download_obj = Frontend_Handler(
 		metadata = metadata_json,
 		map_data = workflow_info['map_data'],
