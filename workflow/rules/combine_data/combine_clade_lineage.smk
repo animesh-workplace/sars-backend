@@ -77,9 +77,41 @@ rule combine_clade_lineage:
 			insacog_datahub_metadata = metadata.merge(nextclade_pangolin, on = 'Virus name', how = 'inner')
 			insacog_datahub_metadata.to_csv(output.insacog_datahub, sep = '\t', index = False)
 
-			send_data_to_websocket('SUCCESS_METADATA', 'combine_clade_lineage', insacog_datahub_metadata[
-				['Virus name', 'Collection date', 'State', 'District', 'Gender', 'Patient age', 'Patient status', 'Last vaccinated', 'Treatment', 'Submitting lab', 'Originating lab', 'Sequencing technology', 'Assembly method', 'clade', 'lineage', 'scorpio_call', 'substitutions', 'aaSubstitutions', 'deletions', 'aaDeletions']
-			].fillna('None').to_dict(orient="records"))
+			database_entry = {}
+			database_entry['map_data'] = []
+			database_entry['pie_chart_data'] = []
+
+			database_entry['states_covered'] 		= len(pandas.unique(insacog_datahub_metadata['State']))
+			database_entry['genomes_sequenced'] 	= len(insacog_datahub_metadata)
+			database_entry['lineages_catalogued'] 	= len(pandas.unique(insacog_datahub_metadata['lineage']))
+
+			all_variants = []
+			for i in insacog_datahub_metadata.index:
+				if(isinstance(insacog_datahub_metadata.iloc[i]['aaSubstitutions'], str)):
+					all_variants.append(insacog_datahub_metadata.iloc[i]['aaSubstitutions'].split(','))
+				if(isinstance(insacog_datahub_metadata.iloc[i]['aaDeletions'], str)):
+					all_variants.append(insacog_datahub_metadata.iloc[i]['aaDeletions'].split(','))
+			all_variants = list(itertools.chain(*all_variants))
+			unique_variants = pandas.unique(all_variants).tolist()
+
+			database_entry['variants_catalogued'] 	= len('unique_variants')
+			# database_entry['metadata'] = insacog_datahub_metadata[
+			# 	['Virus name', 'Collection date', 'State', 'District', 'Gender', 'Patient age', 'Patient status', 'Last vaccinated', 'Treatment', 'Submitting lab', 'Originating lab', 'Sequencing technology', 'Assembly method', 'clade', 'lineage', 'scorpio_call', 'substitutions', 'aaSubstitutions', 'deletions', 'aaDeletions']
+			# ].fillna('None').to_dict(orient="records")
+
+			for (key,value) in dict(collections.Counter(insacog_datahub_metadata['State'].tolist())).items():
+				database_entry['map_data'].append({
+					"name": key,
+					"value": value
+				})
+
+			for (key,value) in dict(collections.Counter(insacog_datahub_metadata['Submitting lab'].tolist())).items():
+				database_entry['pie_chart_data'].append({
+					"name": f'{key} ({value})',
+					"value": value
+				})
+
+			send_data_to_websocket('SUCCESS_METADATA', 'combine_clade_lineage', database_entry)
 			storage.store("total_count", len(insacog_datahub_metadata))
 		except:
 			error_traceback = traceback.format_exc()
