@@ -26,7 +26,6 @@ application = ProtocolTypeRouter({
 					URLRouter(
 							[
 								url(os.getenv('BASE_URL'), URLRouter([
-									url(r'^wsa/landing/$', LandingConsumer, name='landing-consumer'),
 									url(r'^wsa/backend/$', BackendConsumer, name='backend-consumer'),
 									url(r'^wsa/frontend/$', FrontendConsumer, name='frontend-consumer'),
 								]))
