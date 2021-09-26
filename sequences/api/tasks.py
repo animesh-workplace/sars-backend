@@ -49,6 +49,39 @@ def get_my_metadata(user_obj):
 	return_dict = list(itertools.chain(*temp))
 	return return_dict
 
+def update_landing_data():
+	metadata_qs 	= Metadata_Handler.objects.all()
+	frontend_obj 	= Frontend_Handler.objects.last()
+
+	if(metadata_qs.count() > 0):
+		temp = {}
+		return_dict = {}
+		pie_chart_data = []
+		total_sequenced = 0
+		for i in metadata_qs:
+			if(not i.user.username in list(temp.keys())):
+				temp[i.user.username] = []
+			temp[i.user.username].append(i.metadata)
+		for k,v in temp.items():
+			return_dict[k] = len(list(itertools.chain(*v)))
+			total_sequenced += return_dict[k]
+			pie_chart_data.append({
+				"value": return_dict[k],
+				"name": f"{k.split('_')[1]} ({return_dict[k]})",
+			})
+
+		frontend_obj = Frontend_Handler(
+			pie_chart_data = pie_chart_data,
+			metadata = frontend_obj.metadata,
+			map_data = frontend_obj.map_data,
+			genomes_sequenced = total_sequenced,
+			states_covered = frontend_obj.states_covered,
+			variants_catalogued = frontend_obj.variants_catalogued,
+			lineages_catalogued = frontend_obj.lineages_catalogued,
+		)
+		frontend_obj.save()
+
+
 def get_dashboard():
 	frontend_obj = Frontend_Handler.objects.last()
 	dashboard = {
@@ -199,7 +232,7 @@ def send_email_success(workflow_info):
 							<li>Specific VoC/VoI progression report for all and State wise</li>
 							<li>Lineage deletion/substitution report</li>
 							<li>Logs</li>
-						</ul>
+						</ul>return_dict[k]
 					</p>
 					<p>
 						<a href="{ link }" target="_blank"
