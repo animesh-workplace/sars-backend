@@ -35,40 +35,6 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 				"type": "ALL_METADATA",
 				"data": get_all_metadata(event["filter"]["each_page"], event["filter"]["page"])
 			}
-		elif(event["type"] == "DASHBOARD"):
-			result = {
-				"type": "DASHBOARD",
-				"data": get_dashboard(self.scope["user"])
-			}
-		else:
-			result = {
-				"type": "ERROR"
-			}
-		await self.send_json(result)
-
-	async def disconnect(self, close_code):
-		username = self.scope['user'].username
-		await self.channel_layer.group_discard(username, self.channel_name)
-		await self.close()
-
-class LandingConsumer(AsyncJsonWebsocketConsumer):
-	async def connect(self):
-		username = 'Landing_Consumer'
-		await self.accept()
-		await self.channel_layer.group_add(username, self.channel_name)
-		data = {
-			"type": "Message",
-			"message": f"Welcome! to Landing Websocket",
-		}
-		await self.send_json(data)
-
-	async def receive_json(self, event):
-		username = self.scope["user"].username
-		if(event["type"] == "DASHBOARD"):
-			result = {
-				"type": "DASHBOARD",
-				"data": get_dashboard(self.scope["user"])
-			}
 		else:
 			result = {
 				"type": "ERROR"
