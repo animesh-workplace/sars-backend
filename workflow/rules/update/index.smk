@@ -11,7 +11,7 @@ rule update:
 				"""
 			)
 			print("Updating Nextclade")
-			nextstrain_path = f"{os.environ.get('MODULE_PREFIX')}/modules/nextstrain/v1.0.0_a9/package"
+			nextstrain_path = f"{os.environ.get('MODULE_PREFIX')}/modules_source/nextstrain/v1.0.0_a9/package"
 			shell(
 				f"""
 					curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextalign-Linux-x86_64' -o {nextstrain_path}/nextalign && chmod +x {nextstrain_path}/nextalign
