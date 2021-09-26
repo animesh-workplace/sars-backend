@@ -28,7 +28,7 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 		if(event["type"] == "MY_METADATA"):
 			result = {
 				"type": "MY_METADATA",
-				"data": get_my_metadata(self.scope["user"])
+				"data": get_my_metadata(self.scope["user"], event["filter"]["each_page"], event["filter"]["page"])
 			}
 		elif(event["type"] == "ALL_METADATA"):
 			result = {
