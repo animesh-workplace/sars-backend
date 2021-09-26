@@ -42,18 +42,12 @@ def create_config_file(self, upload_info):
 	return 'Pipeline run completed'
 
 def get_my_metadata(user_obj, each_page, page):
-	temp = []
+	username = user_obj.username.split('_')[1]
+	frontend_obj = Frontend_Handler.objects.last()
+	metadata = pandas.DataFrame(frontend_obj.metadata)
 	start = 0 + (each_page * (page - 1))
 	end = (each_page - 1) + (each_page * (page -1))
-	metadata_qs = Metadata_Handler.objects.filter(Q(user=user_obj))
-	for index,i in enumerate(metadata_qs):
-		temp.append(i.metadata)
-	return_dict = list(itertools.chain(*temp))
-	# required_metadata = frontend_obj.metadata[start:(end+1)]
-	# data = {
-	# 	"metadata": required_metadata,
-	# 	"total_length": math.ceil(len(frontend_obj.metadata)/each_page)
-	# }
+	return_dict = metadata[metadata['Submitting lab'] == username].iloc[start:(end+1)].fillna('None').to_dict(orient="records")
 	return return_dict
 
 def update_landing_data():
