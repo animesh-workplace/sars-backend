@@ -40,48 +40,45 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 				"type": "DASHBOARD",
 				"data": get_dashboard(self.scope["user"])
 			}
-		elif(event["type"] == "MAP_DATA"):
-			result = {
-				"type": "MAP_DATA",
-				"data": get_map_data(self.scope["user"])
-			}
-		elif(event["type"] == "BAR_CHART_DATA"):
-			result = {
-				"type": "BAR_CHART_DATA",
-				"data": get_bar_chart_data(self.scope["user"])
-			}
-		elif(event["type"] == "TREEMAP_CHART_DATA"):
-			result = {
-				"type": "TREEMAP_CHART_DATA",
-				"data": get_treemap_chart_data(self.scope["user"])
-			}
-		elif(event["type"] == "LINEAGE_DEFINITION_DATA"):
-			result = {
-				"type": "LINEAGE_DEFINITION_DATA",
-				"data": get_lineage_definition_data(self.scope["user"])
-			}
 		else:
 			result = {
 				"type": "ERROR"
 			}
 		await self.send_json(result)
-		# await self.channel_layer.group_send(
-		# 	username,
-		# 		{
-		# 			"type": "task_message",
-		# 			"result": result,
-		# 		}
-		# )
 
 	async def disconnect(self, close_code):
 		username = self.scope['user'].username
 		await self.channel_layer.group_discard(username, self.channel_name)
 		await self.close()
 
-	async def task_message(self, event):
-		result = event["result"]
+class LandingConsumer(AsyncJsonWebsocketConsumer):
+	async def connect(self):
+		username = 'Landing_Consumer'
+		await self.accept()
+		await self.channel_layer.group_add(username, self.channel_name)
+		data = {
+			"type": "Message",
+			"message": f"Welcome! to Landing Websocket",
+		}
+		await self.send_json(data)
+
+	async def receive_json(self, event):
+		username = self.scope["user"].username
+		if(event["type"] == "DASHBOARD"):
+			result = {
+				"type": "DASHBOARD",
+				"data": get_dashboard(self.scope["user"])
+			}
+		else:
+			result = {
+				"type": "ERROR"
+			}
 		await self.send_json(result)
 
+	async def disconnect(self, close_code):
+		username = self.scope['user'].username
+		await self.channel_layer.group_discard(username, self.channel_name)
+		await self.close()
 
 class BackendConsumer(AsyncJsonWebsocketConsumer):
 	async def connect(self):
