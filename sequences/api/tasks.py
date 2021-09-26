@@ -49,10 +49,12 @@ def get_my_metadata(user_obj):
 	return_dict = list(itertools.chain(*temp))
 	return return_dict
 
-def get_dashboard(user_obj):
+def get_dashboard():
 	frontend_obj = Frontend_Handler.objects.last()
 	dashboard = {
 		"map_data": frontend_obj.map_data,
+		"last_updated": frontend_obj.last_updated,
+		"pie_chart_data": frontend_obj.pie_chart_data,
 		"states_covered": int(frontend_obj.states_covered),
 		"genomes_sequenced": int(frontend_obj.genomes_sequenced),
 		"variants_catalogued": int(frontend_obj.variants_catalogued),
@@ -99,11 +101,6 @@ def create_frontend_entry(self, workflow_info):
 	states_covered = len(pandas.unique(workflow_df['State']))
 
 	map_data = []
-	bar_chart_data = {}
-	treemap_chart_data = {}
-	lineage_definition_data = {}
-	genes = ['E', 'M', 'N', 'ORF1a', 'ORF1b', 'ORF3a', 'ORF6', 'ORF7a', 'ORF7b', 'ORF8', 'ORF9b', 'S']
-	treemap_chart_data['genes'] = genes
 
 	for (key,value) in dict(collections.Counter(workflow_df['State'].tolist())).items():
 		map_data.append({
