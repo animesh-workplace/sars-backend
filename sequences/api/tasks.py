@@ -111,43 +111,14 @@ def create_download_link(workflow_info):
 	download_obj = Download_Handler(download_link = download_link)
 	download_obj.save()
 
-@shared_task(bind=True)
-def create_frontend_entry(self, workflow_info):
-	workflow_df = pandas.DataFrame(workflow_info["message"])
-	workflow_df['Collection date'] = pandas.to_datetime(workflow_df['Collection date'], format="%Y-%m-%d")
-	month_values = sorted(workflow_df['Collection date'])
-	month_keys = [i.strftime('%b-%Y') for i in month_values]
-	workflow_df['Collection month'] = month_keys
-	month_keys = pandas.DataFrame(month_keys)[0].unique().tolist()
-
-	genomes_sequenced = len(workflow_df)
-	all_variants = []
-	for i in workflow_df.index:
-		if(isinstance(workflow_df.iloc[i]['aaSubstitutions'], str)):
-			all_variants.append(workflow_df.iloc[i]['aaSubstitutions'].split(','))
-		if(isinstance(workflow_df.iloc[i]['aaDeletions'], str)):
-			all_variants.append(workflow_df.iloc[i]['aaDeletions'].split(','))
-	all_variants = list(itertools.chain(*all_variants))
-	unique_variants = pandas.unique(all_variants).tolist()
-	variants_catalogued = len(unique_variants)
-	lineages_catalogued = len(pandas.unique(workflow_df['lineage']))
-	states_covered = len(pandas.unique(workflow_df['State']))
-
-	map_data = []
-
-	for (key,value) in dict(collections.Counter(workflow_df['State'].tolist())).items():
-		map_data.append({
-			"name": key,
-			"value": value
-		})
-
+def create_frontend_entry(workflow_info):
 	download_obj = Frontend_Handler(
-		map_data = map_data,
-		states_covered = states_covered,
-		metadata = workflow_info["message"],
-		genomes_sequenced = genomes_sequenced,
-		variants_catalogued = variants_catalogued,
-		lineages_catalogued = lineages_catalogued,
+		map_data = workflow_info['map_data'],
+		pie_chart_data = workflow_info['pie_chart_data'],
+		states_covered = workflow_info['states_covered'],
+		genomes_sequenced = workflow_info['genomes_sequenced'],
+		variants_catalogued = workflow_info['variants_catalogued'],
+		lineages_catalogued = workflow_info['lineages_catalogued'],
 	)
 	download_obj.save()
 
@@ -232,7 +203,7 @@ def send_email_success(workflow_info):
 							<li>Specific VoC/VoI progression report for all and State wise</li>
 							<li>Lineage deletion/substitution report</li>
 							<li>Logs</li>
-						</ul>return_dict[k]
+						</ul>
 					</p>
 					<p>
 						<a href="{ link }" target="_blank"
