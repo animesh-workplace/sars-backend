@@ -96,7 +96,7 @@ def get_dashboard():
 	dashboard = {
 		"map_data": frontend_obj.map_data,
 		"last_updated": frontend_obj.last_updated,
-		"pie_chart_data": update_landing_data('backend'),
+		"pie_chart_data": frontend_obj.pie_chart_data,
 		"states_covered": int(frontend_obj.states_covered),
 		"genomes_sequenced": int(frontend_obj.genomes_sequenced),
 		"variants_catalogued": int(frontend_obj.variants_catalogued),
@@ -126,7 +126,7 @@ def create_frontend_entry(workflow_info):
 	download_obj = Frontend_Handler(
 		metadata = metadata_json,
 		map_data = workflow_info['map_data'],
-		pie_chart_data = workflow_info['pie_chart_data'],
+		pie_chart_data = update_landing_data('backend'),
 		states_covered = workflow_info['states_covered'],
 		genomes_sequenced = workflow_info['genomes_sequenced'],
 		variants_catalogued = workflow_info['variants_catalogued'],
