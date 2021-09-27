@@ -193,9 +193,9 @@ def send_email_success(workflow_info):
 			<div>
 				Dear all,
 					<p>
-						This is an automated mail to provide the link for the report generated after the submission of
-						<strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['uploaded'] }
-						samples by { workflow_info['username'].split('_')[1] }</strong>.<br>
+						This is an automated mail to provide the link for the report generated after the daily analysis of
+						<strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['total_seq'] }
+						sequences</strong>.<br>
 						The pipeline has analyzed total
 						<strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['total_seq'] } sequences</strong> and took
 						<strong style="background-color:#FFC748;text-decoration:none;">{ end_time.diff(start_time).in_minutes() } minutes</strong> starting at
@@ -234,11 +234,9 @@ def send_email_success(workflow_info):
 			<div>
 				Dear all,
 					<p>
-						This is an automated mail to provide the link for the report generated after the submission of
-						<strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['uploaded'] }
-						samples by { workflow_info['username'].split('_')[1] }</strong>.<br>
-						The pipeline has analyzed total
-						<strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['total_seq'] } sequences</strong>.
+						This is an automated mail to provide the link for the report generated after the daily analysis of
+						<strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['total_seq'] }
+						sequences</strong>.<br>
 					</p>
 					<p>
 						The link contains following files:
