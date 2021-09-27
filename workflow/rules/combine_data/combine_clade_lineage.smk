@@ -79,7 +79,6 @@ rule combine_clade_lineage:
 
 			database_entry = {}
 			database_entry['map_data'] = []
-			database_entry['pie_chart_data'] = []
 			database_entry['metadata_link'] = output.insacog_datahub
 
 			database_entry['states_covered'] 		= len(pandas.unique(insacog_datahub_metadata['State']))
@@ -95,17 +94,11 @@ rule combine_clade_lineage:
 			all_variants = list(itertools.chain(*all_variants))
 			unique_variants = pandas.unique(all_variants).tolist()
 
-			database_entry['variants_catalogued'] 	= len('unique_variants')
+			database_entry['variants_catalogued'] = len('unique_variants')
 
 			for (key,value) in dict(collections.Counter(insacog_datahub_metadata['State'].tolist())).items():
 				database_entry['map_data'].append({
 					"name": key,
-					"value": value
-				})
-
-			for (key,value) in dict(collections.Counter(insacog_datahub_metadata['Submitting lab'].tolist())).items():
-				database_entry['pie_chart_data'].append({
-					"name": f'{key} ({value})',
 					"value": value
 				})
 
