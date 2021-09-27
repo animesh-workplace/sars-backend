@@ -55,7 +55,7 @@ def get_my_metadata(user_obj, each_page, page):
 	}
 	return data
 
-def update_landing_data():
+def update_landing_data(source = 'frontend'):
 	metadata_qs 	= Metadata_Handler.objects.all()
 	frontend_obj 	= Frontend_Handler.objects.last()
 
@@ -76,16 +76,19 @@ def update_landing_data():
 				"name": f"{k.split('_')[1]} ({return_dict[k]})",
 			})
 
-		frontend_obj = Frontend_Handler(
-			pie_chart_data = pie_chart_data,
-			metadata = frontend_obj.metadata,
-			map_data = frontend_obj.map_data,
-			genomes_sequenced = total_sequenced,
-			states_covered = frontend_obj.states_covered,
-			variants_catalogued = frontend_obj.variants_catalogued,
-			lineages_catalogued = frontend_obj.lineages_catalogued,
-		)
-		frontend_obj.save()
+		if(source == 'frontend'):
+			frontend_obj = Frontend_Handler(
+				pie_chart_data = pie_chart_data,
+				metadata = frontend_obj.metadata,
+				map_data = frontend_obj.map_data,
+				genomes_sequenced = total_sequenced,
+				states_covered = frontend_obj.states_covered,
+				variants_catalogued = frontend_obj.variants_catalogued,
+				lineages_catalogued = frontend_obj.lineages_catalogued,
+			)
+			frontend_obj.save()
+		elif(source == 'backend'):
+			return pie_chart_data
 
 
 def get_dashboard():
@@ -93,7 +96,7 @@ def get_dashboard():
 	dashboard = {
 		"map_data": frontend_obj.map_data,
 		"last_updated": frontend_obj.last_updated,
-		"pie_chart_data": frontend_obj.pie_chart_data,
+		"pie_chart_data": update_landing_data('backend'),
 		"states_covered": int(frontend_obj.states_covered),
 		"genomes_sequenced": int(frontend_obj.genomes_sequenced),
 		"variants_catalogued": int(frontend_obj.variants_catalogued),
