@@ -42,9 +42,12 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 		await self.send_json(result)
 
 	async def disconnect(self, close_code):
-		username = self.scope['user'].username
-		await self.channel_layer.group_discard(username, self.channel_name)
-		await self.close()
+		try:
+			username = self.scope['user'].username
+			await self.channel_layer.group_discard(username, self.channel_name)
+			await self.close()
+		except:
+			await self.close()
 
 class BackendConsumer(AsyncJsonWebsocketConsumer):
 	async def connect(self):
