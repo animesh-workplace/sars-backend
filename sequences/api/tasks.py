@@ -140,6 +140,7 @@ def send_email_upload(user_info):
 	if(account.is_authenticated):
 		message = account.new_message()
 		message.to.add(['aks1@nibmg.ac.in', 'nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
+		message.bcc.add(['samastha849@gmail.com'])
 		# message.to.add(['aks1@nibmg.ac.in'])
 		message.subject = '✅|📤 Upload Info [ INSACOG DataHub ]'
 		html_content	= f"""
