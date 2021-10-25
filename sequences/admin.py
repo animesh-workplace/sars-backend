@@ -15,7 +15,7 @@ class Frontend_Handler_Manager(admin.ModelAdmin):
 	list_display = ('id', 'last_updated')
 
 class Metadata_Manager(admin.ModelAdmin):
-	list_display = ('Virus_name', 'Clade', 'Lineage', 'Scorpio_call')
+	list_display = ('Virus_name', 'Submitting_lab' ,'Clade', 'Lineage', 'Scorpio_call')
 
 admin.site.register(Metadata, Metadata_Manager)
 admin.site.register(File_Handler, File_Handler_Manager)
