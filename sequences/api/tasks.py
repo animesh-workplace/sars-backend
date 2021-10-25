@@ -92,7 +92,7 @@ def update_landing_data(source = 'frontend'):
 
 
 def get_dashboard():
-	frontend_obj = Frontend_Handler.objects.last()
+	frontend_obj = Frontend_Handler.objects.defer('metadata').last()
 	dashboard = {
 		"map_data": frontend_obj.map_data,
 		"last_updated": frontend_obj.last_updated,
