@@ -92,7 +92,7 @@ def update_landing_data(source = 'frontend'):
 
 
 def get_dashboard():
-	frontend_obj = Frontend_Handler.objects.defer('metadata').last()
+	frontend_obj = Frontend_Handler.objects.last()
 	dashboard = {
 		"map_data": frontend_obj.map_data,
 		"last_updated": frontend_obj.last_updated,
@@ -121,14 +121,11 @@ def create_download_link(workflow_info):
 	download_obj.save()
 
 def create_frontend_entry(workflow_info):
-	# metadata = pandas.read_csv(workflow_info['metadata_link'], delimiter = '\t', encoding = 'utf-8', low_memory = False)
-	# metadata_json = metadata[['Virus name', 'Collection date', 'State', 'District', 'Gender', 'Patient age', 'Patient status', 'Last vaccinated', 'Treatment', 'Submitting lab', 'Originating lab', 'Sequencing technology', 'Assembly method', 'clade', 'lineage', 'scorpio_call', 'substitutions', 'aaSubstitutions', 'deletions', 'aaDeletions']].fillna('None').to_dict(orient="records")
 	download_obj = Frontend_Handler(
-		# metadata = metadata_json,
-		map_data = workflow_info['map_data'],
-		pie_chart_data = update_landing_data('backend'),
-		states_covered = workflow_info['states_covered'],
-		genomes_sequenced = workflow_info['genomes_sequenced'],
+		map_data 			= workflow_info['map_data'],
+		pie_chart_data 		= update_landing_data('backend'),
+		states_covered 		= workflow_info['states_covered'],
+		genomes_sequenced 	= workflow_info['genomes_sequenced'],
 		variants_catalogued = workflow_info['variants_catalogued'],
 		lineages_catalogued = workflow_info['lineages_catalogued'],
 	)
