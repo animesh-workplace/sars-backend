@@ -8,6 +8,7 @@ virtual_env/
 media/
 workflow/config/
 migrations/
+username_password.tsv
 
 # Virtualenv related
 bin/
