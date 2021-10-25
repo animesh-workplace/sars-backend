@@ -42,13 +42,11 @@ def create_config_file(self, upload_info):
 	return 'Pipeline run completed'
 
 def get_my_metadata(user_obj, each_page, page):
-	username = user_obj.username.split('_')[1]
-	frontend_obj = Frontend_Handler.objects.last()
-	metadata = pandas.DataFrame(frontend_obj.metadata)
-	start = 0 + (each_page * (page - 1))
-	end = (each_page - 1) + (each_page * (page -1))
-	user_metadata = metadata[metadata['Submitting lab'] == username]
-	required_metadata = user_metadata.iloc[start:(end+1)].fillna('None').to_dict(orient="records")
+	username 	= user_obj.username.split('_')[1]
+	start 		= 0 + (each_page * (page - 1))
+	end 		= (each_page - 1) + (each_page * (page -1))
+	user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values())
+	required_metadata = user_metadata[start:(end+1)]
 	data = {
 		"metadata": required_metadata,
 		"total_length": math.ceil(len(user_metadata)/each_page)
@@ -95,12 +93,12 @@ def get_dashboard():
 	frontend_obj = Frontend_Handler.objects.last()
 	if(frontend_obj):
 		dashboard = {
-			"last_updated": frontend_obj.last_updated or 0,
-			"pie_chart_data": frontend_obj.pie_chart_data or [],
-			"states_covered": int(frontend_obj.states_covered) or 0,
-			"genomes_sequenced": int(frontend_obj.genomes_sequenced) or 0,
-			"variants_catalogued": int(frontend_obj.variants_catalogued) or 0,
-			"lineages_catalogued": int(frontend_obj.lineages_catalogued) or 0,
+			"last_updated": frontend_obj.last_updated,
+			"pie_chart_data": frontend_obj.pie_chart_data,
+			"states_covered": int(frontend_obj.states_covered),
+			"genomes_sequenced": int(frontend_obj.genomes_sequenced),
+			"variants_catalogued": int(frontend_obj.variants_catalogued),
+			"lineages_catalogued": int(frontend_obj.lineages_catalogued),
 		}
 	else:
 		dashboard = {
@@ -114,9 +112,9 @@ def get_dashboard():
 	return dashboard
 
 def get_all_metadata(each_page, page):
-	frontend_obj = Frontend_Handler.objects.last()
-	start = 0 + (each_page * (page - 1))
-	end = (each_page - 1) + (each_page * (page -1))
+	frontend_obj 	= Frontend_Handler.objects.last()
+	start 			= 0 + (each_page * (page - 1))
+	end 			= (each_page - 1) + (each_page * (page -1))
 	required_metadata = frontend_obj.metadata[start:(end+1)]
 	data = {
 		"metadata": required_metadata,
@@ -154,19 +152,20 @@ def create_metadata_entry(metadata_link):
 				Gender 					= metadata['Gender'][i],
 				Lineage 				= metadata['lineage'][i],
 				District 				= metadata['District'][i],
-				Deletions 				= metadata['deletions'][i].split(',') if(isinstance(metadata['deletions'][i], str)) else [],
+				Deletions 				= metadata['deletions'][i],
 				Treatment 				= metadata['Treatment'][i],
 				Virus_name 				= metadata['Virus name'][i],
-				aaDeletions 			= metadata['aaDeletions'][i].split(',') if(isinstance(metadata['aaDeletions'][i], str)) else [],
+				aaDeletions 			= metadata['aaDeletions'][i],
 				Patient_age 			= metadata['Patient age'][i],
 				Scorpio_call 			= metadata['scorpio_call'][i],
-				Substitutions 			= metadata['substitutions'][i].split(',') if(isinstance(metadata['substitutions'][i], str)) else [],
+				Substitutions 			= metadata['substitutions'][i],
 				Submitting_lab 			= metadata['Submitting lab'][i],
 				Patient_status 			= metadata['Patient status'][i],
 				Collection_date 		= metadata['Collection date'][i],
+				Last_vaccinated 		= metadata['Last vaccinated'][i],
 				Originating_lab 		= metadata['Originating lab'][i],
 				Assembly_method 		= metadata['Assembly method'][i],
-				aaSubstitutions 		= metadata['aaSubstitutions'][i].split(',') if(isinstance(metadata['aaSubstitutions'][i], str)) else [],
+				aaSubstitutions 		= metadata['aaSubstitutions'][i],
 				Sequencing_technology 	= metadata['Sequencing technology'][i],
 			)
 		)
