@@ -13,8 +13,11 @@ class Download_Handler_Manager(admin.ModelAdmin):
 
 class Frontend_Handler_Manager(admin.ModelAdmin):
 	list_display = ('id', 'last_updated')
-	exclude = ('metadata',)
 
+class Metadata_Manager(admin.ModelAdmin):
+	list_display = ('Virus_name', 'Clade', 'Lineage', 'Scorpio_call')
+
+admin.site.register(Metadata, Metadata_Manager)
 admin.site.register(File_Handler, File_Handler_Manager)
 admin.site.register(Metadata_Handler, Metadata_Handler_Manager)
 admin.site.register(Download_Handler, Download_Handler_Manager)
