@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 from django.conf import settings
 from django.utils import timezone
 from zipfile import ZipFile, ZIP_DEFLATED
-from sequences.models import Download_Handler, Metadata_Handler, Frontend_Handler
+from sequences.models import Download_Handler, Metadata_Handler, Frontend_Handler, Metadata
 
 load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
 
@@ -139,6 +139,38 @@ def create_frontend_entry(workflow_info):
 		lineages_catalogued = workflow_info['lineages_catalogued'],
 	)
 	download_obj.save()
+	create_metadata_entry(workflow_info['metadata_link'])
+
+def create_metadata_entry(metadata_link):
+	entries  = []
+	metadata = pandas.read_csv(metadata_link, delimiter = '\t', encoding = 'utf-8', low_memory = False)
+	if(Metadata.objects.count() > 0):
+		Metadata.truncate()
+	for i in metadata.index:
+		entries.append(
+			Metadata(
+				State 					= metadata['State'][i],
+				Clade 					= metadata['clade'][i],
+				Gender 					= metadata['Gender'][i],
+				Lineage 				= metadata['lineage'][i],
+				District 				= metadata['District'][i],
+				Deletions 				= metadata['deletions'][i].split(',') if(isinstance(metadata['deletions'][i], str)) else [],
+				Treatment 				= metadata['Treatment'][i],
+				Virus_name 				= metadata['Virus name'][i],
+				aaDeletions 			= metadata['aaDeletions'][i].split(',') if(isinstance(metadata['aaDeletions'][i], str)) else [],
+				Patient_age 			= metadata['Patient age'][i],
+				Scorpio_call 			= metadata['scorpio_call'][i],
+				Substitutions 			= metadata['substitutions'][i].split(',') if(isinstance(metadata['substitutions'][i], str)) else [],
+				Submitting_lab 			= metadata['Submitting lab'][i],
+				Patient_status 			= metadata['Patient status'][i],
+				Collection_date 		= metadata['Collection date'][i],
+				Originating_lab 		= metadata['Originating lab'][i],
+				Assembly_method 		= metadata['Assembly method'][i],
+				aaSubstitutions 		= metadata['aaSubstitutions'][i].split(',') if(isinstance(metadata['aaSubstitutions'][i], str)) else [],
+				Sequencing_technology 	= metadata['Sequencing technology'][i],
+			)
+		)
+	bulk_obj = Metadata.objects.bulk_create(entries)
 
 def send_email_upload(user_info):
 	credentials = (os.getenv('ONEDRIVE_CLIENT'), os.getenv('ONEDRIVE_SECRET'))
