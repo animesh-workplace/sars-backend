@@ -93,15 +93,24 @@ def update_landing_data(source = 'frontend'):
 
 def get_dashboard():
 	frontend_obj = Frontend_Handler.objects.last()
-	dashboard = {
-		"map_data": frontend_obj.map_data,
-		"last_updated": frontend_obj.last_updated,
-		"pie_chart_data": frontend_obj.pie_chart_data,
-		"states_covered": int(frontend_obj.states_covered),
-		"genomes_sequenced": int(frontend_obj.genomes_sequenced),
-		"variants_catalogued": int(frontend_obj.variants_catalogued),
-		"lineages_catalogued": int(frontend_obj.lineages_catalogued),
-	}
+	if(frontend_obj):
+		dashboard = {
+			"last_updated": frontend_obj.last_updated or 0,
+			"pie_chart_data": frontend_obj.pie_chart_data or [],
+			"states_covered": int(frontend_obj.states_covered) or 0,
+			"genomes_sequenced": int(frontend_obj.genomes_sequenced) or 0,
+			"variants_catalogued": int(frontend_obj.variants_catalogued) or 0,
+			"lineages_catalogued": int(frontend_obj.lineages_catalogued) or 0,
+		}
+	else:
+		dashboard = {
+			"last_updated": 0,
+			"pie_chart_data": [],
+			"states_covered": 0,
+			"genomes_sequenced": 0,
+			"variants_catalogued": 0,
+			"lineages_catalogued": 0,
+		}
 	return dashboard
 
 def get_all_metadata(each_page, page):
@@ -117,7 +126,7 @@ def get_all_metadata(each_page, page):
 
 def create_download_link(workflow_info):
 	download_link = f"{os.getenv('DOWNLOAD_URL')}/INSACOG_data_{workflow_info['upload_time']}.zip"
-	download_obj = Download_Handler(download_link = download_link)
+	download_obj  = Download_Handler(download_link = download_link)
 	download_obj.save()
 
 def create_frontend_entry(workflow_info):
@@ -136,8 +145,8 @@ def send_email_upload(user_info):
 	account = Account(credentials, auth_flow_type='authorization')
 	if(account.is_authenticated):
 		message = account.new_message()
-		message.to.add(['aks1@nibmg.ac.in', 'nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
-		# message.to.add(['aks1@nibmg.ac.in'])
+		# message.to.add(['aks1@nibmg.ac.in', 'nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
+		message.to.add(['aks1@nibmg.ac.in'])
 		message.subject = '✅|📤 Upload Info [ INSACOG DataHub ]'
 		html_content	= f"""
 			<div>
@@ -182,9 +191,9 @@ def send_email_success(workflow_info):
 		message1 = account.new_message()
 		message2 = account.new_message()
 		message1.to.add(['aks1@nibmg.ac.in'])
-		# message2.to.add(['animesh.workplace@gmail.com'])
-		message2.bcc.add(['samastha849@gmail.com'])
-		message2.to.add(['nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
+		message2.to.add(['animesh.workplace@gmail.com'])
+		# message2.bcc.add(['samastha849@gmail.com'])
+		# message2.to.add(['nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
 		message1.subject = '📦 Report [ INSACOG DataHub ]'
 		message2.subject = '📦 Report [ INSACOG DataHub ]'
 		html_content1	= f"""
