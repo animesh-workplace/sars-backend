@@ -2,6 +2,7 @@ import pendulum
 import jsonfield
 from django.db import models
 from django.conf import settings
+from django.db import connection
 from django.utils import timezone
 from .storage import OverwriteStorage
 
@@ -48,7 +49,7 @@ class Metadata(models.Model):
 	Treatment 				= models.CharField(max_length=255, blank=True, null=True)
 	Virus_name 				= models.CharField(max_length=255)
 	aaDeletions 			= jsonfield.JSONField()
-	Patient_age 			= models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
+	Patient_age 			= models.CharField(max_length=255, blank=True, null=True)
 	Scorpio_call 			= models.CharField(max_length=255, blank=True, null=True)
 	Substitutions 			= jsonfield.JSONField()
 	Submitting_lab 			= models.CharField(max_length=255, blank=True, null=True)
@@ -59,3 +60,8 @@ class Metadata(models.Model):
 	Assembly_method 		= models.CharField(max_length=255, blank=True, null=True)
 	aaSubstitutions 		= jsonfield.JSONField()
 	Sequencing_technology 	= models.CharField(max_length=255, blank=True, null=True)
+
+	@classmethod
+	def truncate(cls):
+		with connection.cursor() as cursor:
+			cursor.execute(f'DELETE FROM {cls._meta.db_table}')
