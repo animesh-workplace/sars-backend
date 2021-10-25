@@ -44,7 +44,7 @@ def create_config_file(self, upload_info):
 def get_my_metadata(user_obj, each_page, page):
 	username 	= user_obj.username.split('_')[1]
 	start 		= 0 + (each_page * (page - 1))
-	end 		= (each_page - 1) + (each_page * (page -1))
+	end 		= (each_page - 1) + (each_page * (page - 1))
 	user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values())
 	required_metadata = user_metadata[start:(end+1)]
 	data = {
