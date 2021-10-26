@@ -76,11 +76,10 @@ def update_landing_data(source = 'frontend'):
 
 		if(source == 'frontend'):
 			frontend_obj = Frontend_Handler(
-				pie_chart_data = pie_chart_data,
-				metadata = frontend_obj.metadata,
-				map_data = frontend_obj.map_data,
-				genomes_sequenced = total_sequenced,
-				states_covered = frontend_obj.states_covered,
+				map_data 			= frontend_obj.map_data,
+				states_covered 		= frontend_obj.states_covered,
+				pie_chart_data 		= pie_chart_data,
+				genomes_sequenced 	= total_sequenced,
 				variants_catalogued = frontend_obj.variants_catalogued,
 				lineages_catalogued = frontend_obj.lineages_catalogued,
 			)
