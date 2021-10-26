@@ -1,7 +1,7 @@
 rule split_state:
 	message: "Splitting data state wise"
 	input:
-		sequences = rules.aggregate_alignments.output,
+		sequences = rules.align.output.alignment,
 		metadata = rules.combine_clade_lineage.output.nextstrain,
 	output:
 		state_wise_path = directory("{base_path}/Analysis/{date}/reports/state_wise")
