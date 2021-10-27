@@ -1,7 +1,7 @@
 rule combine_clade_lineage:
 	message: "Creating a new metadata with clade and lineage definitions"
 	input:
-		alignment = rules.align.output.alignment,
+		alignment = rules.clade_report.output.other,
 		clade_report = rules.clade_report.output.report,
 		metadata = rules.combine_fixed_data.output.metadata,
 		sequences = rules.combine_fixed_data.output.sequences,
@@ -68,7 +68,7 @@ rule combine_clade_lineage:
 			# Copy sequences
 			shell(
 				f"""
-					cp {input.alignment} {wildcards.base_path}/Analysis/{wildcards.date}/nextstrain/nextstrain_sequences.fasta
+					cp {input.alignment}/combined_sequences.aligned.fasta {wildcards.base_path}/Analysis/{wildcards.date}/nextstrain/nextstrain_sequences.fasta
 				"""
 			)
 
