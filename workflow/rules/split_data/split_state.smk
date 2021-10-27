@@ -1,15 +1,15 @@
 rule split_state:
 	message: "Splitting data state wise"
 	input:
-		sequences = rules.align.output.alignment,
-		metadata = rules.combine_clade_lineage.output.nextstrain,
+		sequences 	= rules.clade_report.output.other,
+		metadata 	= rules.combine_clade_lineage.output.nextstrain,
 	output:
 		state_wise_path = directory("{base_path}/Analysis/{date}/reports/state_wise")
 	log: "{base_path}/Analysis/{date}/log/split_state_error.log"
 	run:
 		try:
 			metadata = pandas.read_csv(input.metadata, delimiter = '\t', encoding = 'utf-8')
-			sequence = SeqIO.to_dict(SeqIO.parse(str(input.sequences), 'fasta'))
+			sequence = SeqIO.to_dict(SeqIO.parse(os.path.join(input.sequences, 'combined_sequences.aligned.fasta'), 'fasta'))
 			all_states = pandas.unique(metadata['division']).tolist()
 
 			for i in all_states:
