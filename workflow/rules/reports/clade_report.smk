@@ -5,20 +5,26 @@ rule clade_report:
 				- using nextclade
 		"""
 	input:
-		alignment = rules.align.output.alignment,
+		update 		= rules.update.log,
+		qc 			= 'workflow/resources/data/qc.json',
+		tree 		= 'workflow/resources/data/tree.json',
+		primers 	= 'workflow/resources/data/primers.csv',
+		genemap 	= 'workflow/resources/data/genemap.gff',
+		sequences 	= rules.combine_fixed_data.output.sequences,
+		reference 	= 'workflow/resources/data/reference.fasta',
 	output:
-		report = "{base_path}/Analysis/{date}/reports/clade_report.tsv",
-		other = directory("{base_path}/Analysis/{date}/reports/clade_report/")
+		other 	= directory("{base_path}/Analysis/{date}/alignment/"),
+		report 	= "{base_path}/Analysis/{date}/reports/clade_report.tsv",
 	log: "{base_path}/Analysis/{date}/log/clade_report_error.log"
 	threads: 20
 	run:
 		try:
 			shell(
 				"""
-					nextclade --input-fasta {input.alignment} --output-tsv {output.report} --jobs {threads} \
-					--input-root-seq workflow/resources/data/reference.fasta --input-tree workflow/resources/data/tree.json \
-					--input-qc-config workflow/resources/data/qc.json --input-pcr-primers workflow/resources/data/primers.csv \
-					--input-gene-map workflow/resources/data/genemap.gff --output-dir {output.other}
+					nextclade run --input-fasta {input.sequences} --output-tsv {output.report} --jobs {threads} \
+					--input-root-seq {input.reference} --input-tree {input.tree} \
+					--input-qc-config {input.qc} --input-pcr-primers {input.primers} \
+					--input-gene-map {input.genemap} --output-dir {output.other}
 				"""
 			)
 		except:
