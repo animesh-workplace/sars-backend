@@ -1,6 +1,8 @@
 rule lineage_report:
 	message: "Finding the pangolin lineage for each sequence and generating the report"
-	input: rules.align.output.alignment
+	input:
+		alignment_path 	= rules.clade_report.output.other,
+		clade_report 	= rules.clade_report.log,
 	threads: 20
 	output:
 		lineage_report = "{base_path}/Analysis/{date}/reports/lineage_report.csv"
@@ -9,7 +11,7 @@ rule lineage_report:
 		try:
 			shell(
 				"""
-					pangolin {input} --outfile {output.lineage_report} -t {threads}
+					pangolin {input.alignment_path}/combined_sequences.aligned.fasta --outfile {output.lineage_report} -t {threads}
 				"""
 			)
 		except:
