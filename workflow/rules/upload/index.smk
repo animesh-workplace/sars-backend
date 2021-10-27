@@ -12,12 +12,11 @@ rule upload_to_ondedrive:
 			shell(
 				f"""
 					mkdir -p OneDrive/{wildcards.date}/reports
-					mkdir -p OneDrive/{wildcards.date}/alignment
 					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/state_wise OneDrive/{wildcards.date}/reports/
 					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/*.tsv OneDrive/{wildcards.date}/reports/
 					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/*.csv OneDrive/{wildcards.date}/reports/
 					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/*.xlsx OneDrive/{wildcards.date}/reports/
-					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/alignment/combined_sequences_aligned.fasta OneDrive/{wildcards.date}/alignment/
+					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/alignment OneDrive/{wildcards.date}/
 					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/log OneDrive/{wildcards.date}/
 					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/nextstrain OneDrive/{wildcards.date}/
 					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/combined_files OneDrive/{wildcards.date}/
