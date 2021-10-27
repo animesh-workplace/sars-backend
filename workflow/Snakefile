@@ -57,7 +57,7 @@ rule all:
 include: "rules/update/index.smk"
 include: "rules/clean_data/index.smk"
 include: "rules/combine_data/combine_fixed_data.smk"
-include: "rules/alignment/index.smk"
+# include: "rules/alignment/index.smk"
 include: "rules/reports/clade_report.smk"
 include: "rules/reports/lineage_report.smk"
 include: "rules/combine_data/combine_clade_lineage.smk"
