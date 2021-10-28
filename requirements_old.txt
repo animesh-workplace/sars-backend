@@ -37,7 +37,7 @@ cycler==0.10.0
 Cython==0.29.23
 daphne==2.5.0
 datrie==0.8.2
-Django==2.2.13
+Django==2.2.24
 django-celery-beat==2.0.0
 django-celery-results==1.2.1
 django-cors-headers==3.4.0
