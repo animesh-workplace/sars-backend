@@ -67,12 +67,15 @@ class BackendConsumer(AsyncJsonWebsocketConsumer):
 		elif(event["type"] == "ERROR"):
 			send_email_error(event["data"])
 		elif(event["type"] == "SUCCESS_ZIP"):
-			create_download_link(event["data"])
+			await create_download_link(event["data"])
 		elif(event["type"] == "SUCCESS_METADATA"):
-			create_frontend_entry(event["data"]["message"])
+			await create_frontend_entry(event["data"]["message"])
+		elif(event["type"] == "CLOSE"):
+			await self.close()
 
 	async def disconnect(self, close_code):
 		group_name = "Backend_Update_Consumer"
+		print('Closing a connection')
 		await self.channel_layer.group_discard(group_name, self.channel_name)
 		await self.close()
 
