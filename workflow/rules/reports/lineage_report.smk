@@ -11,7 +11,8 @@ rule lineage_report:
 		try:
 			shell(
 				"""
-					pangolin {input.alignment_path}/combined_sequences.aligned.fasta --outfile {output.lineage_report} -t {threads}
+					pangolin {input.alignment_path}/combined_sequences.aligned.fasta \
+					--outfile {output.lineage_report} -t {threads} 2>&1 | tee {log}
 				"""
 			)
 		except:
