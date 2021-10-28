@@ -42,6 +42,7 @@ def create_config_file(self, upload_info):
 	snakemake_command = subprocess.run(command, shell = True)
 	return 'Pipeline run completed'
 
+@sync_to_async
 def get_my_metadata(user_obj, each_page, page):
 	username 	= user_obj.username.split('_')[1]
 	start 		= 0 + (each_page * (page - 1))
