@@ -1,7 +1,7 @@
+from django.urls import path
 from .modules.login import LoginAPIView
 from .modules.user_info import InfoAPIView
 from .modules.register import RegisterAPIView
-from django.urls import path, include, re_path
 from .modules.edit_password import PasswordUpdateAPIView
 from rest_framework_jwt.views import refresh_jwt_token, obtain_jwt_token
 
