@@ -10,6 +10,7 @@ init(autoreset=True)
 
 class FrontendConsumer(AsyncJsonWebsocketConsumer):
 	async def connect(self):
+		print('COnsumer, here', self.scope['user'])
 		try:
 			if(self.scope['user'].is_authenticated):
 				username = self.scope['user'].username
@@ -28,12 +29,12 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 		if(event["type"] == "MY_METADATA"):
 			result = {
 				"type": "MY_METADATA",
-				"data": get_my_metadata(self.scope["user"], event["filter"]["each_page"], event["filter"]["page"])
+				"data": await get_my_metadata(self.scope["user"], event["filter"]["each_page"], event["filter"]["page"])
 			}
 		elif(event["type"] == "ALL_METADATA"):
 			result = {
 				"type": "ALL_METADATA",
-				"data": get_all_metadata(event["filter"]["each_page"], event["filter"]["page"])
+				"data": await get_all_metadata(event["filter"]["each_page"], event["filter"]["page"])
 			}
 		else:
 			result = {
