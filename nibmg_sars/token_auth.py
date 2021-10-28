@@ -31,7 +31,7 @@ class JWTAuthMiddleware(BaseJSONWebTokenAuthentication):
     def __init__(self, inner):
         self.inner = inner
 
-    def __call__(self, scope):
+    def __call__(self, scope, receive, send):
 
         try:
             # Close old database connections to prevent usage of timed out connections
@@ -42,4 +42,4 @@ class JWTAuthMiddleware(BaseJSONWebTokenAuthentication):
         except:
             DenyConnection()
 
-        return self.inner(scope)
+        return self.inner(scope, receive, send)
