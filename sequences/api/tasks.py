@@ -20,6 +20,7 @@ from celery import shared_task
 from dotenv import load_dotenv
 from django.conf import settings
 from django.utils import timezone
+from asgiref.sync import sync_to_async
 from zipfile import ZipFile, ZIP_DEFLATED
 from sequences.models import Download_Handler, Metadata_Handler, Frontend_Handler, Metadata
 
@@ -121,11 +122,13 @@ def get_all_metadata(each_page, page):
 	}
 	return data
 
+@sync_to_async
 def create_download_link(workflow_info):
 	download_link = f"{os.getenv('DOWNLOAD_URL')}/INSACOG_data_{workflow_info['upload_time']}.zip"
 	download_obj  = Download_Handler(download_link = download_link)
 	download_obj.save()
 
+@sync_to_async
 def create_frontend_entry(workflow_info):
 	download_obj = Frontend_Handler(
 		map_data 			= workflow_info['map_data'],
