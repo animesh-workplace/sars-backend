@@ -8,13 +8,11 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
         python-version: [3.7, 3.8, 3.9]
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -30,10 +28,10 @@ jobs:
         python manage.py test
       env:
         DEBUG: ${{ secrets.DEBUG }}
-		USE_TZ: ${{ secrets.USE_TZ }}
+        USE_TZ: ${{ secrets.USE_TZ }}
         BASE_URL: ${{ secrets.BASE_URL }}
-		USE_I18N: ${{ secrets.USE_I18N }}
-		USE_L10N: ${{ secrets.USE_L10N }}
-		TIME_ZONE: ${{ secrets.TIME_ZONE }}
-		SECRET_KEY: ${{ secrets.SECRET_KEY }}
-		LANGUAGE_CODE: ${{ secrets.LANGUAGE_CODE }}
+        USE_I18N: ${{ secrets.USE_I18N }}
+        USE_L10N: ${{ secrets.USE_L10N }}
+        TIME_ZONE: ${{ secrets.TIME_ZONE }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        LANGUAGE_CODE: ${{ secrets.LANGUAGE_CODE }}
