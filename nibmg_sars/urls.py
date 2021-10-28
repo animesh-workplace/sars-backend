@@ -21,7 +21,6 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from rest_framework.documentation import include_docs_urls
 
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
 
 urlpatterns = [
