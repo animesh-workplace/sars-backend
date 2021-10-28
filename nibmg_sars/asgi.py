@@ -8,24 +8,24 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
 """
 
 import os
-from dotenv import load_dotenv
-from django.conf.urls import url
-from sequences.api.consumer import *
-from django.urls import include, re_path
-from .token_auth import JWTAuthMiddleware
-from channels.auth import AuthMiddlewareStack
 from django.core.asgi import get_asgi_application
-from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.security.websocket import AllowedHostsOriginValidator
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nibmg_sars.settings')
-django_asgi_app = get_asgi_application()
+asgi_app = get_asgi_application()
+
+from dotenv import load_dotenv
+from django.urls import re_path
+from sequences.api.consumer import *
+from .token_auth import JWTAuthMiddleware
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import AllowedHostsOriginValidator
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 application = ProtocolTypeRouter({
-	'http': django_asgi_app,
+	'http': asgi_app,
 	'websocket': AllowedHostsOriginValidator(
 			JWTAuthMiddleware(
 					URLRouter(
