@@ -1,4 +1,4 @@
-from django.urls import path, include, re_path
+from django.urls import path
 from .modules.landing_stats import LandingStatsAPI
 from .modules.upload import UserFileUploadHandlerAPI
 from .modules.download_info import UserDownloadInfoAPI
