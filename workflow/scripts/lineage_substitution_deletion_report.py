@@ -4,13 +4,13 @@ import argparse
 import itertools
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--metadata', help='Enter Nexstrain metadata')
-parser.add_argument('--output', help='Enter output file')
+parser.add_argument('--metadata', help = 'Enter Nexstrain metadata')
+parser.add_argument('--output', help = 'Enter output file')
 args = parser.parse_args()
 metadata_url = args.metadata
 output_url = args.output
 
-metadata = pandas.read_csv(metadata_url, delimiter = '\t', encoding = 'utf-8')
+metadata = pandas.read_csv(metadata_url, delimiter = '\t', encoding = 'utf-8', low_memory = False)
 
 new_dict = []
 for i in metadata.index:
@@ -37,4 +37,4 @@ for i in metadata.index:
 				'mutation/deletion': '',
 			})
 
-pandas.DataFrame.from_dict(data=new_dict, orient='columns').to_csv(output_url, sep='\t', header=True, index=False)
+pandas.DataFrame.from_dict(data = new_dict, orient = 'columns').to_csv(output_url, sep = '\t', header = True, index = False)
