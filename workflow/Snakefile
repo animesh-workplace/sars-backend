@@ -39,7 +39,7 @@ def send_data_to_websocket(data_type, tool, message):
 	}
 	ws.send(json.dumps(websocket_data))
 	sleep(1)
-	# ws.close()
+	ws.close()
 
 
 onsuccess:
