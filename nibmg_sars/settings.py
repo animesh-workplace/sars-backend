@@ -71,7 +71,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'nibmg_sars.routing.application'
+ASGI_APPLICATION = 'nibmg_sars.asgi.application'
 
 # Channel Layers
 CHANNEL_LAYERS = {
@@ -129,6 +129,9 @@ HOST_ROOT       = os.path.join(BASE_DIR, 'media')
 
 # Authentication user model
 AUTH_USER_MODEL = 'accounts.Accounts'
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Cross Origin Resource Sharing
 CORS_ORIGIN_ALLOW_ALL = True
