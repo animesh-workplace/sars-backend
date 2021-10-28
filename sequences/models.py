@@ -1,10 +1,11 @@
 import pendulum
-import jsonfield
+# import jsonfield
 from django.db import models
 from django.conf import settings
 from django.db import connection
 from django.utils import timezone
 from .storage import OverwriteStorage
+from django.db.models import JSONField
 
 # Create your functions here
 def user_directory_path(instance, filename):
@@ -20,7 +21,7 @@ class File_Handler(models.Model):
 
 class Metadata_Handler(models.Model):
 	user 			= models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='User')
-	metadata 		= jsonfield.JSONField()
+	metadata 		= JSONField()
 	submission_date = models.DateTimeField(auto_now=False, auto_now_add=False, null=True)
 
 class Download_Handler(models.Model):
@@ -28,9 +29,9 @@ class Download_Handler(models.Model):
 	download_link = models.CharField(max_length=500, blank=True)
 
 class Frontend_Handler(models.Model):
-	map_data 			= jsonfield.JSONField()
+	map_data 			= JSONField()
 	last_updated 		= models.DateTimeField(auto_now=True)
-	pie_chart_data 		= jsonfield.JSONField()
+	pie_chart_data 		= JSONField()
 	states_covered 		= models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
 	pangolin_version 	= models.CharField(max_length=255)
 	genomes_sequenced 	= models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
