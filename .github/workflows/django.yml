@@ -29,5 +29,6 @@ jobs:
       run: |
         python manage.py test
       env:
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
         DEBUG: ${{ secrets.DEBUG }}
+        BASE_URL: ${{ secrets.BASE_URL }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
