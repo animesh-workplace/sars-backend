@@ -9,9 +9,8 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
 
 import os
 from dotenv import load_dotenv
-from django.conf.urls import url
+from django.urls import re_path
 from sequences.api.consumer import *
-from django.urls import include, re_path
 from .token_auth import JWTAuthMiddleware
 from channels.auth import AuthMiddlewareStack
 from django.core.asgi import get_asgi_application
