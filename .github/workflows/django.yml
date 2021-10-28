@@ -35,5 +35,5 @@ jobs:
 		USE_I18N: ${{ secrets.USE_I18N }}
 		USE_L10N: ${{ secrets.USE_L10N }}
 		TIME_ZONE: ${{ secrets.TIME_ZONE }}
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+		SECRET_KEY: ${{ secrets.SECRET_KEY }}
 		LANGUAGE_CODE: ${{ secrets.LANGUAGE_CODE }}
