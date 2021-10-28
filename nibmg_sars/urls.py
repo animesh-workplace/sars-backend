@@ -14,11 +14,10 @@ Including another URLconf
 	2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import os
-from django.urls import path
 from dotenv import load_dotenv
 from django.contrib import admin
 from django.conf import settings
-from django.conf.urls import url, include
+from django.urls import path, include
 from django.conf.urls.static import static
 from rest_framework.documentation import include_docs_urls
 
@@ -26,11 +25,11 @@ from rest_framework.documentation import include_docs_urls
 load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
 
 urlpatterns = [
-	url(os.getenv('BASE_URL'), include([
-		url(r'^admin/', admin.site.urls),
-		url(r'^api/', include_docs_urls(title='API Documentation')),
-		url(r'^api/auth/', include(('accounts.api.urls', 'accounts'), namespace='api-auth')),
-		url(r'^api/files/', include(('sequences.api.urls', 'sequences'), namespace='api-upload')),
+	path(os.getenv('BASE_URL'), include([
+		path('admin/', admin.site.urls),
+		path('api/', include_docs_urls(title='API Documentation')),
+		path('api/auth/', include(('accounts.api.urls', 'accounts'), namespace='api-auth')),
+		path('api/files/', include(('sequences.api.urls', 'sequences'), namespace='api-upload')),
 	])),
 ]
 
