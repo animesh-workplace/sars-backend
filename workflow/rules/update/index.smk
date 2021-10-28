@@ -6,8 +6,8 @@ rule update:
 			print("Updating Pangolin")
 			shell(
 				"""
-					pangolin --update
-					pangolin --update-data
+					# pangolin --update
+					# pangolin --update-data
 				"""
 			)
 			print("Updating Nextclade")
