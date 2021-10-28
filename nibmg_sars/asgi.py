@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
 
 import os
 from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter, get_default_application
+from django.contrib.staticfiles.handlers import ASGIStaticFilesHandler
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nibmg_sars.settings')
-asgi_app = get_asgi_application()
+asgi_app = ASGIStaticFilesHandler(get_asgi_application())
 
 from dotenv import load_dotenv
 from django.urls import re_path
@@ -19,7 +21,6 @@ from django.conf import settings
 from sequences.api.consumer import *
 from .token_auth import JWTAuthMiddleware
 from channels.auth import AuthMiddlewareStack
-from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 
 load_dotenv(settings.BASE_DIR / '.env')
