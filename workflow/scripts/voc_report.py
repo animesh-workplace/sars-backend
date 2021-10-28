@@ -4,8 +4,8 @@ import argparse
 from pandas import ExcelWriter
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--metadata', help='Enter Nexstrain metadata')
-parser.add_argument('--output', help='Enter output file')
+parser.add_argument('--metadata', help = 'Enter Nexstrain metadata')
+parser.add_argument('--output', help = 'Enter output file')
 args = parser.parse_args()
 metadata_url = args.metadata
 output_url = args.output
