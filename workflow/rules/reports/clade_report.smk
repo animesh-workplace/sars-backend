@@ -24,7 +24,7 @@ rule clade_report:
 					nextclade run --input-fasta {input.sequences} --output-tsv {output.report} --jobs {threads} \
 					--input-root-seq {input.reference} --input-tree {input.tree} \
 					--input-qc-config {input.qc} --input-pcr-primers {input.primers} \
-					--input-gene-map {input.genemap} --output-dir {output.other}
+					--input-gene-map {input.genemap} --output-dir {output.other} 2>&1 | tee {log}
 				"""
 			)
 		except:
