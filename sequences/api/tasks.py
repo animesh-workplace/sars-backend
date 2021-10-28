@@ -20,8 +20,8 @@ from celery import shared_task
 from dotenv import load_dotenv
 from django.conf import settings
 from django.utils import timezone
-from asgiref.sync import sync_to_async
 from zipfile import ZipFile, ZIP_DEFLATED
+from channels.db import database_sync_to_async
 from sequences.models import Download_Handler, Metadata_Handler, Frontend_Handler, Metadata
 
 load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
@@ -42,7 +42,7 @@ def create_config_file(self, upload_info):
 	snakemake_command = subprocess.run(command, shell = True)
 	return 'Pipeline run completed'
 
-@sync_to_async
+@database_sync_to_async
 def get_my_metadata(user_obj, each_page, page):
 	username 	= user_obj.username.split('_')[1]
 	start 		= 0 + (each_page * (page - 1))
@@ -123,14 +123,13 @@ def get_all_metadata(each_page, page):
 	}
 	return data
 
-@sync_to_async
+@database_sync_to_async
 def create_download_link(workflow_info):
 	download_link = f"{os.getenv('DOWNLOAD_URL')}/INSACOG_data_{workflow_info['upload_time']}.zip"
 	download_obj  = Download_Handler(download_link = download_link)
 	download_obj.save()
-	return
 
-@sync_to_async
+@database_sync_to_async
 def create_frontend_entry(workflow_info):
 	download_obj = Frontend_Handler(
 		map_data 			= workflow_info['map_data'],
@@ -142,7 +141,6 @@ def create_frontend_entry(workflow_info):
 	)
 	download_obj.save()
 	create_metadata_entry(workflow_info['metadata_link'])
-	return
 
 def create_metadata_entry(metadata_link):
 	entries  = []
