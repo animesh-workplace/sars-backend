@@ -128,6 +128,7 @@ def create_download_link(workflow_info):
 	download_link = f"{os.getenv('DOWNLOAD_URL')}/INSACOG_data_{workflow_info['upload_time']}.zip"
 	download_obj  = Download_Handler(download_link = download_link)
 	download_obj.save()
+	return
 
 @sync_to_async
 def create_frontend_entry(workflow_info):
@@ -141,6 +142,7 @@ def create_frontend_entry(workflow_info):
 	)
 	download_obj.save()
 	create_metadata_entry(workflow_info['metadata_link'])
+	return
 
 def create_metadata_entry(metadata_link):
 	entries  = []
