@@ -13,7 +13,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter, get_default_applicat
 from django.contrib.staticfiles.handlers import ASGIStaticFilesHandler
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nibmg_sars.settings')
-asgi_app = ASGIStaticFilesHandler(get_asgi_application())
+asgi_app = get_asgi_application()
 
 from dotenv import load_dotenv
 from django.urls import re_path
@@ -27,7 +27,8 @@ load_dotenv(settings.BASE_DIR / '.env')
 
 application = ProtocolTypeRouter({
 	'http': asgi_app,
-	'websocket': AllowedHostsOriginValidator(
+	'websocket':
+		AllowedHostsOriginValidator(
 			JWTAuthMiddleware(
 					URLRouter(
 							[
