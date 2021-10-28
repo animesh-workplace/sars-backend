@@ -10,6 +10,7 @@ import pendulum
 import itertools
 import traceback
 import subprocess
+import asyncio
 import collections
 from tqdm import tqdm
 from Bio import SeqIO
@@ -38,7 +39,7 @@ def send_data_to_websocket(data_type, tool, message):
 	}
 	ws.send(json.dumps(websocket_data))
 	sleep(1)
-	ws.close()
+	# ws.close()
 
 
 onsuccess:
