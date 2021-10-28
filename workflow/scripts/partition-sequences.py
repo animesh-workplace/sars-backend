@@ -8,9 +8,9 @@ from pathlib import Path
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--sequences", required=True, help="FASTA file of sequences to partition into smaller chunks")
-    parser.add_argument("--sequences-per-group", required=True, type=int, help="number of sequences to include in each group")
-    parser.add_argument("--output-dir", required=True, help="directory to write out partitioned sequences")
+    parser.add_argument("--sequences", required = True, help = "FASTA file of sequences to partition into smaller chunks")
+    parser.add_argument("--sequences-per-group", required = True, type = int, help = "number of sequences to include in each group")
+    parser.add_argument("--output-dir", required = True, help = "directory to write out partitioned sequences")
 
     args = parser.parse_args()
 
@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     # Create the requested output directory.
     output_dir = Path(args.output_dir)
-    output_dir.mkdir(exist_ok=True)
+    output_dir.mkdir(exist_ok = True)
 
     i = 0
     group_number = 0
