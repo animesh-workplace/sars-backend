@@ -15,14 +15,14 @@ asgi_app = get_asgi_application()
 
 from dotenv import load_dotenv
 from django.urls import re_path
+from django.conf import settings
 from sequences.api.consumer import *
 from .token_auth import JWTAuthMiddleware
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+load_dotenv(settings.BASE_DIR / '.env')
 
 application = ProtocolTypeRouter({
 	'http': asgi_app,
