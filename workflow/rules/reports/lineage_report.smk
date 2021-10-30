@@ -12,7 +12,7 @@ rule lineage_report:
 			shell(
 				"""
 					pangolin {input.alignment_path}/combined_sequences.aligned.fasta \
-					--outfile {output.lineage_report} -t {threads} 2>&1 | tee {log}
+					--outfile {output.lineage_report} -t {threads} > {log} 2>&1
 				"""
 			)
 		except:
