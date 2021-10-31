@@ -4,6 +4,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=1
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 RUN apt -y update && apt -y upgrade && apt install -y git minimap2
+# RUN useradd --user-group --system -M --no-log-init non-root
 WORKDIR /backend
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
