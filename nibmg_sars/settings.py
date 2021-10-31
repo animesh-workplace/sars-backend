@@ -88,7 +88,7 @@ CHANNEL_LAYERS = {
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.sqlite3',
-		'NAME': BASE_DIR / 'database' / 'db.sqlite3',
+		'NAME': BASE_DIR / 'media' / 'database' / 'db.sqlite3',
 	}
 }
 
