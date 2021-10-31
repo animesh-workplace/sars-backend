@@ -87,7 +87,7 @@ def update_landing_data(source = 'frontend'):
 			)
 			frontend_obj.save()
 		elif(source == 'backend'):
-			return pie_chart_data
+			return pie_chart_data, total_sequenced
 
 
 def get_dashboard():
@@ -131,11 +131,12 @@ def create_download_link(workflow_info):
 
 @database_sync_to_async
 def create_frontend_entry(workflow_info):
+	pie_chart_data, genomes_sequenced = update_landing_data('backend')
 	download_obj = Frontend_Handler(
 		map_data 			= workflow_info['map_data'],
-		pie_chart_data 		= update_landing_data('backend'),
+		pie_chart_data 		= pie_chart_data,
 		states_covered 		= workflow_info['states_covered'],
-		genomes_sequenced 	= workflow_info['genomes_sequenced'],
+		genomes_sequenced 	= genomes_sequenced,
 		variants_catalogued = workflow_info['variants_catalogued'],
 		lineages_catalogued = workflow_info['lineages_catalogued'],
 	)
