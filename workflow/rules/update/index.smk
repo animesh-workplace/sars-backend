@@ -14,8 +14,8 @@ rule update:
 			nextstrain_path = f"{os.environ.get('MODULE_PREFIX')}/modules_source/nextstrain/v1.0.0_a9/package"
 			shell(
 				f"""
-					curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextalign-Linux-x86_64' -o /bin/nextalign && chmod +x bin/nextalign
-					curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextclade-Linux-x86_64' -o /bin/nextclade && chmod +x bin/nextclade
+					curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextalign-Linux-x86_64' -o /bin/nextalign && chmod +x /bin/nextalign
+					curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextclade-Linux-x86_64' -o /bin/nextclade && chmod +x /bin/nextclade
 					nextclade --version
 					nextalign --version
 					nextclade dataset get --name='sars-cov-2' --output-dir='workflow/resources/data'
