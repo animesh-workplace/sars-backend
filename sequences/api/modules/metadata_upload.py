@@ -42,8 +42,8 @@ class UserMetadataUploadSerializer(CustomSerializer):
 					'uploaded': len(metadata)
 				}
 				update_landing_data()
-				# send_email_upload(user_info)
-				create_config_file.delay(user_info)
+				send_email_upload(user_info)
+				# create_config_file.delay(user_info)
 				return {'message': 'Upload Successful'}
 			raise serializers.ValidationError({'message': 'User Inactive'})
 		raise serializers.ValidationError({'message': 'Not Authenticated'})
