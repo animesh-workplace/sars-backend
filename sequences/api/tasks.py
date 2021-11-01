@@ -150,7 +150,7 @@ def create_metadata_entry(self, metadata_link):
 	if(Metadata.objects.count() > 0):
 		print('Truncation starting')
 		Metadata.truncate()
-		print('Truncation done starting')
+		print('Truncation done')
 	for i in metadata.index:
 		entries.append(
 			Metadata(
@@ -176,7 +176,9 @@ def create_metadata_entry(self, metadata_link):
 				Sequencing_technology 	= metadata['Sequencing technology'][i],
 			)
 		)
+	print('Entries created')
 	bulk_obj = Metadata.objects.bulk_create(entries)
+	print('Bulk creation done')
 
 def send_email_upload(user_info):
 	credentials = (os.getenv('ONEDRIVE_CLIENT'), os.getenv('ONEDRIVE_SECRET'))
