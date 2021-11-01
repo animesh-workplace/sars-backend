@@ -8,6 +8,8 @@ RUN curl https://rclone.org/install.sh | bash
 # RUN useradd --user-group --system -M --no-log-init non-root
 WORKDIR /backend
 COPY requirements.txt requirements.txt
+COPY rclone_config rclone_config
+RUN rclone config file && cp rclone_config /root/.config/rclone/rclone.conf
 RUN pip install --no-cache-dir --upgrade pip && \
 	pip install --no-cache-dir cython && \
 	pip install --no-cache-dir -r requirements.txt && \
