@@ -177,7 +177,8 @@ def create_metadata_entry(self, metadata_link):
 			)
 		)
 	print('Entries created')
-	bulk_obj = Metadata.objects.bulk_create(entries)
+	batch_size = 500
+	bulk_obj = Metadata.objects.bulk_create(entries, batch_size)
 	print('Bulk creation done')
 
 def send_email_upload(user_info):
