@@ -141,9 +141,10 @@ def create_frontend_entry(workflow_info):
 		lineages_catalogued = workflow_info['lineages_catalogued'],
 	)
 	download_obj.save()
-	create_metadata_entry(workflow_info['metadata_link'])
+	create_metadata_entry.delay(workflow_info['metadata_link'])
 
-def create_metadata_entry(metadata_link):
+@shared_task(bind=True)
+def create_metadata_entry(self, metadata_link):
 	entries  = []
 	metadata = pandas.read_csv(metadata_link, delimiter = '\t', encoding = 'utf-8', low_memory = False)
 	if(Metadata.objects.count() > 0):
