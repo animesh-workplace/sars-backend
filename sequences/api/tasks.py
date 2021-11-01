@@ -181,8 +181,8 @@ def send_email_upload(user_info):
 	account = Account(credentials, auth_flow_type='authorization')
 	if(account.is_authenticated):
 		message = account.new_message()
-		# message.to.add(['aks1@nibmg.ac.in', 'nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
-		message.to.add(['aks1@nibmg.ac.in'])
+		message.to.add(['aks1@nibmg.ac.in', 'nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
+		# message.to.add(['aks1@nibmg.ac.in'])
 		message.subject = '✅|📤 Upload Info [ INSACOG DataHub ]'
 		html_content	= f"""
 			<div>
@@ -227,9 +227,9 @@ def send_email_success(workflow_info):
 		message1 = account.new_message()
 		message2 = account.new_message()
 		message1.to.add(['aks1@nibmg.ac.in'])
-		message2.to.add(['animesh.workplace@gmail.com'])
-		# message2.bcc.add(['samastha849@gmail.com'])
-		# message2.to.add(['nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
+		# message2.to.add(['animesh.workplace@gmail.com'])
+		message2.bcc.add(['samastha849@gmail.com'])
+		message2.to.add(['nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
 		message1.subject = '📦 Report [ INSACOG DataHub ]'
 		message2.subject = '📦 Report [ INSACOG DataHub ]'
 		html_content1	= f"""
