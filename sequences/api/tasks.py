@@ -148,7 +148,9 @@ def create_metadata_entry(self, metadata_link):
 	entries  = []
 	metadata = pandas.read_csv(metadata_link, delimiter = '\t', encoding = 'utf-8', low_memory = False)
 	if(Metadata.objects.count() > 0):
+		print('Truncation starting')
 		Metadata.truncate()
+		print('Truncation done starting')
 	for i in metadata.index:
 		entries.append(
 			Metadata(
