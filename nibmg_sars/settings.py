@@ -79,7 +79,7 @@ CHANNEL_LAYERS = {
 	"default": {
 		"BACKEND": "channels_redis.core.RedisChannelLayer",
 		"CONFIG": {
-			"hosts": [("backend-redis", 6379)],
+			"hosts": [(os.getenv('CELERY_BROKER_NAME'), os.getenv('CELERY_BROKER_PORT'))],
 		},
 	},
 }
@@ -145,7 +145,7 @@ CORS_ALLOW_CREDENTIALS = True
 # ]
 
 # Celery Settings
-CELERY_BROKER_URL           = os.getenv('CELERY_BROKER_URL')
+CELERY_BROKER_URL           = f"redis://{ os.getenv('CELERY_BROKER_NAME') }:{ os.getenv('CELERY_BROKER_PORT') }"
 CELERY_RESULT_BACKEND       = os.getenv('CELERY_RESULT_BACKEND')
 CELERY_ACCEPT_CONTENT       = ['application/json']
 CELERY_TASK_SERIALIZER      = 'json'
