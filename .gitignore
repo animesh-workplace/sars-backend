@@ -3,6 +3,7 @@
 .env
 *.sublime*
 dump.rdb
+rclone_config
 db.sqlite3
 virtual_env/
 media/
