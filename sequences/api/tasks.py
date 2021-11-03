@@ -55,6 +55,13 @@ def get_my_metadata(user_obj, each_page, page):
 	}
 	return data
 
+@database_sync_to_async
+def search_my_metadata(user_obj, search, each_page, page):
+	username 	= user_obj.username.split('_')[1]
+	start 		= 0 + (each_page * (page - 1))
+	end 		= (each_page - 1) + (each_page * (page - 1))
+	user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values())
+
 def update_landing_data(source = 'frontend'):
 	metadata_qs 	= Metadata_Handler.objects.all()
 	frontend_obj 	= Frontend_Handler.objects.last()
@@ -95,7 +102,6 @@ def update_landing_data(source = 'frontend'):
 			frontend_obj.save()
 		elif(source == 'backend'):
 			return pie_chart_data, total_sequenced
-
 
 def get_dashboard():
 	frontend_obj = Frontend_Handler.objects.last()
@@ -207,9 +213,10 @@ def send_email_upload(user_info):
 		message = account.new_message()
 		if(eval(os.getenv('DEBUG'))):
 			message.to.add(['aks1@nibmg.ac.in'])
+			message.subject = '✅|📤 Upload Info [ INSACOG TestHub ]'
 		else:
 			message.to.add(['aks1@nibmg.ac.in', 'nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
-		message.subject = '✅|📤 Upload Info [ INSACOG DataHub ]'
+			message.subject = '✅|📤 Upload Info [ INSACOG DataHub ]'
 		html_content	= f"""
 			<div>
 				Dear all,
@@ -255,11 +262,13 @@ def send_email_success(workflow_info):
 		message1.to.add(['aks1@nibmg.ac.in'])
 		if(eval(os.getenv('DEBUG'))):
 			message2.to.add(['animesh.workplace@gmail.com'])
+			message1.subject = '📦 Report [ INSACOG TestHub ]'
+			message2.subject = '📦 Report [ INSACOG TestHub ]'
 		else:
 			message2.bcc.add(['samastha849@gmail.com'])
 			message2.to.add(['nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
-		message1.subject = '📦 Report [ INSACOG DataHub ]'
-		message2.subject = '📦 Report [ INSACOG DataHub ]'
+			message1.subject = '📦 Report [ INSACOG DataHub ]'
+			message2.subject = '📦 Report [ INSACOG DataHub ]'
 		html_content1	= f"""
 			<div>
 				Dear all,
@@ -359,7 +368,10 @@ def send_email_error(workflow_info):
 	if(account.is_authenticated):
 		message = account.new_message()
 		message.to.add(['aks1@nibmg.ac.in'])
-		message.subject = f"☠️🆘☠️ Error Information [ INSACOG DataHub ]"
+		if(eval(os.getenv('DEBUG'))):
+			message.subject = f"☠️🆘☠️ Error Information [ INSACOG TestHub ]"
+		else:
+			message.subject = f"☠️🆘☠️ Error Information [ INSACOG DataHub ]"
 		html_content = f"""
 			<div>
 				Dear Animesh Kumar Singh,
