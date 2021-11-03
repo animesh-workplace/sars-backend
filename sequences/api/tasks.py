@@ -101,12 +101,18 @@ def get_dashboard():
 	frontend_obj = Frontend_Handler.objects.last()
 	if(frontend_obj):
 		dashboard = {
-			"last_updated": frontend_obj.last_updated,
-			"pie_chart_data": frontend_obj.pie_chart_data,
-			"states_covered": int(frontend_obj.states_covered),
-			"genomes_sequenced": int(frontend_obj.genomes_sequenced),
-			"variants_catalogued": int(frontend_obj.variants_catalogued),
-			"lineages_catalogued": int(frontend_obj.lineages_catalogued),
+			"last_updated"				: frontend_obj.last_updated,
+			"pie_chart_data"			: frontend_obj.pie_chart_data,
+			"states_covered"			: int(frontend_obj.states_covered),
+			"scorpio_version" 			: frontend_obj.scorpio_version,
+			"pangolin_version" 			: frontend_obj.pangolin_version,
+			"nextclade_version" 		: frontend_obj.nextclade_version,
+			"genomes_sequenced"			: int(frontend_obj.genomes_sequenced),
+			"pangolearn_version" 		: frontend_obj.pangolearn_version,
+			"variants_catalogued"		: int(frontend_obj.variants_catalogued),
+			"lineages_catalogued"		: int(frontend_obj.lineages_catalogued),
+			"constellation_version" 	: frontend_obj.constellation_version,
+			"pango_designation_version" : frontend_obj.pango_designation_version,
 		}
 	else:
 		dashboard = {
