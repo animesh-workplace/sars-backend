@@ -28,12 +28,12 @@ rule update:
 			from pango_designation import __version__ as pango_designation_version
 			nextclade_version = subprocess.run('nextclade --version', shell = True, capture_output = True, text = True).stdout.split('\n')[0]
 			storage.store("tool_version", {
-				'scorpio_version': scorpio_version,
-				'pangolin_version': pangolin_version,
-				'nextclade_version': nextclade_version,
-				'pangolearn_version': pangolearn_version,
-				'constellation_version': constellation_version,
-				'pango_designation_version': pango_designation_version,
+				'scorpio_version': f"Scorpio version: {scorpio_version}",
+				'pangolin_version': f"Pangolin version: {pangolin_version}",
+				'nextclade_version': f"Nextclade version: {nextclade_version}",
+				'pangolearn_version': f"PangoLearn version: {pangolearn_version}",
+				'constellation_version': f"Constellation version: {constellation_version}",
+				'pango_designation_version': f"PangoDesignation version: {pango_designation_version}",
 			})
 		except:
 			error_traceback = traceback.format_exc()
