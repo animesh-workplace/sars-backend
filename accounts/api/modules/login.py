@@ -40,9 +40,10 @@ class UserLoginSerializer(CustomSerializer):
 						payload = jwt_payload_handler(user_obj)
 						token = jwt_encode_handler(payload)
 						return {
+							'token'	 	: token,
+							'expires'   : timezone.now() + api_settings.JWT_EXPIRATION_DELTA,
 							'username'  : username,
-							'token'	 : token,
-							'expires'   : timezone.now() + api_settings.JWT_EXPIRATION_DELTA
+							'download'	: user_obj.download,
 						}
 					raise serializers.ValidationError({'message' :'User inactive'})
 				raise serializers.ValidationError({'message' :'Invalid Credentials'})
