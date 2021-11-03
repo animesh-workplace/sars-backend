@@ -30,7 +30,8 @@ class UserDownloadInfoSerializer(CustomSerializer):
 			if(user_obj.is_active):
 				download_obj = Download_Handler.objects.last()
 				return {
-					'link': download_obj.download_link
+					'link': download_obj.download_link,
+					'last_updated': download_obj.creation_date
 				}
 			raise serializers.ValidationError({'message': 'User Inactive'})
 		raise serializers.ValidationError({'message': 'Invalid Credentials'})
