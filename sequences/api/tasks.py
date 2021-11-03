@@ -78,12 +78,19 @@ def update_landing_data(source = 'frontend'):
 
 		if(source == 'frontend'):
 			frontend_obj = Frontend_Handler(
-				map_data 			= frontend_obj.map_data,
-				states_covered 		= frontend_obj.states_covered,
-				pie_chart_data 		= pie_chart_data,
-				genomes_sequenced 	= total_sequenced,
-				variants_catalogued = frontend_obj.variants_catalogued,
-				lineages_catalogued = frontend_obj.lineages_catalogued,
+				map_data 					= frontend_obj.map_data,
+				states_covered 				= frontend_obj.states_covered,
+				pie_chart_data 				= pie_chart_data,
+				scorpio_version 			= frontend_obj.scorpio_version,
+				pangolin_version 			= frontend_obj.pangolin_version,
+				nextclade_version 			= frontend_obj.nextclade_version,
+				genomes_sequenced 			= total_sequenced,
+				pangolearn_version 			= frontend_obj.pangolearn_version,
+				variants_catalogued 		= frontend_obj.variants_catalogued,
+				lineages_catalogued 		= frontend_obj.lineages_catalogued,
+				constellation_version 		= frontend_obj.constellation_version,
+				pango_designation_version 	= frontend_obj.pango_designation_version,
+
 			)
 			frontend_obj.save()
 		elif(source == 'backend'):
