@@ -144,7 +144,6 @@ def create_download_link(workflow_info):
 
 @database_sync_to_async
 def create_frontend_entry(workflow_info):
-	print(workflow_info)
 	pie_chart_data, genomes_sequenced = update_landing_data('backend')
 	download_obj = Frontend_Handler(
 		map_data 					= workflow_info['map_data'],
