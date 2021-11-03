@@ -134,12 +134,18 @@ def create_frontend_entry(workflow_info):
 	print(workflow_info)
 	pie_chart_data, genomes_sequenced = update_landing_data('backend')
 	download_obj = Frontend_Handler(
-		map_data 			= workflow_info['map_data'],
-		pie_chart_data 		= pie_chart_data,
-		states_covered 		= workflow_info['states_covered'],
-		genomes_sequenced 	= genomes_sequenced,
-		variants_catalogued = workflow_info['variants_catalogued'],
-		lineages_catalogued = workflow_info['lineages_catalogued'],
+		map_data 					= workflow_info['map_data'],
+		pie_chart_data 				= pie_chart_data,
+		states_covered 				= workflow_info['states_covered'],
+		scorpio_version 			= workflow_info['scorpio_version'],
+		pangolin_version 			= workflow_info['pangolin_version'],
+		nextclade_version 			= workflow_info['nextclade_version'],
+		genomes_sequenced 			= genomes_sequenced,
+		pangolearn_version 			= workflow_info['pangolearn_version'],
+		variants_catalogued 		= workflow_info['variants_catalogued'],
+		lineages_catalogued 		= workflow_info['lineages_catalogued'],
+		constellation_version 		= workflow_info['constellation_version'],
+		pango_designation_version 	= workflow_info['pango_designation_version'],
 	)
 	download_obj.save()
 	create_metadata_entry.delay(workflow_info['metadata_link'])
