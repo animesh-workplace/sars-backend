@@ -102,7 +102,7 @@ rule combine_clade_lineage:
 					"value": value
 				})
 
-			send_data_to_websocket('SUCCESS_METADATA', 'combine_clade_lineage', database_entry)
+			send_data_to_websocket('SUCCESS_METADATA', 'combine_clade_lineage', database_entry | storage.fetch("tool_version"))
 			storage.store("total_count", len(insacog_datahub_metadata))
 		except:
 			error_traceback = traceback.format_exc()
