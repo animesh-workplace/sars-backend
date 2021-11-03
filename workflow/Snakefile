@@ -10,7 +10,6 @@ import pendulum
 import itertools
 import traceback
 import subprocess
-import asyncio
 import collections
 from tqdm import tqdm
 from Bio import SeqIO
