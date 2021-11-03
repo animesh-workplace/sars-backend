@@ -26,13 +26,14 @@ rule update:
 			from pangoLEARN import __version__ as pangolearn_version
 			from constellations import __version__ as constellation_version
 			from pango_designation import __version__ as pango_designation_version
-			nextclade_version = subprocess.run('nextclade --version', shell = True, capture_output = True, text = True).stdout.split('\n')
+			nextclade_version = subprocess.run('nextclade --version', shell = True, capture_output = True, text = True).stdout.split('\n')[0]
 			storage.store("tool_version", {
 				'scorpio_version': scorpio_version,
 				'pangolin_version': pangolin_version,
+				'nextclade_version': nextclade_version,
 				'pangolearn_version': pangolearn_version,
 				'constellation_version': constellation_version,
-				'pango_designation_version': pango_designation_version
+				'pango_designation_version': pango_designation_version,
 			})
 		except:
 			error_traceback = traceback.format_exc()
