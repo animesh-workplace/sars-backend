@@ -36,6 +36,7 @@ class Frontend_Handler(models.Model):
 	genomes_sequenced 	= models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
 	nextclade_version 	= models.CharField(max_length=255)
 	pangolearn_version 	= models.CharField(max_length=255)
+	scorpio_version 	= models.CharField(max_length=255)
 	variants_catalogued = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
 	lineages_catalogued = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
 
@@ -54,7 +55,7 @@ class Metadata(models.Model):
 	Substitutions 			= models.TextField()
 	Submitting_lab 			= models.CharField(max_length=255, blank=True, null=True)
 	Patient_status 			= models.CharField(max_length=255, blank=True, null=True)
-	Collection_date 		= models.CharField(max_length=255, blank=True, null=True)
+	Collection_date 		= models.DateField()
 	Last_vaccinated 		= models.CharField(max_length=255, blank=True, null=True)
 	Originating_lab 		= models.CharField(max_length=255, blank=True, null=True)
 	Assembly_method 		= models.CharField(max_length=255, blank=True, null=True)
