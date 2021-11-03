@@ -15,6 +15,7 @@ class AccountAdmin(UserAdmin):
                     'state',
                     'address',
                     'pin_code',
+                    'download',
                     'institute',
                 ),
             },
