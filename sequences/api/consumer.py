@@ -4,13 +4,14 @@ from time import sleep
 from colorama import Fore, init
 from asgiref.sync import async_to_sync
 from channels.exceptions import StopConsumer
+from django.core.serializers.json import DjangoJSONEncoder
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 init(autoreset=True)
 
 class FrontendConsumer(AsyncJsonWebsocketConsumer):
 	async def connect(self):
-		print('COnsumer, here', self.scope['user'])
+		print('Consumer, here', self.scope['user'])
 		try:
 			if(self.scope['user'].is_authenticated):
 				username = self.scope['user'].username
@@ -49,6 +50,10 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 			await self.close()
 		except:
 			await self.close()
+
+	@classmethod
+	async def encode_json(cls, content):
+		return json.dumps(content, cls = DjangoJSONEncoder)
 
 class BackendConsumer(AsyncJsonWebsocketConsumer):
 	async def connect(self):
