@@ -37,6 +37,11 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 				"type": "ALL_METADATA",
 				"data": await get_all_metadata(event["filter"]["each_page"], event["filter"]["page"])
 			}
+		elif(event["type"] == "SEARCH_METADATA"):
+			result = {
+				"type": "SEARCH_METADATA",
+				"data": await search_my_metadata(self.scope["user"], event["filter"]["search"], event["filter"]["each_page"], event["filter"]["page"])
+			}
 		else:
 			result = {
 				"type": "ERROR"
