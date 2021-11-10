@@ -28,9 +28,10 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 	async def receive_json(self, event):
 		username = self.scope["user"].username
 		if(event["type"] == "MY_METADATA"):
+			search = event["filter"]["search"] if('search' in event["filter"].keys()) else None
 			result = {
 				"type": "MY_METADATA",
-				"data": await get_my_metadata(self.scope["user"], event["filter"]["each_page"], event["filter"]["page"])
+				"data": await get_my_metadata(self.scope["user"], event["filter"]["each_page"], event["filter"]["page"], search)
 			}
 		elif(event["type"] == "ALL_METADATA"):
 			result = {
@@ -40,7 +41,7 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 		elif(event["type"] == "SEARCH_METADATA"):
 			result = {
 				"type": "SEARCH_METADATA",
-				"data": await search_my_metadata(self.scope["user"], event["filter"]["search"], event["filter"]["each_page"], event["filter"]["page"])
+				"data": await search_my_metadata(self.scope["user"], event["filter"]["search"])
 			}
 		else:
 			result = {
