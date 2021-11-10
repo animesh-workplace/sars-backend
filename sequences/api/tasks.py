@@ -9,12 +9,14 @@ import base64
 import pandas
 import fuzzyset
 import pendulum
+import operator
 import itertools
 import subprocess
 import collections
 from Bio import SeqIO
 from time import sleep
 from O365 import Account
+from functools import reduce
 from django.db.models import Q
 from celery import shared_task
 from dotenv import load_dotenv
@@ -43,11 +45,14 @@ def create_config_file(self, upload_info):
 	return 'Pipeline run completed'
 
 @database_sync_to_async
-def get_my_metadata(user_obj, each_page, page):
+def get_my_metadata(user_obj, each_page, page, search = None):
 	username 	= user_obj.username.split('_')[1]
 	start 		= 0 + (each_page * (page - 1))
 	end 		= (each_page - 1) + (each_page * (page - 1))
-	user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values())
+	if(search):
+		user_metadata = search_my_metadata(user_obj, search)
+	else:
+		user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values())
 	required_metadata = user_metadata[start:(end+1)]
 	data = {
 		"metadata": required_metadata,
@@ -56,11 +61,32 @@ def get_my_metadata(user_obj, each_page, page):
 	return data
 
 @database_sync_to_async
-def search_my_metadata(user_obj, search, each_page, page):
+def search_my_metadata(user_obj, search):
 	username 	= user_obj.username.split('_')[1]
-	start 		= 0 + (each_page * (page - 1))
-	end 		= (each_page - 1) + (each_page * (page - 1))
-	user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values())
+	filter_columns = [
+		'State__contains',
+		'Clade__contains',
+		'Gender__contains',
+		'Lineage__contains',
+		'District__contains',
+		'Deletions__contains',
+		'Treatment__contains',
+		'Virus_name__contains',
+		'aaDeletions__contains',
+		'Patient_age__contains',
+		'Scorpio_call__contains',
+		'Substitutions__contains',
+		'Patient_status__contains',
+		'Collection_date__contains',
+		'Last_vaccinated__contains',
+		'Originating_lab__contains',
+		'Assembly_method__contains',
+		'aaSubstitutions__contains',
+		'Sequencing_technology__contains',
+	]
+	filter_statement = reduce(operator.or_, [Q(**{name: search}) for name in filter_columns])
+	search_metadata = list(Metadata.objects.filter(Submitting_lab = username).filter(filter_statement).values())
+	return search_metadata
 
 def update_landing_data(source = 'frontend'):
 	metadata_qs 	= Metadata_Handler.objects.all()
