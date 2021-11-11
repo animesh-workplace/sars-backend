@@ -23,6 +23,7 @@ from dotenv import load_dotenv
 from django.conf import settings
 from django.utils import timezone
 from zipfile import ZipFile, ZIP_DEFLATED
+from django.core.paginator import Paginator
 from channels.db import database_sync_to_async
 from sequences.models import Download_Handler, Metadata_Handler, Frontend_Handler, Metadata
 
@@ -47,20 +48,18 @@ def create_config_file(self, upload_info):
 @database_sync_to_async
 def get_my_metadata(user_obj, each_page, page, search = None):
 	username 	= user_obj.username.split('_')[1]
-	start 		= 0 + (each_page * (page - 1))
-	end 		= (each_page - 1) + (each_page * (page - 1))
 	if(search):
 		user_metadata = search_my_metadata(user_obj, search)
 	else:
 		user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values())
-	required_metadata = user_metadata[start:(end+1)]
+	paginator = Paginator(user_metadata, each_page)
+	required_metadata = list(paginator.page(page))
 	data = {
 		"metadata": required_metadata,
-		"total_length": math.ceil(len(user_metadata)/each_page)
+		"total_length": paginator.num_pages
 	}
 	return data
 
-@database_sync_to_async
 def search_my_metadata(user_obj, search):
 	username 	= user_obj.username.split('_')[1]
 	filter_columns = [
@@ -156,17 +155,6 @@ def get_dashboard():
 			"lineages_catalogued": 0,
 		}
 	return dashboard
-
-def get_all_metadata(each_page, page):
-	frontend_obj 	= Frontend_Handler.objects.last()
-	start 			= 0 + (each_page * (page - 1))
-	end 			= (each_page - 1) + (each_page * (page -1))
-	required_metadata = frontend_obj.metadata[start:(end+1)]
-	data = {
-		"metadata": required_metadata,
-		"total_length": math.ceil(len(frontend_obj.metadata)/each_page)
-	}
-	return data
 
 @database_sync_to_async
 def create_download_link(workflow_info):
