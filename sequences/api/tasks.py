@@ -46,18 +46,24 @@ def create_config_file(self, upload_info):
 	return 'Pipeline run completed'
 
 @database_sync_to_async
-def get_my_metadata(user_obj, each_page, page, search = None):
+def get_my_metadata(user_obj, each_page, page, search = None, download = False):
 	username 	= user_obj.username.split('_')[1]
 	if(search):
 		user_metadata = search_my_metadata(user_obj, search)
 	else:
 		user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values())
-	paginator = Paginator(user_metadata, each_page)
-	required_metadata = list(paginator.page(page))
-	data = {
-		"metadata": required_metadata,
-		"total_length": paginator.num_pages
-	}
+	if(not download):
+		paginator = Paginator(user_metadata, each_page)
+		required_metadata = list(paginator.page(page))
+		data = {
+			"metadata": required_metadata,
+			"total_length": paginator.num_pages
+		}
+	else:
+		required_metadata = user_metadata
+		data = {
+			"metadata": required_metadata
+		}
 	return data
 
 def search_my_metadata(user_obj, search):
