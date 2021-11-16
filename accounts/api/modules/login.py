@@ -41,6 +41,7 @@ class UserLoginSerializer(CustomSerializer):
 						token = jwt_encode_handler(payload)
 						return {
 							'token'	 	: token,
+							'export'	: user_obj.export,
 							'expires'   : timezone.now() + api_settings.JWT_EXPIRATION_DELTA,
 							'username'  : username,
 							'download'	: user_obj.download,
