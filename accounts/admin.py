@@ -13,6 +13,7 @@ class AccountAdmin(UserAdmin):
                 'fields': (
                     'city',
                     'state',
+                    'export',
                     'address',
                     'pin_code',
                     'download',
