@@ -73,8 +73,15 @@ def get_my_metadata(user_obj, each_page, page, search = None, download = False):
 
 @database_sync_to_async
 def get_my_metadata_name(user_obj):
-	username 	= user_obj.username.split('_')[1]
-	user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values_list('Virus_name', flat = True))
+	metadata_qs = Metadata_Handler.objects.filter(Q(user = user_obj))
+	if(metadata_qs.count() > 0):
+		temp = []
+		for index,i in enumerate(metadata_qs):
+			temp.append(i.metadata)
+		return_dict = itertools.chain(*temp)
+		user_metadata = [i['Virus name'] for i in return_dict]
+	else:
+		user_metadata = { 'message': 'No data found' }
 	data = {
 		"name": user_metadata,
 	}
