@@ -51,7 +51,12 @@ def get_my_metadata(user_obj, each_page, page, search = None, download = False):
 	if(search):
 		user_metadata = search_my_metadata(user_obj, search)
 	else:
-		user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values())
+		user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values(
+			'Virus_name', 'State', 'Gender', 'Clade', 'Lineage', 'District', 'Deletions', 'Treatment',
+			'aaDeletions', 'Patient_age', 'Scorpio_call', 'Substitutions', 'Submitting_lab',
+			'Patient_status', 'Collection_date', 'Last_vaccinated', 'Originating_lab',
+			'Assembly_method', 'aaSubstitutions', 'Sequencing_technology'
+		))
 	if(not download):
 		paginator = Paginator(user_metadata, each_page)
 		required_metadata = list(paginator.page(page))
@@ -64,6 +69,15 @@ def get_my_metadata(user_obj, each_page, page, search = None, download = False):
 		data = {
 			"metadata": required_metadata
 		}
+	return data
+
+@database_sync_to_async
+def get_my_metadata_name(user_obj):
+	username 	= user_obj.username.split('_')[1]
+	user_metadata = list(Metadata.objects.filter(Submitting_lab = username).values_list('Virus_name', flat = True))
+	data = {
+		"name": user_metadata,
+	}
 	return data
 
 def search_my_metadata(user_obj, search):
