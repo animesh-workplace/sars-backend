@@ -10,24 +10,13 @@ rule clean_data:
 	log: "{base_path}/Fixed_data/{date}/log/clean_data_error.log"
 	run:
 		# try:
-		rgsl_users = os.listdir(f"{wildcards.base_path}/Uploaded_data")
-		with WorkerPool(n_jobs = 50) as pool:
-			output = pool.map(sanitize_data, rgsl_users)
-
-		print('Combining all metadata and sequences')
-		combined_metadata  = pandas.DataFrame()
-		combined_sequences = []
-		for i in output:
-			combined_metadata = pandas.concat([combined_metadata, i[0]])
-			combined_sequences.append(i[1])
-
-		combined_sequences = list(itertools.chain(*combined_sequences))
-		combined_metadata['Virus name'].replace('', numpy.nan, inplace = True)
-		combined_metadata.dropna(subset = ['Virus name'], inplace = True)
-		combined_metadata.reset_index(drop = True, inplace = True)
-		combined_metadata.drop_duplicates(subset = ['Virus name'], ignore_index = True, inplace = True)
-		combined_metadata.to_csv(output.metadata, sep = '\t', index = False)
-		SeqIO.write(combined_sequences, 'output.sequences', 'fasta')
+		shell(
+			"""
+				python workflow/scripts/santize_data.py \
+					--basepath {wildcards.base_path} \
+					--date {wildcards.date}
+			"""
+		)
 
 		print("Creating zip")
 		zip_obj_download = ZipFile(output.download_zip, "w", compression = ZIP_DEFLATED, compresslevel = 9)
