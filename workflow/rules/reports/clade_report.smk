@@ -10,7 +10,7 @@ rule clade_report:
 		tree 		= 'workflow/resources/data/tree.json',
 		primers 	= 'workflow/resources/data/primers.csv',
 		genemap 	= 'workflow/resources/data/genemap.gff',
-		sequences 	= rules.combine_fixed_data.output.sequences,
+		sequences 	= rules.clean_data.output.sequences,
 		reference 	= 'workflow/resources/data/reference.fasta',
 	output:
 		other 	= directory("{base_path}/Analysis/{date}/alignment/"),

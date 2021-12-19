@@ -3,8 +3,8 @@ rule combine_clade_lineage:
 	input:
 		alignment = rules.clade_report.output.other,
 		clade_report = rules.clade_report.output.report,
-		metadata = rules.combine_fixed_data.output.metadata,
-		sequences = rules.combine_fixed_data.output.sequences,
+		metadata = rules.clean_data.output.metadata,
+		sequences = rules.clean_data.output.sequences,
 		lineage_report = rules.lineage_report.output.lineage_report,
 	output:
 		nextstrain = "{base_path}/Analysis/{date}/nextstrain/nextstrain_metadata.tsv",
