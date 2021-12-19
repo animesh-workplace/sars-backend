@@ -1,4 +1,5 @@
 import os
+import gc
 import json
 import numpy
 import arrow
@@ -15,10 +16,12 @@ from tqdm import tqdm
 from Bio import SeqIO
 from time import sleep
 from Bio.Seq import Seq
+from mpire import WorkerPool
 from dotenv import load_dotenv
 from pandas import ExcelWriter
 from websocket import create_connection
 from zipfile import ZipFile, ZIP_DEFLATED
+from mpire.utils import make_single_arguments
 from pytools.persistent_dict import PersistentDict
 
 def send_data_to_websocket(data_type, tool, message):
