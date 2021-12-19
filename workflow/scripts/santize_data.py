@@ -3,21 +3,28 @@ import gc
 import arrow
 import pandas
 import logging
+import argparse
 import fuzzyset
 import itertools
 from Bio import SeqIO
 from mpire import WorkerPool
 
-logging.basicConfig(filename = "additional.log", format = '%(asctime)s %(message)s', filemode = 'w')
+parser = argparse.ArgumentParser()
+parser.add_argument('--date', help = 'Enter output file')
+parser.add_argument('--basepath', help = 'Enter Nexstrain metadata')
+args = parser.parse_args()
+date = args.date
+base_path = args.basepath
+
+os.makedirs(f"{base_path}/Fixed_data/{date}/log/", exist_ok = True)
+logging.basicConfig(filename = f"{base_path}/Fixed_data/{date}/log/santize_data.log", format = '%(asctime)s %(message)s', filemode = 'w')
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
-
-rgsl_users = os.listdir("Uploaded_data")
 
 def sanitize_data(rgsl):
 	metadata_labels           = ['Virus name', 'Type', 'Passage details/history', 'Collection date', 'Country', 'State', 'District', 'Location', 'Additional location information', 'Host', 'Additional host information', 'Gender', 'Patient age', 'Patient status', 'Specimen source', 'Outbreak', 'Last vaccinated', 'Treatment', 'Sequencing technology', 'Assembly method', 'Coverage', 'Originating lab', 'Originating lab address', 'Submitting lab', 'Submitting lab address', 'Sample ID given by the submitting lab', 'Authors']
 	combined_metadata         = pandas.DataFrame()
-	indian_state_info 		  = pandas.read_csv("indian_state_district.tsv", delimiter = '\t', encoding = "utf-8", low_memory = False)
+	indian_state_info 		  = pandas.read_csv("workflow/resources/indian_state_district.tsv", delimiter = '\t', encoding = "utf-8", low_memory = False)
 	combined_sequences        = []
 	combined_sequences_label  = []
 	fs_state          		  = fuzzyset.FuzzySet(pandas.unique(indian_state_info['State']), False, 3, 4)
@@ -26,7 +33,7 @@ def sanitize_data(rgsl):
 	for (path, dirs, files) in os.walk(f"Uploaded_data/{rgsl}"):
 		if(files):
 			for i in files:
-				save_url        = f"Fixed_data/{rgsl}/"
+				save_url        = f"{base_path}/Fixed_data/{date}/{rgsl}/"
 				file_type       = i.split('_')[0]
 				os.makedirs(save_url, exist_ok = True)
 				if(file_type == 'metadata'):
@@ -76,6 +83,9 @@ def sanitize_data(rgsl):
 	print(f"Fixed metadata of {rgsl.split('_')[-1]}")
 	return (combined_metadata, combined_sequences)
 
+
+rgsl_users = os.listdir(f"{base_path}/Uploaded_data")
+
 with WorkerPool(n_jobs = 50) as pool:
 	output = pool.map(sanitize_data, rgsl_users)
 
@@ -87,8 +97,9 @@ for i in output:
 	combined_sequences.append(i[1])
 
 combined_sequences = list(itertools.chain(*combined_sequences))
-
 combined_metadata.reset_index(drop = True, inplace = True)
 combined_metadata.drop_duplicates(subset = ['Virus name'], ignore_index = True, inplace = True)
-combined_metadata.to_csv('combined_metadata.tsv', sep = '\t', index = False)
-SeqIO.write(combined_sequences, 'combined_sequences.fasta', 'fasta')
+
+os.makedirs(f"{base_path}/Analysis/{date}/combined_files/", exist_ok = True)
+combined_metadata.to_csv(f'{base_path}/Analysis/{date}/combined_files/combined_metadata.tsv', sep = '\t', index = False)
+SeqIO.write(combined_sequences, f'{base_path}/Analysis/{date}/combined_files/combined_sequences.fasta', 'fasta')
