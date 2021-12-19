@@ -1,52 +1,22 @@
 {
-	"Alpha": 	[
-		{ "pangolin"	: ["B.1.1.7"] },
-		{ "nextstrain"	: ["20I (Alpha, V1)"] }
+	"Alpha": [{ "pangolin": { "exact": ["B.1.1.7"] } }],
+	"Beta": [{ "pangolin": { "contains": "B.1.351" } }],
+	"Gamma": [{ "pangolin": { "contains": "P.1" } }],
+	"Omicron": [{ "pangolin": { "exact": ["B.1.1.529"], "contains": "BA." } }],
+	"Delta (All)": [
+		{ "pangolin": { "exact": ["B.1.617.2"], "contains": "AY." } }
 	],
-	"Beta": 	[
-		{ "pangolin" 	: ["B.1.351", "B.1.351.2", "B.1.351.3"] },
-		{ "nextstrain" 	: ["20H (Beta, V2)"] }
-	],
-	"Gamma":	[
-		{ "pangolin" 	: ["P.1", "P.1.1", "P.1.2"] },
-		{ "nextstrain" 	: ["20J (Gamma, V3)"] }
-	],
-	"Delta":	[
-		{ "pangolin" : ["B.1.617.2", "AY.1", "AY.2"] },
-		{ "nextstrain" 	: ["21A (Delta)"] }
-	],
-	"Eta":	[
-		{ "pangolin" : ["B.1.525"] },
-		{ "nextstrain" 	: ["21D"] }
-	],
-	"Iota":	[
-		{ "pangolin" : ["B.1.526"] },
-		{ "nextstrain" 	: ["21F"] }
-	],
-	"Kappa":	[
-		{ "pangolin" : ["B.1.617.1"] },
-		{ "nextstrain" 	: ["21B (Kappa)"] }
-	],
-	"Lambda":	[
-		{ "pangolin" : ["C.37"] },
-		{ "nextstrain" 	: ["21G"] }
-	],
-	"B.1.617":	[
-		{ "pangolin" : ["B.1.617"] }
-	],
-	"B.1.617.3":	[
-		{ "pangolin" : ["B.1.617.3"] }
-	],
-	"B.1.618":	[
-		{ "pangolin": ["B.1.618"] }
-	],
-	"AY.1":	[
-		{ "pangolin": ["AY.1"] }
-	],
-	"AY.2":	[
-		{ "pangolin": ["AY.2"] }
-	],
-	"AY.3":	[
-		{ "pangolin": ["AY.3"] }
-	]
+	"Delta (Only B.1.617.2)": [{ "pangolin": { "exact": ["B.1.617.2"] } }],
+	"Delta (AY.XX)": [{ "pangolin": { "contains": "AY." } }],
+	"Kappa": [{ "pangolin": { "exact": ["B.1.617.1"] } }],
+	"Eta": [{ "pangolin": { "exact": ["B.1.525"] } }],
+	"Iota": [{ "pangolin": { "exact": ["B.1.526"] } }],
+	"Epsilon": [{ "pangolin": { "exact": ["B.1.427", "B.1.429"] } }],
+	"Theta": [{ "pangolin": { "contains": "P.3" } }],
+	"Zeta": [{ "pangolin": { "contains": "P.2" } }],
+	"Lambda": [{ "pangolin": { "contains": "C.37" } }],
+	"Mu": [{ "pangolin": { "contains": "B.1.621" } }],
+	"B.1.618": [{ "pangolin": { "exact": ["B.1.618"] } }],
+	"B.1.617.3": [{ "pangolin": { "exact": ["B.1.617.3"] } }],
+	"None": [{ "pangolin": { "exact": ["None"] } }]
 }
