@@ -159,6 +159,7 @@ def get_dashboard():
 	frontend_obj = Frontend_Handler.objects.last()
 	if(frontend_obj):
 		dashboard = {
+			"map_data" 					: frontend_obj.map_data,
 			"last_updated"				: frontend_obj.last_updated,
 			"pie_chart_data"			: frontend_obj.pie_chart_data,
 			"states_covered"			: int(frontend_obj.states_covered),
