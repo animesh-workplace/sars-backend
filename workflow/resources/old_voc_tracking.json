@@ -1,0 +1,59 @@
+{
+	"Alpha": [
+		{ "pangolin": { "exact": ["B.1.1.7"] } },
+		{ "nextstrain": { "exact": ["20I (Alpha, V1)"] } }
+	],
+	"Beta": [
+		{ "pangolin": { "contains": "B.1.351" } },
+		{ "nextstrain": { "exact": ["20H (Beta, V2)"] } }
+	],
+	"Gamma": [
+		{ "pangolin": { "contains": "P.1" } },
+		{ "nextstrain": { "exact": ["20J (Gamma, V3)"] } }
+	],
+	"Omicron": [
+		{ "nextstrain": { "exact": ["21K (Omicron)"] } },
+		{ "pangolin": { "exact": ["B.1.1.529"], "contains": "BA." } }
+	],
+	"Delta (All)": [
+		{ "pangolin": { "exact": ["B.1.617.2"], "contains": "AY." } },
+		{
+			"nextstrain": {
+				"exact": ["21A (Delta)", "21I (Delta)", "21J (Delta)"]
+			}
+		}
+	],
+	"Delta (Only B.1.617.2)": [{ "pangolin": { "exact": ["B.1.617.2"] } }],
+	"Delta (AY.XX)": [{ "pangolin": { "contains": "AY." } }],
+	"Kappa": [
+		{ "pangolin": { "exact": ["B.1.617.1"] } },
+		{ "nextstrain": { "exact": ["21B (Kappa)"] } }
+	],
+	"Eta": [
+		{ "pangolin": { "exact": ["B.1.525"] } },
+		{ "nextstrain": { "exact": ["21D (Eta)"] } }
+	],
+	"Iota": [
+		{ "pangolin": { "exact": ["B.1.526"] } },
+		{ "nextstrain": { "exact": ["21F (Iota)"] } }
+	],
+	"Epsilon": [
+		{ "nextstrain": { "exact": ["21C (Epsilon)"] } },
+		{ "pangolin": { "exact": ["B.1.427", "B.1.429"] } }
+	],
+	"Theta": [
+		{ "pangolin": { "contains": "P.3" } },
+		{ "nextstrain": { "exact": ["21E (Theta)"] } }
+	],
+	"Zeta": [{ "pangolin": { "contains": "P.2" } }],
+	"Lambda": [
+		{ "pangolin": { "contains": "C.37" } },
+		{ "nextstrain": { "exact": ["21G (Lambda)"] } }
+	],
+	"Mu": [
+		{ "pangolin": { "contains": "B.1.621" } },
+		{ "nextstrain": { "exact": ["21H (Mu)"] } }
+	],
+	"B.1.618": [{ "pangolin": { "exact": ["B.1.618"] } }],
+	"B.1.617.3": [{ "pangolin": { "exact": ["B.1.617.3"] } }]
+}
