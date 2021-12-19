@@ -20,9 +20,19 @@ for voc_type, entries in voc_to_track.items():
 	voc_metadata = pandas.DataFrame()
 	for i in entries:
 		if('pangolin' in list(i.keys())):
-			voc_metadata = pandas.concat([ voc_metadata, metadata.loc[metadata['lineage'].isin(i['pangolin'])] ])
+			for (key, value) in i['pangolin'].items():
+				if(key == 'exact'):
+					voc_metadata = pandas.concat([ voc_metadata, metadata.loc[metadata['lineage'].isin(value)] ])
+				elif(key == 'contains'):
+					print(i['pangolin'][key])
+					voc_metadata = pandas.concat([ voc_metadata, metadata.loc[metadata['lineage'].str.contains(value)] ])
+
 		if('nextstrain' in list(i.keys())):
-			voc_metadata = pandas.concat([ voc_metadata, metadata.loc[metadata['clade'].isin(i['nextstrain'])] ])
+			for (key, value) in i['nextstrain'].items():
+				if(key == 'exact'):
+					voc_metadata = pandas.concat([ voc_metadata, metadata.loc[metadata['clade'].isin(value)] ])
+				elif(key == 'contains'):
+					voc_metadata = pandas.concat([ voc_metadata, metadata.loc[metadata['clade'].str.contains(value)] ])
 
 	voc_metadata.reset_index(drop = True, inplace = True)
 	voc_metadata.drop_duplicates(subset = ['strain'], ignore_index = True, inplace = True)
