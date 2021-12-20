@@ -114,7 +114,8 @@ def search_my_metadata(user_obj, search):
 	search_metadata = list(Metadata.objects.filter(Submitting_lab = username).filter(filter_statement).values())
 	return search_metadata
 
-def update_landing_data(source = 'frontend'):
+@shared_task(bind=True)
+def update_landing_data(self, source = 'frontend'):
 	metadata_qs 	= Metadata_Handler.objects.all()
 	frontend_obj 	= Frontend_Handler.objects.last()
 
@@ -138,6 +139,50 @@ def update_landing_data(source = 'frontend'):
 		if(source == 'frontend'):
 			frontend_obj = Frontend_Handler(
 				map_data 					= frontend_obj.map_data,
+				lineage_data				= [],
+				states_covered 				= frontend_obj.states_covered,
+				pie_chart_data 				= pie_chart_data,
+				scorpio_version 			= frontend_obj.scorpio_version,
+				pangolin_version 			= frontend_obj.pangolin_version,
+				nextclade_version 			= frontend_obj.nextclade_version,
+				genomes_sequenced 			= total_sequenced,
+				pangolearn_version 			= frontend_obj.pangolearn_version,
+				variants_catalogued 		= frontend_obj.variants_catalogued,
+				lineages_catalogued 		= frontend_obj.lineages_catalogued,
+				constellation_version 		= frontend_obj.constellation_version,
+				pango_designation_version 	= frontend_obj.pango_designation_version,
+
+			)
+			frontend_obj.save()
+		elif(source == 'backend'):
+			return pie_chart_data, total_sequenced
+
+
+def update_landing_data_backend(source = 'frontend'):
+	metadata_qs 	= Metadata_Handler.objects.all()
+	frontend_obj 	= Frontend_Handler.objects.last()
+
+	if(metadata_qs.count() > 0):
+		temp = {}
+		return_dict = {}
+		pie_chart_data = []
+		total_sequenced = 0
+		for i in metadata_qs:
+			if(not i.user.username in list(temp.keys())):
+				temp[i.user.username] = []
+			temp[i.user.username].append(i.metadata)
+		for k,v in temp.items():
+			return_dict[k] = len(list(itertools.chain(*v)))
+			total_sequenced += return_dict[k]
+			pie_chart_data.append({
+				"value": return_dict[k],
+				"name": f"{k.split('_')[1]} ({return_dict[k]})",
+			})
+
+		if(source == 'frontend'):
+			frontend_obj = Frontend_Handler(
+				map_data 					= frontend_obj.map_data,
+				lineage_data				= [],
 				states_covered 				= frontend_obj.states_covered,
 				pie_chart_data 				= pie_chart_data,
 				scorpio_version 			= frontend_obj.scorpio_version,
@@ -192,9 +237,10 @@ def create_download_link(workflow_info):
 
 @database_sync_to_async
 def create_frontend_entry(workflow_info):
-	pie_chart_data, genomes_sequenced = update_landing_data('backend')
+	pie_chart_data, genomes_sequenced = update_landing_data_backend('backend')
 	download_obj = Frontend_Handler(
 		map_data 					= workflow_info['map_data'],
+		lineage_data				= [],
 		pie_chart_data 				= pie_chart_data,
 		states_covered 				= workflow_info['states_covered'],
 		scorpio_version 			= workflow_info['scorpio_version'],
