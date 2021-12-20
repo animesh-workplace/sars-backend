@@ -80,7 +80,7 @@ def sanitize_data(rgsl):
 
 					metadata.to_csv(os.path.join(save_url, f"fixed_{metadata_name}"), sep = '\t', index = False)
 					SeqIO.write([seq for (key, seq) in sequence.items()], os.path.join(save_url, f"fixed_{sequence_name}"), 'fasta')
-	print(f"Fixed metadata of {rgsl.split('_')[-1]}")
+	print(f"Fixed metadata of {rgsl.split('_')[-1]}: Metadata - {len(combined_metadata.index)} Sequences - {len(combined_sequences)}")
 	return (combined_metadata, combined_sequences)
 
 
@@ -101,5 +101,6 @@ combined_metadata.reset_index(drop = True, inplace = True)
 combined_metadata.drop_duplicates(subset = ['Virus name'], ignore_index = True, inplace = True)
 
 os.makedirs(f"{base_path}/Analysis/{date}/combined_files/", exist_ok = True)
+print(f"Total: Metadata - {len(combined_metadata.index)} Sequences - {len(combined_sequences)}")
 combined_metadata.to_csv(f'{base_path}/Analysis/{date}/combined_files/combined_metadata.tsv', sep = '\t', index = False)
 SeqIO.write(combined_sequences, f'{base_path}/Analysis/{date}/combined_files/combined_sequences.fasta', 'fasta')
