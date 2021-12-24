@@ -1,0 +1,22 @@
+{
+	"Alpha": [{ "pangolin": { "exact": ["B.1.1.7"] } }],
+	"Beta": [{ "pangolin": { "contains": "B.1.351" } }],
+	"Gamma": [{ "pangolin": { "contains": "P.1" } }],
+	"Omicron": [{ "pangolin": { "exact": ["B.1.1.529"], "contains": "BA." } }],
+	"Delta (All)": [
+		{ "pangolin": { "exact": ["B.1.617.2"], "contains": "AY." } }
+	],
+	"Delta (Only B.1.617.2)": [{ "pangolin": { "exact": ["B.1.617.2"] } }],
+	"Delta (AY.XX)": [{ "pangolin": { "contains": "AY." } }],
+	"Kappa": [{ "pangolin": { "exact": ["B.1.617.1"] } }],
+	"Eta": [{ "pangolin": { "exact": ["B.1.525"] } }],
+	"Iota": [{ "pangolin": { "exact": ["B.1.526"] } }],
+	"Epsilon": [{ "pangolin": { "exact": ["B.1.427", "B.1.429"] } }],
+	"Theta": [{ "pangolin": { "contains": "P.3" } }],
+	"Zeta": [{ "pangolin": { "contains": "P.2" } }],
+	"Lambda": [{ "pangolin": { "contains": "C.37" } }],
+	"Mu": [{ "pangolin": { "contains": "B.1.621" } }],
+	"B.1.618": [{ "pangolin": { "exact": ["B.1.618"] } }],
+	"B.1.617.3": [{ "pangolin": { "exact": ["B.1.617.3"] } }],
+	"None": [{ "pangolin": { "exact": ["None"] } }]
+}
