@@ -1,0 +1,71 @@
+import os
+import gc
+import json
+import numpy
+import arrow
+import base64
+import pandas
+import pathlib
+import fuzzyset
+import pendulum
+import itertools
+import traceback
+import subprocess
+import collections
+from tqdm import tqdm
+from Bio import SeqIO
+from time import sleep
+from Bio.Seq import Seq
+from mpire import WorkerPool
+from dotenv import load_dotenv
+from pandas import ExcelWriter
+from websocket import create_connection
+from zipfile import ZipFile, ZIP_DEFLATED
+from mpire.utils import make_single_arguments
+from pytools.persistent_dict import PersistentDict
+
+def send_data_to_websocket(data_type, tool, message):
+	print(message)
+	# load_dotenv(".env")
+	# ws = create_connection(f"ws://{os.getenv('WEBSOCKET_URL')}/{os.getenv('BASE_URL')}wsa/backend/")
+	# websocket_data = {
+	# 	"type": data_type,
+	# 	"data": {
+	# 		"tool": tool,
+	# 		"message": message,
+	# 		"username": config["uploaded_by"],
+	# 		"upload_time": config["analysis_time"],
+	# 		"uploaded": config["sequences_uploaded"],
+	# 		"total_seq": storage.fetch("total_count"),
+	# 		"timestamp": pendulum.now("Asia/Kolkata").format("YYYY-MM-DD_hh-mm-ss-A"),
+	# 	}
+	# }
+	# ws.send(json.dumps(websocket_data))
+	# sleep(1)
+	# ws.close()
+
+
+onsuccess:
+	send_data_to_websocket("SUCCESS", "Workflow", "Completed Workflow")
+
+storage = PersistentDict("insacog_storage")
+
+rule all:
+	input:
+		uploaded_files = expand(
+			"{base_path}/Analysis/{date}/log/upload_error.log",
+				base_path=config["base_path"],
+				date=config["analysis_time"],
+		)
+
+include: "rules/update/index.smk"
+include: "rules/santize_data/index.smk"
+include: "rules/annotation/nextclade.smk"
+include: "rules/annotation/pangolin.smk"
+include: "rules/combine_data/combine_clade_lineage.smk"
+include: "rules/split_data/split_state.smk"
+include: "rules/reports/mutation_report.smk"
+include: "rules/reports/voc_id_report.smk"
+include: "rules/reports/voc_progress_report.smk"
+include: "rules/reports/lineage_substitution_deletion_report.smk"
+include: "rules/upload/index.smk"
