@@ -16,7 +16,5 @@
 	"Zeta": [{ "pangolin": { "contains": "P.2" } }],
 	"Lambda": [{ "pangolin": { "contains": "C.37" } }],
 	"Mu": [{ "pangolin": { "contains": "B.1.621" } }],
-	"B.1.618": [{ "pangolin": { "exact": ["B.1.618"] } }],
-	"B.1.617.3": [{ "pangolin": { "exact": ["B.1.617.3"] } }],
 	"None": [{ "pangolin": { "exact": ["None"] } }]
 }
