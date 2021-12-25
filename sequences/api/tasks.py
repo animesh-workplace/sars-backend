@@ -33,6 +33,7 @@ load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
 def create_config_file(self, upload_info):
 	upload_date = pendulum.now('Asia/Kolkata').format('YYYY-MM-DD_hh-mm-ss-A')
 	config_data = {
+		"websocket": True,
 		"analysis_time": upload_date,
 		"base_path": settings.MEDIA_ROOT,
 		"uploaded_by": upload_info['username'],
@@ -138,6 +139,7 @@ def update_landing_data(source = 'frontend'):
 		if(source == 'frontend'):
 			frontend_obj = Frontend_Handler(
 				map_data 					= frontend_obj.map_data,
+				lineage_data				= frontend_obj.lineage_data,
 				states_covered 				= frontend_obj.states_covered,
 				pie_chart_data 				= pie_chart_data,
 				scorpio_version 			= frontend_obj.scorpio_version,
@@ -195,6 +197,7 @@ def create_frontend_entry(workflow_info):
 	pie_chart_data, genomes_sequenced = update_landing_data('backend')
 	download_obj = Frontend_Handler(
 		map_data 					= workflow_info['map_data'],
+		lineage_data				= [],
 		pie_chart_data 				= pie_chart_data,
 		states_covered 				= workflow_info['states_covered'],
 		scorpio_version 			= workflow_info['scorpio_version'],
