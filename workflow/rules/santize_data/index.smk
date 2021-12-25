@@ -23,10 +23,11 @@ rule santize_data:
 			zip_obj_download.write(output.sequence, arcname = "combined_sequences.fasta")
 			zip_obj_download.write(output.metadata, arcname = "combined_metadata.tsv")
 			zip_obj_download.close()
-
-			send_data_to_websocket('SUCCESS_ZIP', 'combine_data', None)
+			if(config['websocket']):
+				send_data_to_websocket('SUCCESS_ZIP', 'combine_data', None)
 		except:
 			error_traceback = traceback.format_exc()
-			send_data_to_websocket('ERROR', 'clean_data', error_traceback)
+			if(config['websocket']):
+				send_data_to_websocket('ERROR', 'clean_data', error_traceback)
 			pathlib.Path(str(log)).write_text(error_traceback)
 			raise
