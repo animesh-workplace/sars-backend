@@ -1,11 +1,10 @@
 rule combine_clade_lineage:
 	message: "Creating a new metadata with clade and lineage definitions"
 	input:
-		alignment = rules.clade_report.output.other,
-		clade_report = rules.clade_report.output.report,
-		metadata = rules.combine_fixed_data.output.metadata,
-		sequences = rules.combine_fixed_data.output.sequences,
-		lineage_report = rules.lineage_report.output.lineage_report,
+		metadata 		= rules.santize_data.output.metadata,
+		sequence 		= rules.santize_data.output.sequence,
+		clade_report 	= rules.clade_report.output.report,
+		lineage_report 	= rules.lineage_report.output.report,
 	output:
 		nextstrain = "{base_path}/Analysis/{date}/nextstrain/nextstrain_metadata.tsv",
 		insacog_datahub = "{base_path}/Analysis/{date}/nextstrain/insacog_datahub_metadata.tsv"
@@ -14,7 +13,7 @@ rule combine_clade_lineage:
 		try:
 			nextstrain_labels = ['strain', 'virus', 'gisaid_epi_isl', 'genbank_accession', 'date', 'region', 'country', 'division', 'location', 'region_exposure', 'country_exposure', 'division_exposure', 'segment', 'length', 'host', 'age', 'sex', 'originating_lab', 'submitting_lab', 'authors', 'url', 'title', 'paper_url', 'date_submitted', 'purpose_of_sequencing']
 			metadata = pandas.read_csv(input.metadata, delimiter = '\t', encoding = 'utf-8', low_memory = False)
-			sequence = SeqIO.to_dict(SeqIO.parse(str(input.sequences), 'fasta'))
+			sequence = SeqIO.to_dict(SeqIO.parse(str(input.sequence), 'fasta'))
 
 			nextclade_metadata = pandas.read_csv(input.clade_report, delimiter = '\t', encoding = 'utf-8', low_memory = False)
 			nextclade_metadata.rename(columns = {'seqName': 'strain'}, inplace = True)
@@ -29,6 +28,7 @@ rule combine_clade_lineage:
 			)
 
 			region_type = pandas.read_csv('workflow/resources/indian_region.tsv', delimiter = '\t', encoding = 'utf-8').set_index('State').T.to_dict()
+
 			# For Nextstrain Analysis
 			nextstrain_metadata = pandas.DataFrame(columns = nextstrain_labels)
 			nextstrain_metadata = nextstrain_metadata.assign(
@@ -65,13 +65,6 @@ rule combine_clade_lineage:
 			nextstrain_metadata = nextstrain_metadata.merge(nextclade_pangolin, on = 'strain', how = 'inner')
 			nextstrain_metadata.to_csv(output.nextstrain, sep = '\t', index = False)
 
-			# Copy sequences
-			shell(
-				f"""
-					cp {input.alignment}/combined_sequences.aligned.fasta {wildcards.base_path}/Analysis/{wildcards.date}/nextstrain/nextstrain_sequences.fasta
-				"""
-			)
-
 			# For INSACOG DataHub
 			nextclade_pangolin.rename(columns = {'strain': 'Virus name'}, inplace = True)
 			insacog_datahub_metadata = metadata.merge(nextclade_pangolin, on = 'Virus name', how = 'inner')
@@ -102,11 +95,13 @@ rule combine_clade_lineage:
 					"value": value
 				})
 
-			send_data_to_websocket('SUCCESS_METADATA', 'combine_clade_lineage', database_entry | storage.fetch("tool_version"))
 			storage.store("total_count", len(insacog_datahub_metadata))
+			if(config['websocket']):
+				send_data_to_websocket('SUCCESS_METADATA', 'combine_clade_lineage', database_entry | storage.fetch("tool_version"))
 		except:
 			error_traceback = traceback.format_exc()
-			send_data_to_websocket('ERROR', 'combine_clade_lineage', error_traceback)
+			if(config['websocket']):
+				send_data_to_websocket('ERROR', 'combine_clade_lineage', error_traceback)
 			pathlib.Path(str(log)).write_text(error_traceback)
 			raise
 

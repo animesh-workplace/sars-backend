@@ -10,20 +10,21 @@ rule upload_to_ondedrive:
 		try:
 			print("Copying files onto OneDrive")
 			shell(
-				f"""
+				"""
 					mkdir -p OneDrive/{wildcards.date}/reports
-					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/state_wise OneDrive/{wildcards.date}/reports/
-					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/*.tsv OneDrive/{wildcards.date}/reports/
-					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/*.csv OneDrive/{wildcards.date}/reports/
-					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/*.xlsx OneDrive/{wildcards.date}/reports/
-					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/alignment OneDrive/{wildcards.date}/
-					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/log OneDrive/{wildcards.date}/
-					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/nextstrain OneDrive/{wildcards.date}/
-					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/combined_files OneDrive/{wildcards.date}/
+					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/state_wise OneDrive/{wildcards.date}/reports/ > {log} 2>&1
+					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/*.tsv OneDrive/{wildcards.date}/reports/ > {log} 2>&1
+					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/*.csv OneDrive/{wildcards.date}/reports/ > {log} 2>&1
+					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/reports/*.xlsx OneDrive/{wildcards.date}/reports/ > {log} 2>&1
+					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/alignment OneDrive/{wildcards.date}/ > {log} 2>&1
+					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/log OneDrive/{wildcards.date}/ > {log} 2>&1
+					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/nextstrain OneDrive/{wildcards.date}/ > {log} 2>&1
+					cp -rv {wildcards.base_path}/Analysis/{wildcards.date}/combined_files OneDrive/{wildcards.date}/ > {log} 2>&1
 				"""
 			)
 		except:
 			error_traceback = traceback.format_exc()
-			send_data_to_websocket('ERROR', 'update', error_traceback)
+			if(config['websocket']):
+				send_data_to_websocket('ERROR', 'update', error_traceback)
 			pathlib.Path(str(log)).write_text(error_traceback)
 			raise
