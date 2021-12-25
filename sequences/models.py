@@ -29,6 +29,7 @@ class Download_Handler(models.Model):
 
 class Frontend_Handler(models.Model):
 	map_data 					= JSONField()
+	lineage_data 				= JSONField()
 	last_updated 				= models.DateTimeField(auto_now=True)
 	pie_chart_data 				= JSONField()
 	states_covered 				= models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
