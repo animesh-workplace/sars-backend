@@ -53,6 +53,7 @@ storage = PersistentDict("insacog_storage")
 
 rule all:
 	input:
+		download_files = f"{config['base_path']}/Download/INSACOG_data_{config['analysis_time']}.zip",
 		uploaded_files = expand(
 			"{base_path}/Analysis/{date}/log/upload_error.log",
 				base_path=config["base_path"],
@@ -61,6 +62,7 @@ rule all:
 
 include: "rules/update/index.smk"
 include: "rules/santize_data/index.smk"
+include: "rules/compress_santize_data/index.smk"
 include: "rules/annotation/nextclade.smk"
 include: "rules/annotation/pangolin.smk"
 include: "rules/combine_data/combine_clade_lineage.smk"
