@@ -25,7 +25,6 @@ from mpire.utils import make_single_arguments
 from pytools.persistent_dict import PersistentDict
 
 def send_data_to_websocket(data_type, tool, message):
-	print(message)
 	load_dotenv(".env")
 	ws = create_connection(f"ws://{os.getenv('WEBSOCKET_URL')}/{os.getenv('BASE_URL')}wsa/backend/")
 	websocket_data = {
@@ -47,7 +46,8 @@ def send_data_to_websocket(data_type, tool, message):
 
 
 onsuccess:
-	send_data_to_websocket("SUCCESS", "Workflow", "Completed Workflow")
+	if(config['websocket']):
+		send_data_to_websocket("SUCCESS", "Workflow", "Completed Workflow")
 
 storage = PersistentDict("insacog_storage")
 
