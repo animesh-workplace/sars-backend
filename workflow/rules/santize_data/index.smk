@@ -7,7 +7,7 @@ rule santize_data:
 		sequence 		= "{base_path}/Analysis/{date}/combined_files/combined_sequences.fasta",
 		download_zip 	= "{base_path}/Download/INSACOG_data_{date}.zip",
 		fixed_directory = directory("{base_path}/Fixed_data/{date}"),
-	log: "{base_path}/Fixed_data/{date}/log/clean_data_error.log"
+	log: "{base_path}/Analysis/{date}/log/santize_data_error.log"
 	run:
 		try:
 			shell(
