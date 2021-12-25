@@ -16,6 +16,7 @@ rule lineage_substitution_deletion_report:
 			)
 		except Exception as e:
 			error_traceback = traceback.format_exc()
-			send_data_to_websocket('ERROR', 'lineage_substitution_deletion_report', error_traceback)
+			if(config['websocket']):
+				send_data_to_websocket('ERROR', 'lineage_substitution_deletion_report', error_traceback)
 			pathlib.Path(str(log)).write_text(error_traceback)
 			raise
