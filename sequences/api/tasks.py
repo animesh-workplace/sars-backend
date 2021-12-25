@@ -305,13 +305,13 @@ def send_email_success(workflow_info):
 		message1.to.add(['aks1@nibmg.ac.in'])
 		if(eval(os.getenv('DEBUG'))):
 			message2.to.add(['animesh.workplace@gmail.com'])
-			message1.subject = '📦 Report [ INSACOG TestHub ] v2'
-			message2.subject = '📦 Report [ INSACOG TestHub ] v2'
+			message1.subject = '📦 Report v2 [ INSACOG TestHub ]'
+			message2.subject = '📦 Report v2 [ INSACOG TestHub ]'
 		else:
 			message2.bcc.add(['samastha849@gmail.com'])
 			message2.to.add(['nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
-			message1.subject = '📦 Report [ INSACOG DataHub ] v2'
-			message2.subject = '📦 Report [ INSACOG DataHub ] v2'
+			message1.subject = '📦 Report v2 [ INSACOG DataHub ]'
+			message2.subject = '📦 Report v2 [ INSACOG DataHub ]'
 		html_content1	= f"""
 			<div>
 				Dear all,
