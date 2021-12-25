@@ -36,6 +36,7 @@ rule update:
 			})
 		except:
 			error_traceback = traceback.format_exc()
-			send_data_to_websocket('ERROR', 'update', error_traceback)
+			if(config['websocket']):
+				send_data_to_websocket('ERROR', 'update', error_traceback)
 			pathlib.Path(str(log)).write_text(error_traceback)
 			raise
