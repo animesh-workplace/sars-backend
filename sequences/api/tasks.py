@@ -266,8 +266,6 @@ def send_email_upload(user_info):
 						This is an automated mail to alert you of the submission of
 						<strong style="background-color:#FFC748;text-decoration:none;">{ user_info['uploaded'] } samples by
 						{ user_info['username'].split('_')[1] }</strong>.
-						The pipeline to generate report has been activated and
-						soon you will get another mail with all the reports.
 					</p>
 					<p>
 					With Regards,<br>
@@ -304,13 +302,13 @@ def send_email_success(workflow_info):
 		message1.to.add(['aks1@nibmg.ac.in'])
 		if(eval(os.getenv('DEBUG'))):
 			message2.to.add(['animesh.workplace@gmail.com'])
-			message1.subject = '📦 Report [ INSACOG TestHub ]'
-			message2.subject = '📦 Report [ INSACOG TestHub ]'
+			message1.subject = '📦 Report [ INSACOG TestHub ] v2'
+			message2.subject = '📦 Report [ INSACOG TestHub ] v2'
 		else:
 			message2.bcc.add(['samastha849@gmail.com'])
 			message2.to.add(['nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in', 'rezwanuzzaman.laskar@gmail.com'])
-			message1.subject = '📦 Report [ INSACOG DataHub ]'
-			message2.subject = '📦 Report [ INSACOG DataHub ]'
+			message1.subject = '📦 Report [ INSACOG DataHub ] v2'
+			message2.subject = '📦 Report [ INSACOG DataHub ] v2'
 		html_content1	= f"""
 			<div>
 				Dear all,
