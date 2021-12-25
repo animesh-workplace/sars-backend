@@ -95,11 +95,13 @@ rule combine_clade_lineage:
 					"value": value
 				})
 
-			send_data_to_websocket('SUCCESS_METADATA', 'combine_clade_lineage', database_entry | storage.fetch("tool_version"))
 			storage.store("total_count", len(insacog_datahub_metadata))
+			if(config['websocket']):
+				send_data_to_websocket('SUCCESS_METADATA', 'combine_clade_lineage', database_entry | storage.fetch("tool_version"))
 		except:
 			error_traceback = traceback.format_exc()
-			send_data_to_websocket('ERROR', 'combine_clade_lineage', error_traceback)
+			if(config['websocket']):
+				send_data_to_websocket('ERROR', 'combine_clade_lineage', error_traceback)
 			pathlib.Path(str(log)).write_text(error_traceback)
 			raise
 
