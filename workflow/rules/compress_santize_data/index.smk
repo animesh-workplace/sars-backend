@@ -6,7 +6,7 @@ rule compress_santize_data:
 		sequence = rules.santize_data.output.sequence,
 	output:
 		download_zip = "{base_path}/Download/INSACOG_data_{date}.zip",
-	log: "{base_path}/Analysis/{date}/log/santize_data_error.log"
+	log: "{base_path}/Analysis/{date}/log/compress_santize_data_error.log"
 	run:
 		try:
 			print("Creating zip")
