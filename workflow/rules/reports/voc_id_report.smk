@@ -1,8 +1,8 @@
 rule voc_id_report:
 	message: "Get Specific VoC/VoI IDs report (Overall & State wise)"
 	input:
-		metadata 		= rules.combine_clade_lineage.output.nextstrain,
-		split_state 	= rules.split_state.output.state_wise_path,
+		metadata 	= rules.combine_clade_lineage.output.nextstrain,
+		split_state = rules.split_state.output.state_wise_path,
 	output:
 		voc_report = "{base_path}/Analysis/{date}/reports/voc_id_report.xlsx"
 	log: "{base_path}/Analysis/{date}/log/voc_report_error.log"
