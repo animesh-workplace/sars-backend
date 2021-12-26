@@ -1,8 +1,9 @@
 rule lineage_substitution_deletion_report:
 	message: "Finding all Mutations and Deletions and ordering it (Overall & State wise)"
 	input:
-		metadata 	= rules.combine_clade_lineage.output.nextstrain,
-		split_state = rules.split_state.output.state_wise_path,
+		metadata 		= rules.combine_clade_lineage.output.nextstrain,
+		split_state 	= rules.split_state.output.state_wise_path,
+		mutation_report = rules.mutation_report.output.overall_mutation,
 	output:
 		lineage_substitution_deletion = "{base_path}/Analysis/{date}/reports/lineage_substitution_deletion_report.tsv"
 	log: "{base_path}/Analysis/{date}/log/lineage_substitution_deletion_report_error.log"
