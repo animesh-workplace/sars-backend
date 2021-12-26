@@ -44,6 +44,11 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 				"type": "MY_METADATA_NAME",
 				"data": await get_my_metadata_name(self.scope["user"])
 			}
+		elif(event["type"] == "MY_METADATA_BATCH"):
+			result = {
+				"type": "MY_METADATA_BATCH",
+				"data": await get_my_metadata_batch(self.scope["user"])
+			}
 		else:
 			result = {
 				"type": "ERROR"
