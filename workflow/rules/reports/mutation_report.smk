@@ -1,8 +1,8 @@
 rule mutation_report:
 	message: "Finding all Mutations and Deletions [Gene wise] (Overall & State wise)"
 	input:
+		metadata 	= rules.combine_clade_lineage.output.nextstrain,
 		split_state = rules.split_state.output.state_wise_path,
-		metadata = rules.combine_clade_lineage.output.nextstrain
 	output:
 		overall_mutation = "{base_path}/Analysis/{date}/reports/mutation_count_report.xlsx"
 	log: "{base_path}/Analysis/{date}/log/mutation_report_error.log"
