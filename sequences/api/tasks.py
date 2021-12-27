@@ -49,11 +49,18 @@ def create_config_file(self, upload_info):
 	return 'Pipeline run completed'
 
 @database_sync_to_async
-def get_my_metadata_batch(user_obj):
+def get_my_batch(user_obj):
 	username 	= user_obj.username.split('_')[1]
 	# metadata_qs = Metadata_Handler.objects.filter(Q(user = user_obj)).annotate(date_only = Cast('submission_date', DateField())).values_list('date_only', flat = True).distinct()
 	metadata_qs = list(Metadata_Handler.objects.filter(Q(user = user_obj)).values_list('submission_date', flat = True))
 	return metadata_qs
+
+@database_sync_to_async
+def get_my_batch_metadata(user_obj, submission_date):
+	username = user_obj.username.split('_')[1]
+	metadata_qs = Metadata_Handler.objects.get(user = user_obj, submission_date = submission_date)
+	print(metadata_qs.submission_date, metadata_qs.user, metadata_qs.metadata)
+	pass
 
 @database_sync_to_async
 def get_my_metadata(user_obj, each_page, page, search = None, download = False):
