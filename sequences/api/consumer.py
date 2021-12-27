@@ -34,7 +34,7 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 				"data": await get_my_metadata(self.scope["user"], event["filter"]["each_page"], event["filter"]["page"], search)
 			}
 		elif(event["type"] == "DOWNLOAD_METADATA"):
-			search 	 = event["filter"]["search"] if('search' in event["filter"].keys()) else None
+			search = event["filter"]["search"] if('search' in event["filter"].keys()) else None
 			result = {
 				"type": "DOWNLOAD_METADATA",
 				"data": await get_my_metadata(self.scope["user"], event["filter"]["each_page"], event["filter"]["page"], search, True)
@@ -44,10 +44,16 @@ class FrontendConsumer(AsyncJsonWebsocketConsumer):
 				"type": "MY_METADATA_NAME",
 				"data": await get_my_metadata_name(self.scope["user"])
 			}
-		elif(event["type"] == "MY_METADATA_BATCH"):
+		elif(event["type"] == "MY_BATCH"):
 			result = {
-				"type": "MY_METADATA_BATCH",
-				"data": await get_my_metadata_batch(self.scope["user"])
+				"type": "MY_BATCH",
+				"data": await get_my_batch(self.scope["user"])
+			}
+		elif(event["type"] == "MY_BATCH_METADATA"):
+			submission_date = event["filter"]["submission_date"]
+			result = {
+				"type": "MY_BATCH_METADATA",
+				"data": await get_my_batch_metadata(self.scope["user"], submission_date)
 			}
 		else:
 			result = {
