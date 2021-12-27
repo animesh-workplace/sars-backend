@@ -21,6 +21,10 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from rest_framework.documentation import include_docs_urls
 
+admin.site.site_title  	=  'INSACOG DataHub'
+admin.site.site_header  =  '[ INSACOG DataHub ]'
+admin.site.index_title 	=  'Admin Panel'
+
 load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
 
 urlpatterns = [
