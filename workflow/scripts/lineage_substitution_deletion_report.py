@@ -31,6 +31,7 @@ def lsd_report(url):
 	all_changes = all_changes + [{'date': metadata.iloc[index]['date'], 'strain': metadata.iloc[index]['strain'], 'lineage': metadata.iloc[index]['lineage'], 'mutation/deletion': ''} for index in metadata[metadata['aaSubstitutions'].isna()]['aaSubstitutions'].index.to_list() + metadata[metadata['aaDeletions'].isna()]['aaDeletions'].index.to_list()]
 	pandas.DataFrame.from_dict(data = all_changes, orient = 'columns').to_csv(output_url, sep = '\t', header = True, index = False)
 	print(url["name"])
+	return all_changes
 
 metadata = pandas.read_csv(metadata_url, delimiter = '\t', encoding = 'utf-8', low_memory = False)
 states = pandas.unique(metadata['division']).tolist()
@@ -40,11 +41,10 @@ path_list = [
 		"metadata": f"{base_path}/Analysis/{date}/reports/state_wise/{state.replace(' ','_')}/{state.replace(' ','_')}_metadata.tsv",
 		"output": f"{base_path}/Analysis/{date}/reports/state_wise/{state.replace(' ','_')}/{state.replace(' ','_')}_lineage_substitution_deletion_report.tsv"
 	} for state in states ]
-path_list.append({
-	"metadata": metadata_url,
-	"name": "Generating Overall Lineage Substitution Deletion report",
-	"output": f"{base_path}/Analysis/{date}/reports/lineage_substitution_deletion_report.tsv",
-})
 
 with WorkerPool(n_jobs = 50) as pool:
 	output = pool.map(lsd_report, make_single_arguments(path_list, generator = False))
+
+all_changes = list(itertools.chain(*output))
+print("Generating Overall Lineage Substitution Deletion report")
+pandas.DataFrame.from_dict(data = all_changes, orient = 'columns').to_csv(f"{base_path}/Analysis/{date}/reports/lineage_substitution_deletion_report.tsv", sep = '\t', header = True, index = False)
