@@ -79,10 +79,10 @@ rule combine_clade_lineage:
 			database_entry['lineages_catalogued'] 	= len(pandas.unique(insacog_datahub_metadata['lineage']))
 
 			# Calculation of all variants
-			if(not metadata['aaSubstitutions'].dropna().empty):
-				all_variants = [mutations for (index, mutations) in  metadata['aaSubstitutions'].dropna().str.split(',').to_dict().items()]
-			if(not metadata['aaDeletions'].dropna().empty):
-				all_variants = all_variants + [mutations for (index, mutations) in  metadata['aaDeletions'].dropna().str.split(',').to_dict().items()]
+			if(not nextstrain_metadata['aaSubstitutions'].dropna().empty):
+				all_variants = [mutations for (index, mutations) in  nextstrain_metadata['aaSubstitutions'].dropna().str.split(',').to_dict().items()]
+			if(not nextstrain_metadata['aaDeletions'].dropna().empty):
+				all_variants = all_variants + [mutations for (index, mutations) in  nextstrain_metadata['aaDeletions'].dropna().str.split(',').to_dict().items()]
 			all_variants = list(itertools.chain(*all_variants))
 			unique_variants = pandas.unique(all_variants).tolist()
 
