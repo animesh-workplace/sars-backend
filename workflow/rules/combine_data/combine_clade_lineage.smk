@@ -78,22 +78,25 @@ rule combine_clade_lineage:
 			database_entry['genomes_sequenced'] 	= len(insacog_datahub_metadata)
 			database_entry['lineages_catalogued'] 	= len(pandas.unique(insacog_datahub_metadata['lineage']))
 
-			all_variants = []
-			for i in insacog_datahub_metadata.index:
-				if(isinstance(insacog_datahub_metadata.iloc[i]['aaSubstitutions'], str)):
-					all_variants.append(insacog_datahub_metadata.iloc[i]['aaSubstitutions'].split(','))
-				if(isinstance(insacog_datahub_metadata.iloc[i]['aaDeletions'], str)):
-					all_variants.append(insacog_datahub_metadata.iloc[i]['aaDeletions'].split(','))
+			# Calculation of all variants
+			if(not metadata['aaSubstitutions'].dropna().empty):
+				all_variants = [mutations for (index, mutations) in  metadata['aaSubstitutions'].dropna().str.split(',').to_dict().items()]
+			if(not metadata['aaDeletions'].dropna().empty):
+				all_variants = all_variants + [mutations for (index, mutations) in  metadata['aaDeletions'].dropna().str.split(',').to_dict().items()]
 			all_variants = list(itertools.chain(*all_variants))
 			unique_variants = pandas.unique(all_variants).tolist()
 
 			database_entry['variants_catalogued'] = len(unique_variants)
 
+			# Calculation of State wise distribution
 			for (key,value) in dict(collections.Counter(insacog_datahub_metadata['State'].tolist())).items():
 				database_entry['map_data'].append({
 					"name": key,
 					"value": value
 				})
+
+			# Calculation of lineage distribution
+
 
 			storage.store("total_count", len(insacog_datahub_metadata))
 			if(config['websocket']):
