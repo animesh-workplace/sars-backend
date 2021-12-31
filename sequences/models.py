@@ -20,6 +20,7 @@ class File_Handler(models.Model):
 
 class Metadata_Handler(models.Model):
 	user 			= models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='User')
+	count 			= models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
 	metadata 		= JSONField()
 	submission_date = models.DateTimeField(auto_now=False, auto_now_add=False, null=True)
 
