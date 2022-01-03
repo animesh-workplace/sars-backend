@@ -99,6 +99,7 @@ rule combine_clade_lineage:
 
 			database_entry['states_covered'] 		= len(pandas.unique(frontend_metadata['State']))
 			database_entry['genomes_sequenced'] 	= len(frontend_metadata)
+			database_entry['lineage_graph_data']	= { 'month_data': {}, 'lineage': [] }
 			database_entry['lineages_catalogued'] 	= len(pandas.unique(frontend_metadata['lineage']))
 
 			# Calculation of all variants
