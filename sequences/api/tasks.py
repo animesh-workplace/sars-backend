@@ -160,7 +160,7 @@ def update_landing_data(source = 'frontend'):
 		if(source == 'frontend'):
 			frontend_obj = Frontend_Handler(
 				map_data 					= frontend_obj.map_data,
-				lineage_data				= [],
+				lineage_data				= frontend_obj.lineage_data,
 				states_covered 				= frontend_obj.states_covered,
 				pie_chart_data 				= pie_chart_data,
 				scorpio_version 			= frontend_obj.scorpio_version,
