@@ -64,6 +64,7 @@ rule combine_clade_lineage:
 
 			nextstrain_metadata['date'] = pandas.to_datetime(nextstrain_metadata['date'], format="%Y-%m-%d")
 			nextstrain_metadata = nextstrain_metadata.assign(collection_month = nextstrain_metadata['date'].dt.strftime('%b-%Y'), WHO_label = "Others")
+			nextstrain_metadata = nextstrain_metadata.merge(nextclade_pangolin, on = 'strain', how = 'inner')
 
 			with open("workflow/resources/voc_tracking_frontend.json") as f:
 				voc_to_track = json.loads(f.read())
@@ -84,7 +85,6 @@ rule combine_clade_lineage:
 							elif(key == 'contains'):
 								nextstrain_metadata['WHO_label'][nextstrain_metadata['lineage'].str.contains(value)] = voc_type
 
-			nextstrain_metadata = nextstrain_metadata.merge(nextclade_pangolin, on = 'strain', how = 'inner')
 			nextstrain_metadata.to_csv(output.nextstrain, sep = '\t', index = False)
 
 			# For INSACOG DataHub
