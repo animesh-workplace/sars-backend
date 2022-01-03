@@ -62,6 +62,25 @@ rule combine_clade_lineage:
 				purpose_of_sequencing = ['?' for i in metadata.index]
 			)
 
+			nextstrain_metadata['date'] = pandas.to_datetime(nextstrain_metadata['date'], format="%Y-%m-%d")
+			nextstrain_metadata = nextstrain_metadata.assign(collection_month = nextstrain_metadata['date'].dt.strftime('%b-%Y'), WHO_label = "")
+
+			for voc_type, entries in voc_to_track.items():
+				for i in entries:
+					if('pangolin' in list(i.keys())):
+						for (key, value) in i['pangolin'].items():
+							if(key == 'exact'):
+								nextstrain_metadata['WHO_label'][nextstrain_metadata['lineage'].isin(value)] = voc_type
+							elif(key == 'contains'):
+								nextstrain_metadata['WHO_label'][nextstrain_metadata['lineage'].str.contains(value)] = voc_type
+
+					if('nextstrain' in list(i.keys())):
+						for (key, value) in i['nextstrain'].items():
+							if(key == 'exact'):
+								nextstrain_metadata['WHO_label'][nextstrain_metadata['lineage'].isin(value)] = voc_type
+							elif(key == 'contains'):
+								nextstrain_metadata['WHO_label'][nextstrain_metadata['lineage'].str.contains(value)] = voc_type
+
 			nextstrain_metadata = nextstrain_metadata.merge(nextclade_pangolin, on = 'strain', how = 'inner')
 			nextstrain_metadata.to_csv(output.nextstrain, sep = '\t', index = False)
 
@@ -70,26 +89,30 @@ rule combine_clade_lineage:
 			insacog_datahub_metadata = metadata.merge(nextclade_pangolin, on = 'Virus name', how = 'inner')
 			insacog_datahub_metadata.to_csv(output.insacog_datahub, sep = '\t', index = False)
 
+			# Removing NIV sequences
+			frontend_metadata = insacog_datahub_metadata[~insacog_datahub_metadata['submitting_lab'].isin(['NIV'])]
+			frontend_nextstrain_metadata = nextstrain_metadata[~nextstrain_metadata['submitting_lab'].isin(['NIV'])]
+
 			database_entry = {}
 			database_entry['map_data'] = []
 			database_entry['metadata_link'] = output.insacog_datahub
 
-			database_entry['states_covered'] 		= len(pandas.unique(insacog_datahub_metadata['State']))
-			database_entry['genomes_sequenced'] 	= len(insacog_datahub_metadata)
-			database_entry['lineages_catalogued'] 	= len(pandas.unique(insacog_datahub_metadata['lineage']))
+			database_entry['states_covered'] 		= len(pandas.unique(frontend_metadata['State']))
+			database_entry['genomes_sequenced'] 	= len(frontend_metadata)
+			database_entry['lineages_catalogued'] 	= len(pandas.unique(frontend_metadata['lineage']))
 
 			# Calculation of all variants
-			if(not nextstrain_metadata['aaSubstitutions'].dropna().empty):
-				all_variants = [mutations for (index, mutations) in  nextstrain_metadata['aaSubstitutions'].dropna().str.split(',').to_dict().items()]
-			if(not nextstrain_metadata['aaDeletions'].dropna().empty):
-				all_variants = all_variants + [mutations for (index, mutations) in  nextstrain_metadata['aaDeletions'].dropna().str.split(',').to_dict().items()]
+			if(not frontend_metadata['aaSubstitutions'].dropna().empty):
+				all_variants = [mutations for (index, mutations) in  frontend_metadata['aaSubstitutions'].dropna().str.split(',').to_dict().items()]
+			if(not frontend_metadata['aaDeletions'].dropna().empty):
+				all_variants = all_variants + [mutations for (index, mutations) in  frontend_metadata['aaDeletions'].dropna().str.split(',').to_dict().items()]
 			all_variants = list(itertools.chain(*all_variants))
 			unique_variants = pandas.unique(all_variants).tolist()
 
 			database_entry['variants_catalogued'] = len(unique_variants)
 
 			# Calculation of State wise distribution
-			for (key,value) in dict(collections.Counter(insacog_datahub_metadata['State'].tolist())).items():
+			for (key,value) in dict(collections.Counter(frontend_metadata['State'].tolist())).items():
 				database_entry['map_data'].append({
 					"name": key,
 					"value": value
