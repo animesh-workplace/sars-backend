@@ -40,6 +40,7 @@ def send_data_to_websocket(data_type, tool, message):
 	}
 	if(data_type == "SUCCESS"):
 		websocket_data["data"]["total_seq"] = storage.fetch("total_count")
+		websocket_data["data"]["frontend_seq"] = storage.fetch("frontend_count")
 	ws.send(json.dumps(websocket_data))
 	sleep(1)
 	ws.close()
