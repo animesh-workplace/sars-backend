@@ -11,5 +11,5 @@
 	"Theta": [{ "pangolin": { "contains": "P.3" } }],
 	"Zeta": [{ "pangolin": { "contains": "P.2" } }],
 	"Lambda": [{ "pangolin": { "contains": "C.37" } }],
-	"Mu": [{ "pangolin": { "contains": "B.1.621" } }],
+	"Mu": [{ "pangolin": { "contains": "B.1.621" } }]
 }
