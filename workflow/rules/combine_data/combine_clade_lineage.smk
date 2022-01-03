@@ -122,6 +122,7 @@ rule combine_clade_lineage:
 
 
 			storage.store("total_count", len(insacog_datahub_metadata))
+			storage.store("frontend_count", len(frontend_metadata))
 			if(config['websocket']):
 				send_data_to_websocket('SUCCESS_METADATA', 'combine_clade_lineage', database_entry | storage.fetch("tool_version"))
 		except:

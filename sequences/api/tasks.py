@@ -339,7 +339,7 @@ def send_email_success(workflow_info):
 					<p>
 						This is an automated mail to provide the link for the report generated after the daily analysis of
 						<strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['total_seq'] }
-						sequences</strong>.<br>
+						sequences in the backend and in the frontend it's showing { workflow_info['frontend_seq'] }</strong>.<br>
 						The pipeline has analyzed total
 						<strong style="background-color:#FFC748;text-decoration:none;">{ workflow_info['total_seq'] } sequences</strong> and took
 						<strong style="background-color:#FFC748;text-decoration:none;">{ end_time.diff(start_time).in_minutes() } minutes</strong> starting at
