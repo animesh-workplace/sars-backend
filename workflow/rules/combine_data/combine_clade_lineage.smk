@@ -63,7 +63,7 @@ rule combine_clade_lineage:
 			)
 
 			nextstrain_metadata['date'] = pandas.to_datetime(nextstrain_metadata['date'], format="%Y-%m-%d")
-			nextstrain_metadata = nextstrain_metadata.assign(collection_month = nextstrain_metadata['date'].dt.strftime('%b-%Y'), WHO_label = "")
+			nextstrain_metadata = nextstrain_metadata.assign(collection_month = nextstrain_metadata['date'].dt.strftime('%b-%Y'), WHO_label = "Others")
 
 			for voc_type, entries in voc_to_track.items():
 				for i in entries:
