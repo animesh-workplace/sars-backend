@@ -183,6 +183,7 @@ def get_dashboard():
 	if(frontend_obj):
 		dashboard = {
 			"map_data" 					: frontend_obj.map_data,
+			"lineage_data"				: frontend_obj.lineage_data,
 			"last_updated"				: frontend_obj.last_updated,
 			"pie_chart_data"			: frontend_obj.pie_chart_data,
 			"states_covered"			: int(frontend_obj.states_covered),
@@ -218,7 +219,7 @@ def create_frontend_entry(workflow_info):
 	pie_chart_data, genomes_sequenced = update_landing_data('backend')
 	download_obj = Frontend_Handler(
 		map_data 					= workflow_info['map_data'],
-		lineage_data				= [],
+		lineage_data				= workflow_info['lineage_graph_data']['lineage'],
 		pie_chart_data 				= pie_chart_data,
 		states_covered 				= workflow_info['states_covered'],
 		scorpio_version 			= workflow_info['scorpio_version'],
