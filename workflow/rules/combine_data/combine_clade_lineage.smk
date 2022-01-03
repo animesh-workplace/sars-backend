@@ -119,7 +119,25 @@ rule combine_clade_lineage:
 				})
 
 			# Calculation of lineage distribution
+			month_values = sorted(frontend_metadata['date'])
+			month_keys = [i.strftime('%b-%Y') for i in month_values]
+			month_keys = pandas.DataFrame(month_keys)[0].unique().tolist()
+			month_wise_mutation_percent = pandas.DataFrame(index = list(voc_to_track.keys()), columns = month_keys)
 
+			month_count = dict(collections.Counter(frontend_nextstrain_metadata['collection_month']))
+			lineage_wise_count = pandas.crosstab(frontend_nextstrain_metadata.WHO_label, frontend_nextstrain_metadata.collection_month)
+
+			for i in month_keys:
+				month_wise_mutation_percent[i] = round((lineage_wise_count[i]/month_count[i])*100, 2)
+
+			for i in month_wise_mutation_percent.T['Jan-2021':].index:
+				database_entry['lineage_graph_data']['month_data'][i] = month_count[i]
+
+			for (key, value) in month_wise_mutation_percent.T['Jan-2021':].to_dict(orient = 'list').items():
+				database_entry['lineage_graph_data']['lineage'].append({
+					'name': key,
+					'value': value
+				})
 
 			storage.store("total_count", len(insacog_datahub_metadata))
 			storage.store("frontend_count", len(frontend_metadata))
