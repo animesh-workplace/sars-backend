@@ -123,7 +123,7 @@ rule combine_clade_lineage:
 			month_values = sorted(frontend_metadata['date'])
 			month_keys = [i.strftime('%b-%Y') for i in month_values]
 			month_keys = pandas.DataFrame(month_keys)[0].unique().tolist()
-			month_wise_mutation_percent = pandas.DataFrame(index = list(voc_to_track.keys()), columns = month_keys)
+			month_wise_mutation_percent = pandas.DataFrame(index = list(pandas.unique(frontend_nextstrain_metadata['WHO_label'])), columns = month_keys)
 
 			month_count = dict(collections.Counter(frontend_nextstrain_metadata['collection_month']))
 			lineage_wise_count = pandas.crosstab(frontend_nextstrain_metadata.WHO_label, frontend_nextstrain_metadata.collection_month)
