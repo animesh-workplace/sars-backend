@@ -123,7 +123,7 @@ rule combine_clade_lineage:
 				})
 
 			# Calculation of lineage distribution
-			month_values = sorted(frontend_metadata['Collection date'])
+			month_values = sorted(frontend_nextstrain_metadata['date'])
 			month_keys = [i.strftime('%b-%Y') for i in month_values]
 			month_keys = pandas.DataFrame(month_keys)[0].unique().tolist()
 			month_wise_mutation_percent = pandas.DataFrame(index = list(pandas.unique(frontend_nextstrain_metadata['WHO_label'])), columns = month_keys)
