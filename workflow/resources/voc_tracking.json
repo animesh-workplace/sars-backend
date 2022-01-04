@@ -1,5 +1,5 @@
 {
-	"Alpha": [{ "pangolin": { "exact": ["B.1.1.7"] } }],
+	"Alpha": [{ "pangolin": { "exact": ["B.1.1.7"], "contains": "Q." } }],
 	"Beta": [{ "pangolin": { "contains": "B.1.351" } }],
 	"Gamma": [{ "pangolin": { "contains": "P.1" } }],
 	"Omicron": [{ "pangolin": { "exact": ["B.1.1.529"], "contains": "BA." } }],
