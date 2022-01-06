@@ -28,7 +28,7 @@ def lsd_report(url):
 		all_changes = [{'date': metadata.iloc[index]['date'], 'strain': metadata.iloc[index]['strain'], 'lineage': metadata.iloc[index]['lineage'], 'state': metadata.iloc[index]['division'], 'mutation/deletion': mutation} for (index, mutations) in  metadata['aaSubstitutions'].dropna().str.split(',').to_dict().items() for mutation in mutations]
 	if(not metadata['aaDeletions'].dropna().empty):
 		all_changes = all_changes + [{'date': metadata.iloc[index]['date'], 'strain': metadata.iloc[index]['strain'], 'lineage': metadata.iloc[index]['lineage'], 'state': metadata.iloc[index]['division'], 'mutation/deletion': mutation} for (index, mutations) in  metadata['aaDeletions'].dropna().str.split(',').to_dict().items() for mutation in mutations]
-	all_changes = all_changes + [{'date': metadata.iloc[index]['date'], 'strain': metadata.iloc[index]['strain'], 'lineage': metadata.iloc[index]['lineage'], 'mutation/deletion': ''} for index in metadata[metadata['aaSubstitutions'].isna()]['aaSubstitutions'].index.to_list() + metadata[metadata['aaDeletions'].isna()]['aaDeletions'].index.to_list()]
+	all_changes = all_changes + [{'date': metadata.iloc[index]['date'], 'strain': metadata.iloc[index]['strain'], 'lineage': metadata.iloc[index]['lineage'],'state': metadata.iloc[index]['division'], 'mutation/deletion': ''} for index in metadata[metadata['aaSubstitutions'].isna()]['aaSubstitutions'].index.to_list() + metadata[metadata['aaDeletions'].isna()]['aaDeletions'].index.to_list()]
 	pandas.DataFrame.from_dict(data = all_changes, orient = 'columns').to_csv(output_url, sep = '\t', header = True, index = False)
 	print(url["name"])
 	return all_changes
