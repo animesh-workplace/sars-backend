@@ -138,12 +138,13 @@ rule combine_clade_lineage:
 				database_entry['lineage_graph_data']['month_data'][i] = month_count[i]
 
 			temp = {}
-			for (key, value) in month_wise_mutation_percent.T['Jan-2021':].to_dict(orient = 'list').items():
+			for (key, value) in month_wise_mutation_percent.T['Jan-2021':'Dec-2021'].to_dict(orient = 'list').items():
 				temp[key] = { 'name': key, 'value': value }
 
 			order_lineage = ['Omicron', 'Delta', 'Alpha', 'Beta', 'Gamma', 'Kappa', 'Eta', 'Iota', 'Epsilon', 'Zeta', 'Others']
 			for i in order_lineage:
-				database_entry['lineage_graph_data']['lineage'].append(temp[i])
+				if(i in temp.keys()):
+					database_entry['lineage_graph_data']['lineage'].append(temp[i])
 
 			storage.store("total_count", len(insacog_datahub_metadata))
 			storage.store("frontend_count", len(frontend_metadata))
