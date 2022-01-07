@@ -94,7 +94,7 @@ rule combine_clade_lineage:
 
 			# Removing NIV sequences
 			frontend_metadata = insacog_datahub_metadata[~insacog_datahub_metadata['Submitting lab'].isin(['NIV'])]
-			frontend_nextstrain_metadata = nextstrain_metadata[~nextstrain_metadata['submitting_lab'].isin(['NIV']) & ~nextstrain_metadata['lineage'].isin(['None'])]
+			frontend_nextstrain_metadata = nextstrain_metadata[~nextstrain_metadata['lineage'].isin(['None'])]
 
 			database_entry = {}
 			database_entry['map_data'] = []
