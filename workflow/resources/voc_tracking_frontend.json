@@ -2,7 +2,14 @@
 	"Alpha": [{ "pangolin": { "exact": ["B.1.1.7"], "contains": "Q." } }],
 	"Beta": [{ "pangolin": { "contains": "B.1.351" } }],
 	"Gamma": [{ "pangolin": { "contains": "P.1" } }],
-	"Omicron": [{ "pangolin": { "exact": ["B.1.1.529"], "contains": "BA." } }],
+	"Omicron": [
+		{
+			"pangolin": { "exact": ["B.1.1.529"], "contains": "BA." },
+			"nextstrain": {
+				"exact": ["21M (Omicorn)", "21K (Omicron)", "21L (Omicron)"]
+			}
+		}
+	],
 	"Delta": [{ "pangolin": { "exact": ["B.1.617.2"], "contains": "AY." } }],
 	"Kappa": [{ "pangolin": { "exact": ["B.1.617.1"] } }],
 	"Eta": [{ "pangolin": { "exact": ["B.1.525"] } }],

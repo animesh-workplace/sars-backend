@@ -2,9 +2,23 @@
 	"Alpha": [{ "pangolin": { "exact": ["B.1.1.7"], "contains": "Q." } }],
 	"Beta": [{ "pangolin": { "contains": "B.1.351" } }],
 	"Gamma": [{ "pangolin": { "contains": "P.1" } }],
-	"Omicron": [{ "pangolin": { "exact": ["B.1.1.529"], "contains": "BA." } }],
+	"Omicron": [
+		{
+			"pangolin": { "exact": ["B.1.1.529"], "contains": "BA." }
+		},
+		{
+			"nextstrain": {
+				"exact": ["21M (Omicorn)", "21K (Omicron)", "21L (Omicron)"]
+			}
+		}
+	],
 	"Delta (All)": [
-		{ "pangolin": { "exact": ["B.1.617.2"], "contains": "AY." } }
+		{ "pangolin": { "exact": ["B.1.617.2"], "contains": "AY." } },
+		{
+			"nextstrain": {
+				"exact": ["21A (Delta)", "21I (Delta)", "21J (Delta)"]
+			}
+		}
 	],
 	"Delta (Only B.1.617.2)": [{ "pangolin": { "exact": ["B.1.617.2"] } }],
 	"Delta (AY.XX)": [{ "pangolin": { "contains": "AY." } }],
