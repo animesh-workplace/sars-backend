@@ -10,7 +10,14 @@
 			}
 		}
 	],
-	"Delta": [{ "pangolin": { "exact": ["B.1.617.2"], "contains": "AY." } }],
+	"Delta": [
+		{ "pangolin": { "exact": ["B.1.617.2"], "contains": "AY." } },
+		{
+			"nextstrain": {
+				"exact": ["21A (Delta)", "21I (Delta)", "21J (Delta)"]
+			}
+		}
+	],
 	"Kappa": [{ "pangolin": { "exact": ["B.1.617.1"] } }],
 	"Eta": [{ "pangolin": { "exact": ["B.1.525"] } }],
 	"Iota": [{ "pangolin": { "exact": ["B.1.526"] } }],
