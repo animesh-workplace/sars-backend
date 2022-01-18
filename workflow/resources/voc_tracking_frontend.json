@@ -4,7 +4,9 @@
 	"Gamma": [{ "pangolin": { "contains": "P.1" } }],
 	"Omicron": [
 		{
-			"pangolin": { "exact": ["B.1.1.529"], "contains": "BA." },
+			"pangolin": { "exact": ["B.1.1.529"], "contains": "BA." }
+		},
+		{
 			"nextstrain": {
 				"exact": ["21M (Omicorn)", "21K (Omicron)", "21L (Omicron)"]
 			}
