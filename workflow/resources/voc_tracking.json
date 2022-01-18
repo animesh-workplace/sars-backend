@@ -20,8 +20,6 @@
 			}
 		}
 	],
-	"Delta (Only B.1.617.2)": [{ "pangolin": { "exact": ["B.1.617.2"] } }],
-	"Delta (AY.XX)": [{ "pangolin": { "contains": "AY." } }],
 	"Kappa": [{ "pangolin": { "exact": ["B.1.617.1"] } }],
 	"Eta": [{ "pangolin": { "exact": ["B.1.525"] } }],
 	"Iota": [{ "pangolin": { "exact": ["B.1.526"] } }],
