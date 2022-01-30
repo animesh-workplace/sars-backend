@@ -7,7 +7,7 @@ rule combine_clade_lineage:
         lineage_report = rules.lineage_report.output.report,
     output:
         nextstrain = "{base_path}/Analysis/{date}/nextstrain/nextstrain_metadata.tsv",
-        lineage_percent_report = "{base_path}/Analysis/{date}/reports/lineage_percent.tsv",
+        frontend_data_report = "{base_path}/Analysis/{date}/reports/frontend_data.xlsx",
         insacog_datahub = "{base_path}/Analysis/{date}/nextstrain/insacog_datahub_metadata.tsv",
     log: "{base_path}/Analysis/{date}/log/combine_clade_lineage_error.log"
     run:
