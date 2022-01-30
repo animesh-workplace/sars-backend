@@ -1,4 +1,4 @@
-rule upload_to_ondedrive:
+rule upload_to_onedrive:
 	message: "Uploading Files to Onedrive"
 	input:
 		rules.voc_id_report.output,
