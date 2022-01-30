@@ -27,9 +27,11 @@ rule combine_clade_lineage:
             pangolin_metadata.rename(columns={'taxon': 'strain'}, inplace=True)
 
             nextclade_pangolin = pandas.merge(
-                nextclade_metadata[['strain', 'clade', 'totalInsertions', 'totalMissing', 'totalNonACGTNs', 'nonACGTNs',
-                                    'substitutions', 'deletions', 'aaSubstitutions', 'aaDeletions']],
-                pangolin_metadata[['strain', 'lineage', 'scorpio_call', 'note', 'pangoLEARN_version']],
+                nextclade_metadata[['strain', 'clade', 'totalInsertions', 'insertions', 'totalFrameShifts', 'frameShifts',
+                                    'totalMissing', 'missing', 'totalNonACGTNs', 'nonACGTNs',
+                                    'substitutions', 'aaSubstitutions', 'deletions', , 'aaDeletions']],
+                pangolin_metadata[['strain', 'lineage', 'scorpio_call', 'scorpio_support',
+                                   'scorpio_conflict', 'note', 'pangoLEARN_version']],
                 on='strain', how='inner'
             )
 
