@@ -92,16 +92,14 @@ rule combine_clade_lineage:
                             if(key == 'exact'):
                                 nextstrain_metadata['WHO_label'][nextstrain_metadata['lineage'].isin(value)] = voc_type
                             elif(key == 'contains'):
-                                nextstrain_metadata['WHO_label']
-                                [nextstrain_metadata['lineage'].str.contains(value)] = voc_type
+                                nextstrain_metadata['WHO_label'][nextstrain_metadata['lineage'].str.contains(value)] = voc_type
 
                     if('nextstrain' in list(i.keys())):
                         for (key, value) in i['nextstrain'].items():
                             if(key == 'exact'):
                                 nextstrain_metadata['WHO_label'][nextstrain_metadata['lineage'].isin(value)] = voc_type
                             elif(key == 'contains'):
-                                nextstrain_metadata['WHO_label']
-                                [nextstrain_metadata['lineage'].str.contains(value)] = voc_type
+                                nextstrain_metadata['WHO_label'][nextstrain_metadata['lineage'].str.contains(value)] = voc_type
 
             nextstrain_metadata.to_csv(output.nextstrain, sep='\t', index=False)
 
