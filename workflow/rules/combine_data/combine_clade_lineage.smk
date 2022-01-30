@@ -7,7 +7,8 @@ rule combine_clade_lineage:
         lineage_report = rules.lineage_report.output.report,
     output:
         nextstrain = "{base_path}/Analysis/{date}/nextstrain/nextstrain_metadata.tsv",
-        insacog_datahub = "{base_path}/Analysis/{date}/nextstrain/insacog_datahub_metadata.tsv"
+        lineage_percent_report = "{base_path}/Analysis/{date}/reports/lineage_percent.tsv",
+        insacog_datahub = "{base_path}/Analysis/{date}/nextstrain/insacog_datahub_metadata.tsv",
     log: "{base_path}/Analysis/{date}/log/combine_clade_lineage_error.log"
     run:
         try:
@@ -179,6 +180,8 @@ rule combine_clade_lineage:
             temp = {}
             for (key, value) in month_wise_mutation_percent.T.to_dict(orient='list').items():
                 temp[key] = {'name': key, 'value': value}
+
+            month_wise_mutation_percent.to_csv(output.lineage_percent_report, sep='\t')
 
             order_lineage = ['Omicron', 'Delta', 'Alpha', 'Beta', 'Gamma', 'Kappa', 'Eta', 'Iota', 'Epsilon', 'Zeta', 'Others']
             for i in order_lineage:
