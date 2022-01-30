@@ -79,9 +79,9 @@ rule combine_clade_lineage:
             )
             nextstrain_metadata = nextstrain_metadata.merge(nextclade_pangolin, on='strain', how='inner')
 
-            nextstrain_metadata['WHO_label'][nextstrain_metadata['lineage'] == 'None'] = 'None'
+            # nextstrain_metadata['WHO_label'][nextstrain_metadata['lineage'] == 'None'] = 'None'
 
-            with open("workflow/resources/voc_tracking_frontend.json") as f:
+            with open("workflow/resources/voc_tracking.json") as f:
                 voc_to_track = json.loads(f.read())
 
             for voc_type, entries in voc_to_track.items():
