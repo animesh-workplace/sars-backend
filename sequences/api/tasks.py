@@ -298,7 +298,7 @@ def send_email_upload(user_info):
         message = account.new_message()
         if(eval(os.getenv('DEBUG'))):
             message.to.add(['aks1@nibmg.ac.in'])
-            message.subject = '✅|📤 Upload Info [ INSACOG TestHub ]'
+            message.subject = '🗣️|📤 Upload Info [ INSACOG TestHub ]'
         else:
             message.to.add(['aks1@nibmg.ac.in', 'nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in',
                            'data.analyst.insacog@nibmg.ac.in', 'manager.insacog@nibmg.ac.in'])
@@ -347,8 +347,8 @@ def send_email_success(workflow_info):
         message1.to.add(['aks1@nibmg.ac.in'])
         if(eval(os.getenv('DEBUG'))):
             message2.to.add(['animesh.workplace@gmail.com'])
-            message1.subject = '📦 Report v2 [ INSACOG TestHub ]'
-            message2.subject = '📦 Report v2 [ INSACOG TestHub ]'
+            message1.subject = '🗣️|📦 Report v2 [ INSACOG TestHub ]'
+            message2.subject = '🗣️|📦 Report v2 [ INSACOG TestHub ]'
         else:
             message2.bcc.add(['samastha849@gmail.com'])
             message2.to.add(['nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in',
