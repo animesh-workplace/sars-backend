@@ -331,10 +331,8 @@ def send_email_upload(user_info):
 
 
 def send_email_success(workflow_info):
-    start_time = pendulum.from_format(
-        workflow_info["upload_time"], "YYYY-MM-DD_hh-mm-ss-A", tz="Asia/Kolkata")
-    end_time = pendulum.from_format(
-        workflow_info["timestamp"], "YYYY-MM-DD_hh-mm-ss-A", tz="Asia/Kolkata")
+    start_time = pendulum.from_format(workflow_info["upload_time"], "YYYY-MM-DD_hh-mm-ss-A", tz="Asia/Kolkata")
+    end_time = pendulum.from_format(workflow_info["timestamp"], "YYYY-MM-DD_hh-mm-ss-A", tz="Asia/Kolkata")
     credentials = (os.getenv('ONEDRIVE_CLIENT'), os.getenv('ONEDRIVE_SECRET'))
     account = Account(credentials, auth_flow_type='authorization')
     if(account.is_authenticated):
@@ -354,7 +352,7 @@ def send_email_success(workflow_info):
         else:
             message2.bcc.add(['samastha849@gmail.com'])
             message2.to.add(['nkb1@nibmg.ac.in', 'ap3@nibmg.ac.in',
-                            'data.analyst.insacog@nibmg.ac.in'])
+                            'data.analyst.insacog@nibmg.ac.in', 'manager.insacog@nibmg.ac.in'])
             message1.subject = '📦 Report v2 [ INSACOG DataHub ]'
             message2.subject = '📦 Report v2 [ INSACOG DataHub ]'
         html_content1 = f"""
