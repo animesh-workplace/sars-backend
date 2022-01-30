@@ -163,14 +163,14 @@ rule combine_clade_lineage:
             week_count = dict(collections.Counter(frontend_nextstrain_metadata['collection_week']))
             lineage_week_wise_count = pandas.crosstab(
                 frontend_nextstrain_metadata.WHO_label,
-                frontend_nextstrain_metadata.collection_month
+                frontend_nextstrain_metadata.collection_week
             )
 
             for i in month_keys:
                 month_wise_mutation_percent[i] = round((lineage_month_wise_count[i] / month_count[i]) * 100, 2)
 
-            # for i in week_keys:
-            #   week_wise_mutation_percent[i] = round((lineage_week_wise_count[i]/week_count[i])*100, 2)
+            for i in week_keys:
+                week_wise_mutation_percent[i] = round((lineage_week_wise_count[i] / week_count[i]) * 100, 2)
 
             for i in month_wise_mutation_percent.T.index:
                 database_entry['lineage_graph_data']['month_data'][i] = month_count[i]
@@ -179,7 +179,14 @@ rule combine_clade_lineage:
             for (key, value) in month_wise_mutation_percent.T.to_dict(orient='list').items():
                 temp[key] = {'name': key, 'value': value}
 
-            month_wise_mutation_percent.to_csv(output.lineage_percent_report, sep='\t')
+            writer = ExcelWriter(output.frontend_data_report)
+            pandas.DataFrame.from_dict(data=[month_count]).transpose().rename(columns={0: 'Count'}).to_excel(writer, 'Month_Count')
+            lineage_month_wise_count.to_excel(writer, 'Month_Lineage_Count')
+            month_wise_mutation_percent.to_excel(writer, 'Month_Lineage_Percentage')
+            pandas.DataFrame.from_dict(data=[week_count]).transpose().rename(columns={0: 'Count'}).to_excel(writer, 'Week_Count')
+            lineage_week_wise_count.to_excel(writer, 'Week_Lineage_Count')
+            week_wise_mutation_percent.to_excel(writer, 'Week_Lineage_Percentage')
+            writer.save()
 
             order_lineage = ['Omicron', 'Delta', 'Alpha', 'Beta', 'Gamma', 'Kappa', 'Eta', 'Iota', 'Epsilon', 'Zeta', 'Others']
             for i in order_lineage:
