@@ -193,11 +193,6 @@ rule combine_clade_lineage:
             week_wise_mutation_percent.to_excel(writer, 'Week_Lineage_Percentage')
             writer.save()
 
-            order_lineage = ['Omicron', 'Delta', 'Alpha', 'Beta', 'Gamma', 'Kappa', 'Eta', 'Iota', 'Epsilon', 'Zeta', 'Others']
-            for i in order_lineage:
-                if(i in temp.keys()):
-                    database_entry['lineage_graph_data']['lineage'].append(temp[i])
-
             storage.store("total_count", len(insacog_datahub_metadata))
             storage.store("frontend_count", len(frontend_metadata))
             if(config['websocket']):
