@@ -45,8 +45,7 @@ def queryhub_api(search):
 		obj = obj.filter(Collection_date__lte=search['to_date'])
 	lineage_count = obj.values('Lineage').annotate(Count('Virus_name', distinct=True))
 	state_count = obj.values('State').annotate(Count('Virus_name', distinct=True))
-	return {"lineage": lineage_count, "state": state_count}
-
+	return {"lineage": list(lineage_count), "state": list(state_count)}
 
 @shared_task(bind=True)
 def create_config_file(self, upload_info):
