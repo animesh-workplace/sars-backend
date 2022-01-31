@@ -1,32 +1,32 @@
 {
-	"Alpha": [{ "pangolin": { "exact": ["B.1.1.7"], "contains": "Q." } }],
-	"Beta": [{ "pangolin": { "contains": "B.1.351" } }],
-	"Gamma": [{ "pangolin": { "contains": "P.1" } }],
-	"Omicron": [
-		{
-			"pangolin": { "exact": ["B.1.1.529"], "contains": "BA." }
-		},
-		{
-			"nextstrain": {
-				"exact": ["21M (Omicorn)", "21K (Omicron)", "21L (Omicron)"]
-			}
-		}
-	],
-	"Delta (All)": [
-		{ "pangolin": { "exact": ["B.1.617.2"], "contains": "AY." } },
-		{
-			"nextstrain": {
-				"exact": ["21A (Delta)", "21I (Delta)", "21J (Delta)"]
-			}
-		}
-	],
-	"Kappa": [{ "pangolin": { "exact": ["B.1.617.1"] } }],
-	"Eta": [{ "pangolin": { "exact": ["B.1.525"] } }],
-	"Iota": [{ "pangolin": { "exact": ["B.1.526"] } }],
-	"Epsilon": [{ "pangolin": { "exact": ["B.1.427", "B.1.429"] } }],
-	"Theta": [{ "pangolin": { "contains": "P.3" } }],
-	"Zeta": [{ "pangolin": { "contains": "P.2" } }],
-	"Lambda": [{ "pangolin": { "contains": "C.37" } }],
-	"Mu": [{ "pangolin": { "contains": "B.1.621" } }],
-	"None": [{ "pangolin": { "exact": ["None"] } }]
+    "None": [{ "pangolin": { "exact": ["None"] } }],
+    "Alpha": [{ "pangolin": { "exact": ["B.1.1.7"], "contains": "Q." } }],
+    "Beta": [{ "pangolin": { "contains": "B.1.351" } }],
+    "Gamma": [{ "pangolin": { "contains": "P.1" } }],
+    "Omicron": [
+        {
+            "pangolin": { "exact": ["B.1.1.529"], "contains": "BA." }
+        },
+        {
+            "nextstrain": {
+                "exact": ["21M (Omicorn)", "21K (Omicron)", "21L (Omicron)"]
+            }
+        }
+    ],
+    "Delta": [
+        { "pangolin": { "exact": ["B.1.617.2"], "contains": "AY." } },
+        {
+            "nextstrain": {
+                "exact": ["21A (Delta)", "21I (Delta)", "21J (Delta)"]
+            }
+        }
+    ],
+    "Kappa": [{ "pangolin": { "exact": ["B.1.617.1"] } }],
+    "Eta": [{ "pangolin": { "exact": ["B.1.525"] } }],
+    "Iota": [{ "pangolin": { "exact": ["B.1.526"] } }],
+    "Epsilon": [{ "pangolin": { "exact": ["B.1.427", "B.1.429"] } }],
+    "Theta": [{ "pangolin": { "contains": "P.3" } }],
+    "Zeta": [{ "pangolin": { "contains": "P.2" } }],
+    "Lambda": [{ "pangolin": { "contains": "C.37" } }],
+    "Mu": [{ "pangolin": { "contains": "B.1.621" } }]
 }
