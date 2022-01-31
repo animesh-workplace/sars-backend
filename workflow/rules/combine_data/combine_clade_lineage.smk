@@ -172,12 +172,17 @@ rule combine_clade_lineage:
             for i in week_keys:
                 week_wise_mutation_percent[i] = round((lineage_week_wise_count[i] / week_count[i]) * 100, 2)
 
-            for i in month_wise_mutation_percent.T.index:
+            for i in month_wise_mutation_percent.T['Jan-2021':].index:
                 database_entry['lineage_graph_data']['month_data'][i] = month_count[i]
 
             temp = {}
-            for (key, value) in month_wise_mutation_percent.T.to_dict(orient='list').items():
+            for (key, value) in month_wise_mutation_percent.T['Jan-2021':].to_dict(orient='list').items():
                 temp[key] = {'name': key, 'value': value}
+
+            order_lineage = ['Omicron', 'Delta', 'Alpha', 'Beta', 'Gamma', 'Kappa', 'Eta', 'Iota', 'Epsilon', 'Zeta', 'Others']
+            for i in order_lineage:
+                if(i in temp.keys()):
+                    database_entry['lineage_graph_data']['lineage'].append(temp[i])
 
             writer = ExcelWriter(output.frontend_data_report)
             pandas.DataFrame.from_dict(data=[month_count]).transpose().rename(columns={0: 'Count'}).to_excel(writer, 'Month_Count')
