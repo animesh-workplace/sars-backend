@@ -33,20 +33,20 @@ load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
 
 @database_sync_to_async
 def queryhub_api(search):
-	obj = Metadata.objects
-	if(search["lineage"]):
-		obj = obj.filter(Lineage__in=search['lineage'])
-	if(search["state"]):
-		obj = obj.filter(State__in=search['state'])
-	if(search["mutation"]):
-		obj = obj.filter(reduce(operator.and_, (Q(aaSubstitutions__contains=x) for x in search["mutation"])) | reduce(operator.and_, (Q(aaDeletions__contains=x) for x in search["mutation"])))
-	if(search["from_date"]):
-		obj =obj.filter(Collection_date__gte=search['from_date'])
-	if(search["to_date"]):
-		obj = obj.filter(Collection_date__lte=search['to_date'])
-	lineage_count = obj.values('Lineage').annotate(Count('Virus_name', distinct=True))
-	state_count = obj.values('State').annotate(Count('Virus_name', distinct=True))
-	return {"lineage": list(lineage_count), "state": list(state_count)}
+    obj = Metadata.objects
+    if(search["lineage"]):
+        obj = obj.filter(Lineage__in=search['lineage'])
+    if(search["state"]):
+        obj = obj.filter(State__in=search['state'])
+    if(search["mutation"]):
+        obj = obj.filter(reduce(operator.and_, (Q(aaSubstitutions__contains=x) for x in search["mutation"])) | reduce(operator.and_, (Q(aaDeletions__contains=x) for x in search["mutation"])))
+    if(search["from_date"]):
+        obj =obj.filter(Collection_date__gte=search['from_date'])
+    if(search["to_date"]):
+        obj = obj.filter(Collection_date__lte=search['to_date'])
+    lineage_count = obj.values('Lineage').annotate(lineage = F('Lineage'), count = Count('Virus_name', distinct=True)).values('lineage', 'count')
+    state_count = obj.values('State').annotate(state = F('State'), count = Count('Virus_name', distinct=True)).values('state', 'count')
+    return {"lineage": list(lineage_count), "state": list(state_count)}
 
 @shared_task(bind=True)
 def create_config_file(self, upload_info):
