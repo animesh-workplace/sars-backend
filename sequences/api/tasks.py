@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 from celery import shared_task
 from django.conf import settings
 from django.utils import timezone
-from django.db.models import Q, Count
+from django.db.models import F, Q, Count
 from zipfile import ZipFile, ZIP_DEFLATED
 from django.core.paginator import Paginator
 # from django.db.models.functions import Cast
