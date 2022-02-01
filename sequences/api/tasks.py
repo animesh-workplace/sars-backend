@@ -17,11 +17,11 @@ from Bio import SeqIO
 from time import sleep
 from O365 import Account
 from functools import reduce
-from django.db.models import Q
-from celery import shared_task
 from dotenv import load_dotenv
+from celery import shared_task
 from django.conf import settings
 from django.utils import timezone
+from django.db.models import Q, Count
 from zipfile import ZipFile, ZIP_DEFLATED
 from django.core.paginator import Paginator
 # from django.db.models.functions import Cast
@@ -31,6 +31,22 @@ from sequences.models import Download_Handler, Metadata_Handler, Frontend_Handle
 
 load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
 
+@database_sync_to_async
+def queryhub_api(search):
+	obj = Metadata.objects
+	if(search["lineage"]):
+		obj = obj.filter(Lineage__in=search['lineage'])
+	if(search["state"]):
+		obj = obj.filter(State__in=search['state'])
+	if(search["mutation"]):
+		obj = obj.filter(reduce(operator.and_, (Q(aaSubstitutions__contains=x) for x in search["mutation"])) | reduce(operator.and_, (Q(aaDeletions__contains=x) for x in search["mutation"])))
+	if(search["from_date"]):
+		obj =obj.filter(Collection_date__gte=search['from_date'])
+	if(search["to_date"]):
+		obj = obj.filter(Collection_date__lte=search['to_date'])
+	lineage_count = obj.values('Lineage').annotate(Count('Virus_name', distinct=True))
+	state_count = obj.values('State').annotate(Count('Virus_name', distinct=True))
+	return {"lineage": list(lineage_count), "state": list(state_count)}
 
 @shared_task(bind=True)
 def create_config_file(self, upload_info):
@@ -49,7 +65,6 @@ def create_config_file(self, upload_info):
     command = f"exec snakemake --snakefile {snakefile_loc} --configfile {configfile_loc} --cores 20"
     snakemake_command = subprocess.run(command, shell=True)
     return 'Pipeline run completed'
-
 
 @database_sync_to_async
 def get_my_batch(user_obj):
