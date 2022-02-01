@@ -115,10 +115,13 @@ class QueryHubConsumer(AsyncJsonWebsocketConsumer):
     async def receive_json(self, event):
         group_name = "QueryHub_Consumer"
         if(event["type"] == "SEARCH"):
-            print(event["filter"])
-            # send_email_success(event["filter"])
+            result = {
+                "type": "SEARCH",
+                "data": await queryhub_api(event["filter"])
+            }
         elif(event["type"] == "CLOSE"):
             await self.close()
+        await self.send_json(result)
 
     async def disconnect(self, close_code):
         group_name = "QueryHub_Consumer"
