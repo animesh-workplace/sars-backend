@@ -102,3 +102,26 @@ class BackendConsumer(AsyncJsonWebsocketConsumer):
 		await self.channel_layer.group_discard(group_name, self.channel_name)
 		await self.close()
 
+class QueryHubConsumer(AsyncJsonWebsocketConsumer):
+    async def connect(self):
+        group_name = "QueryHub_Consumer"
+        await self.accept()
+        await self.channel_layer.group_add(group_name, self.channel_name)
+        data = {
+            "message": f"You have connected to {group_name}",
+        }
+        await self.send_json(data)
+
+    async def receive_json(self, event):
+        group_name = "QueryHub_Consumer"
+        if(event["type"] == "SEARCH"):
+            print(event["filter"])
+            # send_email_success(event["filter"])
+        elif(event["type"] == "CLOSE"):
+            await self.close()
+
+    async def disconnect(self, close_code):
+        group_name = "QueryHub_Consumer"
+        print('Closing a connection')
+        await self.channel_layer.group_discard(group_name, self.channel_name)
+        await self.close()
