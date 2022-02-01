@@ -12,7 +12,7 @@ bcrypt==3.2.0
 beautifulsoup4==4.10.0
 billiard==3.6.4.0
 biopython==1.79
-celery==5.1.2
+celery==5.2.2
 celery-progress==0.1.1
 certifi==2021.10.8
 cffi==1.15.0
