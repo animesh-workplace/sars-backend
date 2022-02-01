@@ -18,10 +18,10 @@ asgi_app = get_asgi_application()
 from dotenv import load_dotenv
 from django.urls import re_path
 from django.conf import settings
-from sequences.api.consumer import *
 from .token_auth import JWTAuthMiddleware
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
+from sequences.api.consumer import BackendConsumer, FrontendConsumer, QueryHubConsumer
 
 load_dotenv(settings.BASE_DIR / '.env')
 
@@ -34,7 +34,8 @@ application = ProtocolTypeRouter({
 							[
 								re_path(os.getenv('BASE_URL'), URLRouter([
 									re_path(r'^wsa/backend/$', BackendConsumer.as_asgi(), name='backend-consumer'),
-									re_path(r'^wsa/frontend/$', FrontendConsumer.as_asgi(), name='frontend-consumer'),
+                                    re_path(r'^wsa/frontend/$', FrontendConsumer.as_asgi(), name='frontend-consumer'),
+									re_path(r'^wsa/queryhub/$', QueryHubConsumer.as_asgi(), name='queryhub-consumer'),
 								]))
 
 							]
