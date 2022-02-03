@@ -1,5 +1,5 @@
 aioredis==1.3.1
-amqp==5.0.6
+amqp==5.0.9
 appdirs==1.4.4
 arrow==1.2.1
 asgiref==3.4.1
@@ -12,14 +12,14 @@ bcrypt==3.2.0
 beautifulsoup4==4.10.0
 billiard==3.6.4.0
 biopython==1.79
-celery==5.2.2
+celery==5.2.3
 celery-progress==0.1.1
 certifi==2021.10.8
 cffi==1.15.0
 channels==3.0.4
 channels-redis==3.3.1
 charset-normalizer==2.0.7
-click==7.1.2
+click==8.0.3
 click-didyoumean==0.3.0
 click-plugins==1.1.1
 click-repl==0.2.0
@@ -33,6 +33,7 @@ cryptography==35.0.0
 cycler==0.11.0
 Cython==0.29.24
 daphne==3.0.2
+dataclasses==0.6
 datrie==0.8.2
 Django==3.2.11
 django-celery-beat==2.2.1
@@ -68,7 +69,7 @@ joblib==1.1.0
 jsonschema==3.2.0
 jupyter-core==4.9.0
 kiwisolver==1.3.2
-kombu==5.1.0
+kombu==5.2.3
 MarkupSafe==2.0.1
 matplotlib==3.4.3
 mpire==2.3.3
@@ -83,7 +84,7 @@ openpyxl==3.0.9
 packaging==21.2
 pandas==1.3.4
 pango-designation @ git+https://github.com/cov-lineages/pango-designation.git@26fc5e902b2e8b9233ff8d9e6e8a1e7048e4bded
-pangoLEARN @ git+https://github.com/cov-lineages/pangoLEARN.git@84d1c551615c16eefa7c6b9a338f39fc57aafdaf
+pangoLEARN @ git+https://github.com/cov-lineages/pangoLEARN.git@02cdd402bd79d28bc7f7b00f935853ba757e2e7a
 pangolin @ git+https://github.com/cov-lineages/pangolin.git@901d4c252b469645efebf888f019edebd58361ef
 paramiko==2.8.0
 pendulum==2.1.2
@@ -115,7 +116,7 @@ redis==3.5.3
 requests==2.26.0
 requests-oauthlib==1.3.0
 scikit-learn==1.0.1
-scipy==1.7.1
+scipy==1.7.2
 scorpio @ git+https://github.com/cov-lineages/scorpio.git@c0db12fc11dfbf4d5943b701b90c82d29fe166eb
 service-identity==21.1.0
 simplejson==3.17.5
