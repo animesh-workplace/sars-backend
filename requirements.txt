@@ -89,7 +89,7 @@ pangolin @ git+https://github.com/cov-lineages/pangolin.git@901d4c252b469645efeb
 paramiko==2.8.0
 pendulum==2.1.2
 phylo-treetime==0.8.4
-Pillow==8.4.0
+Pillow==9.0.1
 priority==2.0.0
 prompt-toolkit==3.0.21
 psutil==5.8.0
