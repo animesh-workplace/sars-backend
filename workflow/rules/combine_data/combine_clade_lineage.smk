@@ -32,7 +32,7 @@ rule combine_clade_lineage:
                                     'totalMissing', 'missing', 'totalNonACGTNs', 'nonACGTNs',
                                     'substitutions', 'aaSubstitutions', 'deletions', 'aaDeletions',
                                     'privateNucMutations.reversionSubstitutions', 'privateNucMutations.labeledSubstitutions',
-                                    'privateNucMutations.unlabeledSubstitutions', 'frameShifts']],
+                                    'privateNucMutations.unlabeledSubstitutions']],
                 pangolin_metadata[['strain', 'lineage', 'scorpio_call', 'scorpio_support',
                                    'scorpio_conflict', 'note', 'pangoLEARN_version']],
                 on='strain', how='inner'
