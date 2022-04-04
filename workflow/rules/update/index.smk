@@ -13,8 +13,8 @@ rule update:
 			print("Updating Nextclade")
 			shell(
 				f"""
-					wget 'https://github.com/nextstrain/nextclade/releases/latest/download/nextalign-Linux-x86_64' -O .venv/bin/nextalign && chmod +x .venv/bin/nextalign
-					wget 'https://github.com/nextstrain/nextclade/releases/latest/download/nextclade-Linux-x86_64' -O .venv/bin/nextclade && chmod +x .venv/bin/nextclade
+					curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextalign-Linux-x86_64' -o .venv/bin/nextalign && chmod +x .venv/bin/nextalign
+					curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextclade-Linux-x86_64' -o .venv/bin/nextclade && chmod +x .venv/bin/nextclade
 					nextclade --version
 					nextalign --version
 					nextclade dataset get --name 'sars-cov-2' --output-dir 'workflow/resources/data'
