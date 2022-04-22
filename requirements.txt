@@ -35,7 +35,7 @@ Cython==0.29.24
 daphne==3.0.2
 dataclasses==0.6
 datrie==0.8.2
-Django==3.2.12
+Django==3.2.13
 django-celery-beat==2.2.1
 django-celery-results==2.2.0
 django-cors-headers==3.10.0
