@@ -116,7 +116,7 @@ def sanitize_data(rgsl):
 
 rgsl_users = os.listdir(f"{base_path}/Uploaded_data")
 
-with WorkerPool(n_jobs=1) as pool:
+with WorkerPool(n_jobs=50) as pool:
     output = pool.map(sanitize_data, rgsl_users)
 
 print('Combining all metadata and sequences')

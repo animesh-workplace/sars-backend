@@ -6,15 +6,15 @@ rule update:
 			print("Updating Pangolin")
 			shell(
 				"""
-					pangolin --update
-					pangolin --update-data
+					#pangolin --update
+					#pangolin --update-data
 				"""
 			)
 			print("Updating Nextclade")
 			shell(
 				f"""
-					curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextalign-Linux-x86_64' -o /bin/nextalign && chmod +x /bin/nextalign
-					curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextclade-Linux-x86_64' -o /bin/nextclade && chmod +x /bin/nextclade
+					curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextalign-Linux-x86_64' -o .venv/bin/nextalign && chmod +x .venv/bin/nextalign
+					curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextclade-Linux-x86_64' -o .venv/bin/nextclade && chmod +x .venv/bin/nextclade
 					nextclade --version
 					nextalign --version
 					nextclade dataset get --name 'sars-cov-2' --output-dir 'workflow/resources/data'
