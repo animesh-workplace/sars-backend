@@ -29,7 +29,7 @@ constantly==15.1.0
 constellations @ git+https://github.com/cov-lineages/constellations.git@4b979d68c003a717bab470d5da4bc537be4815c4
 coreapi==2.3.3
 coreschema==0.0.4
-cryptography==35.0.0
+cryptography==39.0.1
 cycler==0.11.0
 Cython==0.29.24
 daphne==3.0.2
